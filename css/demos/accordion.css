@@ -15,6 +15,7 @@
     counter-increment: floof;
     transition:
       opacity .45s var(--ease-out),
+      translate .6s var(--ease-out) var(--enter-delay),
       scale var(--dur) var(--ease-spring),
       border-color .45s var(--ease-out),
       box-shadow .45s var(--ease-out);

@@ -301,15 +301,21 @@
     <footer class="tech">
       <p class="tech__title">Progressive enhancement, live</p>
       <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Open it in another browser and compare.</p>
+      <p class="tech__heading">CSS &middot; graded live by <code>@supports</code></p>
       <ul class="tech__list">
-        <li class="tech__base"><code>&lt;details name="…"&gt;</code> one open at a time</li>
         <li data-feature="details-content"><code>::details-content</code> animate open <em>and</em> close</li>
         <li data-feature="interpolate-size"><code>interpolate-size</code> glide to <code>height: auto</code></li>
         <li data-feature="starting-style"><code>@starting-style</code> cards enter on load</li>
         <li data-feature="has"><code>:has()</code> dim the others</li>
         <li data-feature="linear"><code>linear()</code> springy easing</li>
         <li data-feature="clip-text"><code>background-clip: text</code> gradient names</li>
-        <li data-feature="layers"><code>@layer</code> cascade order, no <code>!important</code></li>
+        <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
+      </ul>
+
+      <p class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></p>
+      <ul class="tech__list tech__list--links">
+        <li><a href="https://caniuse.com/mdn-html_elements_details_name"><code>&lt;details name="…"&gt;</code> one open at a time</a></li>
+        <li><a href="https://caniuse.com/details"><code>&lt;details&gt;</code> + <code>&lt;summary&gt;</code> the disclosure itself</a></li>
       </ul>
     </footer>
 

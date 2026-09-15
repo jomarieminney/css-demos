@@ -96,12 +96,33 @@
 
 /* ----- Card surface, shared by the demo index and the accordion ----- */
 .card {
+  --enter-delay: 0ms;
   position: relative;
   border-radius: var(--radius-card);
   background: var(--surface);
   border: 1px solid var(--surface-border);
   box-shadow: var(--surface-shadow);
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity .5s var(--ease-out),
+    translate .6s var(--ease-out) var(--enter-delay);
 }
+
+/* TRICK: @starting-style — the "before" state for an element's first render,
+   so a plain transition doubles as an entrance. No keyframes, no JS. */
+@starting-style {
+  .card { opacity: 0; translate: 0 1.5rem; }
+}
+
+/* Stagger: each card in a list slides in a beat after the one before */
+.card:nth-child(2), :nth-child(2) > .card { --enter-delay: 70ms; }
+.card:nth-child(3), :nth-child(3) > .card { --enter-delay: 140ms; }
+.card:nth-child(4), :nth-child(4) > .card { --enter-delay: 210ms; }
+.card:nth-child(5), :nth-child(5) > .card { --enter-delay: 280ms; }
+.card:nth-child(6), :nth-child(6) > .card { --enter-delay: 350ms; }
+.card:nth-child(7), :nth-child(7) > .card { --enter-delay: 420ms; }
+.card:nth-child(8), :nth-child(8) > .card { --enter-delay: 490ms; }
 
 /* Gradient bar that sweeps in just outside the left edge, floating clear of the border */
 .card::before {
@@ -136,7 +157,10 @@
   padding: 1.1rem 1.25rem 1.1rem 1.6rem;
   color: inherit;
   text-decoration: none;
-  transition: border-color .3s, translate .4s var(--ease-spring);
+  transition:
+    opacity .5s var(--ease-out),
+    translate .4s var(--ease-spring) var(--enter-delay),
+    border-color .3s;
 }
 a.demo-card:hover { border-color: color-mix(in oklab, var(--magenta) 45%, transparent); translate: 0 -2px; }
 .demo-card--soon { opacity: .5; cursor: not-allowed; }
@@ -192,6 +216,14 @@ a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
   line-height: 1;
   color: var(--pink);
 }
+.tech__heading {
+  margin: 1.5rem 0 .6rem;
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--lilac);
+}
+.tech__heading code { font-size: .95em; text-transform: none; letter-spacing: 0; }
 .tech__list {
   list-style: none;
   margin: 0;
@@ -208,8 +240,68 @@ a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
   border: 1px solid color-mix(in oklab, var(--lilac) 25%, transparent);
   transition: border-color .3s, translate .4s var(--ease-spring);
 }
-.tech__list li:hover { border-color: var(--magenta); translate: 0 -2px; }
+.tech__list li:hover { border-color: var(--tick-hue, var(--magenta)); translate: 0 -2px; }
 .tech__list code { background: none; padding: 0; color: var(--lilac); }
+
+/* Chips that are links: the whole pill is the target, with a little "out" arrow */
+.tech__list--links li { padding: 0; }
+.tech__list--links a {
+  display: block;
+  padding: .4rem .8rem;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+.tech__list--links a::after {
+  content: " \2197";         /* ↗ */
+  color: var(--lilac);
+  font-size: .85em;
+}
+.tech__list--links li:hover { border-color: var(--teal); }
+.tech__list--links a:hover::after { color: var(--teal); }
+
+/* Feature chips: a cross until an @supports block below flips them to a tick.
+   No JS — the browser is grading itself. */
+/* :where() zeroes the specificity, so the plain [data-feature="…"] rules
+   below can override these defaults */
+:where(.tech__list li[data-feature]) {
+  --tick: "\2717";            /* ✗ */
+  --tick-hue: var(--magenta);
+}
+.tech__list li[data-feature] {
+  border-color: color-mix(in oklab, var(--tick-hue) 45%, transparent);
+}
+.tech__list li[data-feature]::before {
+  content: var(--tick);
+  margin-inline-end: .5em;
+  font-weight: 700;
+  color: var(--tick-hue);
+}
+.tech__list li[data-feature] code { color: var(--paper-2); }
+
+@supports selector(::details-content) {
+  [data-feature="details-content"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (interpolate-size: allow-keywords) {
+  [data-feature="interpolate-size"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+/* at-rule() is brand new (Chrome 148, Firefox 157). Until it lands everywhere,
+   fall back to transition-behavior, which shipped in the same releases. */
+@supports at-rule(@starting-style) or (transition-behavior: allow-discrete) {
+  [data-feature="starting-style"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports selector(:has(a)) {
+  [data-feature="has"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  [data-feature="linear"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  [data-feature="clip-text"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+/* Layers need no @supports: this file only arrives via @import … layer().
+   A browser without @layer would show an unstyled page, not a wrong tick. */
+[data-feature="layers"] { --tick: "\2713"; --tick-hue: var(--teal); }
 
 /* ----- Colophon ----- */
 .colophon {
