@@ -57,6 +57,15 @@ a {
 }
 a:hover { text-decoration-color: currentColor; }
 
+/* Disclosure widgets: we always draw our own affordance */
+summary {
+  cursor: pointer;
+  list-style: none;                 /* kill the default triangle… */
+  user-select: none;
+}
+summary::-webkit-details-marker { display: none; }  /* …and in old Safari */
+summary::marker { content: ""; }
+
 code {
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
   font-size: .9em;

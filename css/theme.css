@@ -16,7 +16,9 @@
   /* Card surfaces, shared by the demo index and the accordion */
   --surface:        color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%);
   --surface-border: color-mix(in oklab, var(--lilac) 14%, transparent);
-  --surface-shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 .75rem 2rem -1.25rem rgb(0 0 0 / .8);
+  --surface-highlight: 0 1px 0 rgb(255 255 255 / .04) inset;   /* top-edge glint */
+  --surface-drop:      0 .75rem 2rem -1.25rem rgb(0 0 0 / .8);
+  --surface-shadow:    var(--surface-highlight), var(--surface-drop);
   --radius-card:    1.25rem;
 
   --font-display: "Amatic SC", "Impact", sans-serif;

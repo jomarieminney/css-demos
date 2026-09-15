@@ -96,7 +96,6 @@
 
 /* ----- Card surface, shared by the demo index and the accordion ----- */
 .card {
-  --enter-delay: 0ms;
   position: relative;
   border-radius: var(--radius-card);
   background: var(--surface);
@@ -106,7 +105,7 @@
   translate: 0 0;
   transition:
     opacity .5s var(--ease-out),
-    translate .6s var(--ease-out) var(--enter-delay);
+    translate .6s var(--ease-out) var(--enter-delay, 0ms);
 }
 
 /* TRICK: @starting-style — the "before" state for an element's first render,
@@ -115,29 +114,42 @@
   .card { opacity: 0; translate: 0 1.5rem; }
 }
 
-/* Stagger: each card in a list slides in a beat after the one before */
-.card:nth-child(2), :nth-child(2) > .card { --enter-delay: 70ms; }
-.card:nth-child(3), :nth-child(3) > .card { --enter-delay: 140ms; }
-.card:nth-child(4), :nth-child(4) > .card { --enter-delay: 210ms; }
-.card:nth-child(5), :nth-child(5) > .card { --enter-delay: 280ms; }
-.card:nth-child(6), :nth-child(6) > .card { --enter-delay: 350ms; }
-.card:nth-child(7), :nth-child(7) > .card { --enter-delay: 420ms; }
-.card:nth-child(8), :nth-child(8) > .card { --enter-delay: 490ms; }
+/* Stagger: children of a .stagger list slide in a beat after the one before.
+   --enter-delay inherits, so it reaches a card nested inside an <li> too. */
+.stagger > :nth-child(2) { --enter-delay: 70ms; }
+.stagger > :nth-child(3) { --enter-delay: 140ms; }
+.stagger > :nth-child(4) { --enter-delay: 210ms; }
+.stagger > :nth-child(5) { --enter-delay: 280ms; }
+.stagger > :nth-child(6) { --enter-delay: 350ms; }
+.stagger > :nth-child(7) { --enter-delay: 420ms; }
+.stagger > :nth-child(8) { --enter-delay: 490ms; }
 
-/* Gradient bar that sweeps in just outside the left edge, floating clear of the border */
-.card::before {
-  content: "";
-  position: absolute;
-  inset-block: .9rem;
-  inset-inline-end: calc(100% + .75rem);   /* right edge sits .75rem left of the card */
-  width: .3rem;
-  border-radius: 1rem;
-  background: var(--grad-brand);
-  scale: 1 0;
-  transform-origin: top;
-  transition: scale .5s var(--ease-spring);
+/* ----- Ordinal: "01", "02"… from a CSS counter, no JS ----- */
+.ordinal {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--lilac);
+  min-width: 2ch;
+  transition: color .3s;
 }
-.card:hover::before { scale: 1 1; }
+.ordinal::before { content: counter(item, decimal-leading-zero); }
+
+/* ----- Lit text: gradient that slides in from the right when --lit is 100% ----- */
+.lit-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: .02em;
+  background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
+  background-size: 210% 100%;
+  background-position: var(--lit, 0%) 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: background-position .55s var(--ease-out);
+}
 
 /* ----- Demo index ----- */
 .demos {
@@ -146,10 +158,10 @@
   padding: 0;
   display: grid;
   gap: .85rem;
-  counter-reset: demo;
+  counter-reset: item;
 }
 .demo-card {
-  counter-increment: demo;
+  counter-increment: item;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -159,38 +171,16 @@
   text-decoration: none;
   transition:
     opacity .5s var(--ease-out),
-    translate .4s var(--ease-spring) var(--enter-delay),
+    translate .4s var(--ease-spring) var(--enter-delay, 0ms),
     border-color .3s;
 }
 a.demo-card:hover { border-color: color-mix(in oklab, var(--magenta) 45%, transparent); translate: 0 -2px; }
-.demo-card--soon { opacity: .5; cursor: not-allowed; }
-
-.demo-card__num {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.9rem;
-  line-height: 1;
-  color: var(--lilac);
-  min-width: 2ch;
-}
-.demo-card__num::before { content: counter(demo, decimal-leading-zero); }
 
 .demo-card__name {
   display: block;
-  font-family: var(--font-display);
-  font-weight: 700;
   font-size: clamp(2rem, 4.5vw, 2.8rem);
-  line-height: .95;
-  letter-spacing: .02em;
-  background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
-  background-size: 210% 100%;
-  background-position: 0% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  transition: background-position .55s var(--ease-out);
 }
-a.demo-card:hover .demo-card__name { background-position: 100% 0; }
+a.demo-card:hover .demo-card__name { --lit: 100%; }
 .demo-card__sub { font-size: .95rem; color: var(--paper-2); }
 .demo-card__sub code { font-size: .85em; }
 .demo-card__go {
@@ -215,6 +205,12 @@ a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
   font-size: 2rem;
   line-height: 1;
   color: var(--pink);
+}
+.tech__note {
+  margin: 1.5rem 0 0;
+  max-width: 60ch;
+  font-size: .9rem;
+  color: var(--paper-2);
 }
 .tech__heading {
   margin: 1.5rem 0 .6rem;
@@ -289,6 +285,9 @@ a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
    fall back to transition-behavior, which shipped in the same releases. */
 @supports at-rule(@starting-style) or (transition-behavior: allow-discrete) {
   [data-feature="starting-style"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (grid-template-columns: subgrid) {
+  [data-feature="subgrid"] { --tick: "\2713"; --tick-hue: var(--teal); }
 }
 @supports selector(:has(a)) {
   [data-feature="has"] { --tick: "\2713"; --tick-hue: var(--teal); }
