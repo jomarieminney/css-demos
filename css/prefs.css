@@ -1,0 +1,10 @@
+/* ---------- prefs: user preferences, the last word ----------
+   This is the last layer, so a universal selector here beats every
+   component rule — no !important needed. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms;
+    transition-delay: 0s;
+    animation: none;
+  }
+}

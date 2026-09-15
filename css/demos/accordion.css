@@ -1,0 +1,329 @@
+/* ==========================================================================
+   Accordion demo — "Excellent Floofs", a zero-JS accordion on <details>
+   Lives in the `demo` layer declared in css/main.css. Every "trick" is
+   labelled so you can point at it mid-talk.
+   ========================================================================== */
+@layer demo {
+
+  .floofs {
+    display: grid;
+    gap: .85rem;
+    counter-reset: floof;   /* TRICK: numbering without JS */
+  }
+
+  .floof {
+    counter-increment: floof;
+    transition:
+      opacity .45s var(--ease-out),
+      scale var(--dur) var(--ease-spring),
+      border-color .45s var(--ease-out),
+      box-shadow .45s var(--ease-out);
+  }
+  .floof[open]::before { scale: 1 1; }
+
+  .floof[open] {
+    border-color: color-mix(in oklab, var(--magenta) 45%, transparent);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / .06) inset,
+      0 2rem 4rem -1.5rem color-mix(in oklab, var(--magenta) 45%, transparent);
+  }
+
+  /* TRICK: :has() — when one floof is open, gently dim the rest */
+  .floofs:has(.floof[open]) .floof:not([open]) { opacity: .55; scale: .985; }
+  .floofs:has(.floof[open]) .floof:not([open]):hover { opacity: 1; scale: 1; }
+
+  /* ----- Summary row ----- */
+  .floof > summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.1rem 1.25rem 1.1rem 1.6rem;
+    cursor: pointer;
+    list-style: none;                 /* kill the default triangle… */
+    user-select: none;
+    border-radius: inherit;
+  }
+  .floof > summary::-webkit-details-marker { display: none; }  /* …and in old Safari */
+  .floof > summary::marker { content: ""; }
+
+  .floof__num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--lilac);
+    min-width: 2ch;
+    transition: color .3s;
+  }
+  .floof__num::before { content: counter(floof, decimal-leading-zero); }
+  .floof[open] .floof__num { color: var(--magenta); }
+
+  .floof__names {
+    display: grid;
+    gap: .1rem;
+    min-width: 0;
+  }
+  .floof__pet {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+    line-height: .95;
+    letter-spacing: .02em;
+    /* gradient text that only "lights up" on hover/open */
+    background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
+    background-size: 210% 100%;
+    background-position: 0% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position .55s var(--ease-out);
+  }
+  .floof:hover .floof__pet,
+  .floof[open] .floof__pet { background-position: 100% 0; }
+
+  .floof__owner {
+    font-size: .95rem;
+    color: var(--paper-2);
+  }
+  .floof__owner strong { font-weight: 500; color: var(--pink); }
+
+  .floof__thumb {
+    width: 3.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--lilac);
+    rotate: -6deg;
+    transition: scale var(--dur) var(--ease-spring), opacity .3s, rotate var(--dur) var(--ease-spring);
+  }
+  .floof:hover .floof__thumb { rotate: 6deg; scale: 1.08; }
+  .floof[open] .floof__thumb { scale: 0; opacity: 0; }   /* big photo takes over */
+
+  /* Plus → cross toggle */
+  .floof__toggle {
+    position: relative;
+    width: 2.4rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--lavender) 10%, transparent);
+    transition: rotate var(--dur) var(--ease-spring), background .3s;
+  }
+  .floof__toggle::before,
+  .floof__toggle::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    background: var(--paper);
+    border-radius: 2px;
+    transition: background .3s;
+  }
+  .floof__toggle::before { width: 1rem; height: 2px; }
+  .floof__toggle::after  { width: 2px; height: 1rem; }
+  .floof:hover .floof__toggle { background: color-mix(in oklab, var(--magenta) 30%, transparent); }
+  .floof[open] .floof__toggle { rotate: 135deg; background: var(--magenta); }
+
+  /* ----- TRICK: ::details-content — the animatable hidden part ----- */
+  .floof::details-content {
+    block-size: 0;
+    overflow: hidden;
+    content-visibility: hidden;
+    transition:
+      block-size var(--dur) var(--ease-spring),
+      content-visibility var(--dur) allow-discrete;
+  }
+  .floof[open]::details-content {
+    block-size: auto;               /* animates thanks to interpolate-size */
+    content-visibility: visible;
+  }
+
+  /* ----- Expanded body ----- */
+  .floof__body {
+    display: grid;
+    grid-template-columns: minmax(14rem, 1fr) 1.4fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    padding: .5rem 1.6rem 2rem 1.6rem;
+  }
+  @media (width < 44rem) {
+    .floof__body { grid-template-columns: 1fr; }
+  }
+
+  .floof__photos {
+    position: relative;
+    padding: 1rem 1rem 3.5rem 0;
+  }
+
+  /* Polaroid that drops in and settles at a jaunty tilt */
+  .polaroid {
+    padding: .7rem .7rem 2.4rem;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: .35rem;
+    box-shadow: 0 1.25rem 2.5rem -1rem rgb(0 0 0 / .7);
+    rotate: 8deg;
+    translate: 0 1.5rem;
+    opacity: 0;
+    transition:
+      rotate .8s var(--ease-spring),
+      translate .8s var(--ease-spring),
+      opacity .4s var(--ease-out);
+  }
+  .polaroid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: .15rem;
+    filter: saturate(1.1) contrast(1.05);
+  }
+  .polaroid figcaption {
+    position: absolute;
+    inset-inline: .7rem;
+    bottom: .55rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1;
+    text-align: center;
+    color: var(--purple);
+  }
+  .floof[open] .polaroid {
+    rotate: -3deg;
+    translate: 0;
+    opacity: 1;
+    transition-delay: .1s;
+  }
+  .floof[open] .polaroid:hover { rotate: 0deg; scale: 1.02; transition-delay: 0s; }
+
+  /* The hooman: small circle overlapping the polaroid's corner */
+  .hooman {
+    position: absolute;
+    inset-inline-end: -.25rem;
+    inset-block-end: 3.5rem;    /* overlaps the photo's corner, clear of the caption */
+    width: 6rem;
+    scale: 0;
+    rotate: 25deg;
+    transition: scale .7s var(--ease-spring), rotate .7s var(--ease-spring);
+  }
+  .hooman img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--teal);
+    box-shadow: 0 .75rem 1.5rem -.5rem rgb(0 0 0 / .8);
+  }
+  .hooman figcaption {
+    position: absolute;
+    inset-inline-start: calc(100% + 2.25rem);   /* sits to the lower right of the circle */
+    inset-block-start: 88%;
+    width: 6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--pink);
+    text-align: left;
+    white-space: nowrap;
+    rotate: 4deg;
+  }
+  .floof[open] .hooman { scale: 1; rotate: 0deg; transition-delay: .35s; }
+
+  /* Hand-drawn arrow that draws itself — pathLength="1" makes the maths trivial.
+     Flipped 180° so it points back up at the circle from the label. */
+  .hooman__arrow {
+    position: absolute;
+    inset-inline-end: calc(100% - .1rem);
+    bottom: 45%;
+    width: 3rem;
+    rotate: 190deg;
+    fill: none;
+    stroke: var(--pink);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .hooman__arrow path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset .5s var(--ease-out);
+  }
+  .floof[open] .hooman__arrow path:first-child { stroke-dashoffset: 0; transition-delay: .6s; }
+  .floof[open] .hooman__arrow path:last-child  { stroke-dashoffset: 0; transition-delay: .95s; }
+
+  /* Blurb — lines fade up in a stagger */
+  .floof__blurb { padding-block-start: .5rem; }
+  .floof__blurb > * {
+    translate: 0 .75rem;
+    opacity: 0;
+    transition: translate .6s var(--ease-out), opacity .5s var(--ease-out);
+  }
+  .floof[open] .floof__blurb > * { translate: 0; opacity: 1; }
+  .floof[open] .floof__blurb > :nth-child(1) { transition-delay: .15s; }
+  .floof[open] .floof__blurb > :nth-child(2) { transition-delay: .25s; }
+  .floof[open] .floof__blurb > :nth-child(3) { transition-delay: .35s; }
+  .floof[open] .floof__blurb > :nth-child(4) { transition-delay: .45s; }
+
+  .floof__kicker {
+    margin: 0 0 .5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--lilac);
+  }
+  .floof__blurb p { margin: 0 0 1rem; color: var(--paper-2); }
+
+  /* Floof rating bar — there is no "empty" bar, because every floof is a
+     full-marks floof. The brand gradient covers the first ten points; anything
+     over ten spills into teal, with a notch marking where 10/10 sits. */
+  .rating {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: .75rem;
+    margin-block-start: 1.25rem;
+    font-size: .85rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .rating__track {
+    height: .55rem;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .rating__fill {
+    --ten: min(100%, calc(10 / var(--rating) * 100%));   /* where 10/10 lands */
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background:
+      var(--grad-brand) 0 0 / var(--ten) 100% no-repeat,
+      linear-gradient(90deg, var(--teal), #3fd4c9);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale .9s var(--ease-spring);
+  }
+  .rating__fill::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--ten);
+    width: 2px;
+    translate: -50% 0;
+    background: var(--ink);
+  }
+  .floof[open] .rating__fill { scale: 1 1; transition-delay: .6s; }
+  .rating__value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0;
+    color: var(--pink);
+  }
+
+}

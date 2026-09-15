@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CSS Demos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="masthead">
+      <p class="eyebrow">Things you really don't need JavaScript for</p>
+
+      <h1 class="title">Just <span class="title__slab">CSS</span></h1>
+
+      <p class="lede">A handful of interface patterns that used to need a script, rebuilt on widely available CSS. Pick a demo.</p>
+
+      <svg class="badge badge--still" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main>
+      <ol class="demos">
+        <li>
+          <a class="card demo-card" href="demos/accordion.html">
+            <span class="demo-card__num" aria-hidden="true"></span>
+            <span>
+              <span class="demo-card__name">Accordion</span>
+              <span class="demo-card__sub">Excellent Floofs &middot; <code>&lt;details&gt;</code>, <code>::details-content</code>, <code>interpolate-size</code></span>
+            </span>
+            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+        <li>
+          <div class="card demo-card demo-card--soon" aria-disabled="true">
+            <span class="demo-card__num" aria-hidden="true"></span>
+            <span>
+              <span class="demo-card__name">Tabs</span>
+              <span class="demo-card__sub">Coming soon</span>
+            </span>
+            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+          </div>
+        </li>
+      </ol>
+    </main>
+
+    <footer class="tech">
+      <p class="tech__title">How the stylesheet is put together</p>
+      <p class="tech__sub">One shared <code>main.css</code> declares the cascade order, then <code>@import</code>s each file into its layer. Every demo page adds its own file into the <code>demo</code> layer.</p>
+      <ul class="tech__list">
+        <li><code>reset</code> undo browser defaults</li>
+        <li><code>theme</code> brand tokens</li>
+        <li><code>base</code> page canvas</li>
+        <li><code>components</code> masthead, cards, badge</li>
+        <li><code>demo</code> one file per page</li>
+        <li><code>utilities</code> helpers that always win</li>
+        <li><code>prefs</code> reduced motion, last word</li>
+      </ul>
+    </footer>
+
+    <footer class="colophon">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

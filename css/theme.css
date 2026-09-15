@@ -1,0 +1,33 @@
+/* ---------- theme: brand tokens (lifted from the PowerPoint theme) ---------- */
+:root {
+  --ink:      #0b0910;   /* Dark 1 */
+  --ink-2:    #15111d;   /* Dark 2 */
+  --paper:    #f6f4fa;   /* Light 1 */
+  --paper-2:  #dfe3ee;   /* Light 2 */
+  --magenta:  #d61a96;   /* Accent 1 */
+  --purple:   #7d3c98;   /* Accent 2 */
+  --teal:     #0e9490;   /* Accent 3 */
+  --lilac:    #c9a3dc;   /* Accent 4 */
+  --pink:     #f4c4e3;   /* Accent 5 */
+  --lavender: #e4e7f7;   /* Accent 6 */
+
+  --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, #ff5fb3 100%);
+
+  /* Card surfaces, shared by the demo index and the accordion */
+  --surface:        color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%);
+  --surface-border: color-mix(in oklab, var(--lilac) 14%, transparent);
+  --surface-shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 .75rem 2rem -1.25rem rgb(0 0 0 / .8);
+  --radius-card:    1.25rem;
+
+  --font-display: "Amatic SC", "Impact", sans-serif;
+  --font-body: "Outfit", system-ui, sans-serif;
+
+  /* A springy overshoot curve — pure CSS, no animation library */
+  --ease-spring: linear(
+    0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%,
+    0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%,
+    1.015 55%, 1.017 63.9%, 1.001
+  );
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --dur: .65s;
+}

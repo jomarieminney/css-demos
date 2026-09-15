@@ -1,0 +1,18 @@
+/* ==========================================================================
+   css-demos — shared stylesheet
+   Every page links this file, then its own demo file.
+
+   TRICK: the @layer statement fixes the cascade order up front. From here on
+   a later layer always beats an earlier one, whatever the specificity — so
+   `prefs` can override `.floof[open] .polaroid` with a bare `*` selector and
+   no !important.
+   ========================================================================== */
+@layer reset, theme, base, components, demo, utilities, prefs;
+
+@import url("reset.css")      layer(reset);
+@import url("theme.css")      layer(theme);
+@import url("base.css")       layer(base);
+@import url("components.css") layer(components);
+/* `demo` is filled by each page's own file, e.g. css/demos/accordion.css */
+@import url("utilities.css")  layer(utilities);
+@import url("prefs.css")      layer(prefs);

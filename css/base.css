@@ -1,0 +1,72 @@
+/* ---------- base: the page canvas and plain elements ---------- */
+:root {
+  color-scheme: dark;
+
+  /* TRICK: lets height/width transition to `auto` (Chromium, Safari 26+) */
+  interpolate-size: allow-keywords;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100dvh;
+  padding-block: clamp(2rem, 6vw, 5rem);
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(1rem, .95rem + .3vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--paper);
+  background-color: var(--ink);
+  /* Two slow-drifting colour blobs, like the gradient slide */
+  background-image:
+    radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--purple) 55%, transparent), transparent 60%),
+    radial-gradient(50rem 35rem at 100% 110%, color-mix(in oklab, var(--magenta) 40%, transparent), transparent 60%);
+  background-attachment: fixed;
+  animation: drift 24s ease-in-out infinite alternate;
+  overflow-x: clip;
+}
+
+@keyframes drift {
+  to { background-position: 6% 8%, -6% -8%; }
+}
+
+/* Film grain so the gradient doesn't look like a flat render */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .14;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 62rem;
+  margin-inline: auto;
+}
+
+a {
+  color: var(--pink);
+  text-decoration-color: color-mix(in oklab, var(--pink) 40%, transparent);
+  text-underline-offset: .2em;
+}
+a:hover { text-decoration-color: currentColor; }
+
+code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: .9em;
+  padding: .1em .4em;
+  border-radius: .35em;
+  background: color-mix(in oklab, var(--lavender) 12%, transparent);
+  color: var(--pink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+}

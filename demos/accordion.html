@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Excellent Floofs</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/demos/accordion.css">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">01 &middot; Accordion &middot; a native <code>&lt;details&gt;</code> demo</p>
+
+      <h1 class="title">Excellent <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">This is a CSS Only Accordion Demo. Meet the small, fuzzy overlords who manage some of my speaker friends.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="floofs">
+
+      <!-- ─────────────── Floof 1 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Lollycat</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/lollycat-jo.jpg" alt="" width="4032" height="3024">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="4032" height="3024">
+              <figcaption>Lollycat</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/jominney.png" alt="Jo Minney" width="400" height="400">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+            <p>OK so her real name was actually LOL - she was adopted, and before she joined our household she had a brother named ROFL who thought he was a dog.</p>
+            <p>She ran our household and every morning we had to let her outside so she could inspect the backyard and drink her own body weight in water from flowerpots until she literally made gurgling sounds if you picked her up. RIP sweet baby.</p>
+            <div class="rating" style="--rating: 15">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ─────────────── Floof 2 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Archie</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/archie-michelle.png" alt="" width="923" height="1042">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/archie-michelle.png" alt="Archie, looking excellent" width="923" height="1042">
+              <figcaption>Archie</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/michellefrost.png" alt="Michelle Frost" width="400" height="400">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">Not all heroes wear capes</p>
+            <p>Although, I'm sure you'll agree that Archie would look very dashing in a cape. If you run into Michelle at a conference you might even get to meet him!</p>
+            <p>Archie is a trained service dog, and makes sure that Michelle stays safe if she experiences an epileptic seizure.</p>
+            <div class="rating" style="--rating: 15">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ─────────────── Floof 3 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Fia</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/fia-anders.jpeg" alt="" width="762" height="838">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/fia-anders.jpeg" alt="Fia, looking excellent" width="762" height="838">
+              <figcaption>Fia</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/andersnoras.png" alt="Anders Noras" width="400" height="400">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">Surely this level of adorable can't be real</p>
+            <p>Friends assure me that this is not in fact a stuffed toy. I'm still on the fence, but she clearly meets the criteria for being an excellent floof.</p>
+            <p>One might argue that she has enough hair for both of them...</p>
+            <div class="rating" style="--rating: 13">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">13/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ─────────────── Floof 4 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Treacle</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/treacle-emmz.png" alt="" width="1131" height="1218">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/treacle-emmz.png" alt="Treacle, looking excellent" width="1131" height="1218">
+              <figcaption>Treacle</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/emmzrendle.png" alt="Emmz Rendle" width="400" height="400">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">This dog has seen some things</p>
+            <p>Have you ever woken up not knowing where you are and you can't remember the last 24 hours and you have a stamp on your wrist that says 'not today Satan' and you inexplicably smell like popcorn and bad choices?</p>
+            <p>Treacle has.</p>
+            <div class="rating" style="--rating: 11">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">11/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ─────────────── Floof 5 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Wild Thing &amp; Elmo</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="" width="2048" height="1152">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="Wild Thing and Elmo, looking excellent" width="2048" height="1152">
+              <figcaption>Wild Thing &amp; Elmo</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/luisefreese.png" alt="Luise Freese" width="400" height="400">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">I don't think those count as pets</p>
+            <p>I included them anyway for the LOLs but this is what Luise sent through when I asked in the group chat for pet photos. Although admittedly these two do seem much less likely to set your house on fire or get arrested for selling drugs than Treacle.</p>
+            <div class="rating" style="--rating: 6">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">6/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ─────────────── Floof 6 ─────────────── -->
+      <details class="card floof" name="floofs">
+        <summary>
+          <span class="floof__num" aria-hidden="true"></span>
+          <span class="floof__names">
+            <span class="floof__pet">Buddha</span><span class="visually-hidden">,</span>
+            <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
+          </span>
+          <img class="floof__thumb" src="../assets/images/floofs/buddha-martin.png" alt="" width="1330" height="1033">
+          <span class="floof__toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/images/floofs/buddha-martin.png" alt="Buddha, looking excellent" width="1330" height="1033">
+              <figcaption>Buddha</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/images/hoomans/martinthwaites.png" alt="Martin Thwaite" width="600" height="600">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__kicker">Lavish me with attention, human</p>
+            <p>Do you ever look at a cat and just think - I wish that was me? She looks so relaxed. I bet she's never woken up having inexplicably sprained an ankle in her sleep...</p>
+            <div class="rating" style="--rating: 12">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">12/10</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </main>
+
+    <footer class="tech">
+      <p class="tech__title">Progressive enhancement, live</p>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Open it in another browser and compare.</p>
+      <ul class="tech__list">
+        <li class="tech__base"><code>&lt;details name="…"&gt;</code> one open at a time</li>
+        <li data-feature="details-content"><code>::details-content</code> animate open <em>and</em> close</li>
+        <li data-feature="interpolate-size"><code>interpolate-size</code> glide to <code>height: auto</code></li>
+        <li data-feature="starting-style"><code>@starting-style</code> cards enter on load</li>
+        <li data-feature="has"><code>:has()</code> dim the others</li>
+        <li data-feature="linear"><code>linear()</code> springy easing</li>
+        <li data-feature="clip-text"><code>background-clip: text</code> gradient names</li>
+        <li data-feature="layers"><code>@layer</code> cascade order, no <code>!important</code></li>
+      </ul>
+    </footer>
+
+    <footer class="colophon">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

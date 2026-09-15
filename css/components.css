@@ -1,0 +1,225 @@
+/* ---------- components: shared building blocks ----------
+   Masthead, badge, breadcrumb, demo index cards, tech cheat-sheet. */
+
+/* ----- Breadcrumb back to the index ----- */
+.crumbs {
+  margin-block-end: 1.5rem;
+  font-size: .85rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.crumbs a { text-decoration: none; color: var(--lilac); }
+.crumbs a:hover { color: var(--pink); }
+
+/* ----- Masthead ----- */
+.masthead {
+  position: relative;
+  display: grid;
+  gap: .5rem;
+  margin-block-end: clamp(2.5rem, 6vw, 4.5rem);
+  padding-inline-end: clamp(0rem, 12vw, 9rem);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: .85rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--lilac);
+  margin-block-end: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(4rem, 12vw, 8.5rem);
+  line-height: .9;
+  letter-spacing: .02em;
+  text-wrap: balance;
+}
+
+/* The "Widely Available" slide treatment: a tilted gradient slab */
+.title__slab {
+  display: inline-block;
+  padding: .05em .18em .02em;
+  margin-inline-start: .08em;
+  background: var(--grad-brand);
+  color: var(--ink);
+  rotate: -2.5deg;
+  border-radius: .08em;
+  box-shadow: .12em .12em 0 var(--teal);
+}
+
+.lede {
+  margin: 1.75rem 0 0;
+  max-width: 48ch;
+  line-height: 1.6;
+  color: var(--paper-2);
+}
+
+/* "0 KB of JS" badge — drops in once on load, spins its ring on hover */
+.badge {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: -.5rem;
+  width: clamp(6rem, 12vw, 9rem);
+  filter: drop-shadow(0 .5rem 1.25rem rgb(0 0 0 / .45));
+  animation: badge-in 1s var(--ease-spring) .35s backwards;
+  transition: rotate var(--dur) var(--ease-spring), scale var(--dur) var(--ease-spring);
+}
+.badge:hover { rotate: -8deg; scale: 1.06; }
+.badge--still { animation: none; }   /* index page: no entrance, hover only */
+
+@keyframes badge-in {
+  from { opacity: 0; transform: scale(0) rotate(-120deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.badge__disc { fill: var(--ink-2); stroke: var(--magenta); stroke-width: 2; }
+.badge__ring {
+  transform-origin: 70px 70px;
+  transition: transform 1.4s var(--ease-spring);
+  fill: var(--pink);
+  font: 600 12.5px var(--font-body);
+  letter-spacing: .12em;
+}
+/* Half a turn lands the repeated text exactly where it started */
+.badge:hover .badge__ring { transform: rotate(.5turn); }
+.badge__big   { fill: var(--paper); font: 700 34px var(--font-display); }
+.badge__small { fill: var(--lilac); font: 400 12px var(--font-body); text-transform: uppercase; letter-spacing: .15em; }
+
+@media (width < 40rem) {
+  .masthead { padding-inline-end: 0; }
+  .badge { position: static; justify-self: end; margin-block-start: .5rem; }
+}
+
+/* ----- Card surface, shared by the demo index and the accordion ----- */
+.card {
+  position: relative;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--surface-shadow);
+}
+
+/* Gradient bar that sweeps in just outside the left edge, floating clear of the border */
+.card::before {
+  content: "";
+  position: absolute;
+  inset-block: .9rem;
+  inset-inline-end: calc(100% + .75rem);   /* right edge sits .75rem left of the card */
+  width: .3rem;
+  border-radius: 1rem;
+  background: var(--grad-brand);
+  scale: 1 0;
+  transform-origin: top;
+  transition: scale .5s var(--ease-spring);
+}
+.card:hover::before { scale: 1 1; }
+
+/* ----- Demo index ----- */
+.demos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .85rem;
+  counter-reset: demo;
+}
+.demo-card {
+  counter-increment: demo;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 1.1rem 1.25rem 1.1rem 1.6rem;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color .3s, translate .4s var(--ease-spring);
+}
+a.demo-card:hover { border-color: color-mix(in oklab, var(--magenta) 45%, transparent); translate: 0 -2px; }
+.demo-card--soon { opacity: .5; cursor: not-allowed; }
+
+.demo-card__num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--lilac);
+  min-width: 2ch;
+}
+.demo-card__num::before { content: counter(demo, decimal-leading-zero); }
+
+.demo-card__name {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  line-height: .95;
+  letter-spacing: .02em;
+  background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
+  background-size: 210% 100%;
+  background-position: 0% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: background-position .55s var(--ease-out);
+}
+a.demo-card:hover .demo-card__name { background-position: 100% 0; }
+.demo-card__sub { font-size: .95rem; color: var(--paper-2); }
+.demo-card__sub code { font-size: .85em; }
+.demo-card__go {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--lilac);
+  transition: translate .4s var(--ease-spring), color .3s;
+}
+a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
+
+/* ----- Tech cheat-sheet footer ----- */
+.tech {
+  margin-block-start: clamp(3rem, 8vw, 6rem);
+  padding-block-start: 2rem;
+  border-top: 1px dashed color-mix(in oklab, var(--lilac) 30%, transparent);
+}
+.tech__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--pink);
+}
+.tech__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem .9rem;
+  font-size: .9rem;
+  color: var(--paper-2);
+}
+.tech__list li {
+  padding: .4rem .8rem;
+  border-radius: 2rem;
+  border: 1px solid color-mix(in oklab, var(--lilac) 25%, transparent);
+  transition: border-color .3s, translate .4s var(--ease-spring);
+}
+.tech__list li:hover { border-color: var(--magenta); translate: 0 -2px; }
+.tech__list code { background: none; padding: 0; color: var(--lilac); }
+
+/* ----- Colophon ----- */
+.colophon {
+  margin-block-start: clamp(2rem, 5vw, 3.5rem);
+  padding-block-start: 1.25rem;
+  border-top: 1px dashed color-mix(in oklab, var(--lilac) 30%, transparent);
+  font-size: .85rem;
+  letter-spacing: .04em;
+  color: var(--lilac);
+}
+.colophon p { margin: 0; }
+.colophon a { color: var(--pink); }
+.colophon a:hover { color: var(--paper); }
