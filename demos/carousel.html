@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Coverflow Floofs</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/floof.css">
+  <link rel="stylesheet" href="../css/demos/carousel.css">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">05 &middot; Carousel &middot; <code>:has()</code> + CSS maths + 3D transforms</p>
+
+      <h1 class="title">Coverflow <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">A coverflow with no script. One radio button is checked; <code>:has()</code> reads which, and every slide's tilt, depth and stacking are a <code>calc()</code> of its distance from that one.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main>
+      <div class="reel">
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-1">
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-2">
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-3" checked>
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-4">
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-5">
+        <input class="reel__radio visually-hidden" type="radio" name="reel" id="reel-6">
+
+        <ul class="reel__stage" aria-label="Floofs">
+          <li class="slide">
+            <label class="slide__pick" for="reel-1">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="4032" height="3024">
+                <figcaption>Lollycat</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
+              <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="slide">
+            <label class="slide__pick" for="reel-2">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/archie-michelle.png" alt="Archie, looking excellent" width="923" height="1042">
+                <figcaption>Archie</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
+              <p class="floof__kicker">Not all heroes wear capes</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="slide">
+            <label class="slide__pick" for="reel-3">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/fia-anders.jpeg" alt="Fia, looking excellent" width="762" height="838">
+                <figcaption>Fia</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
+              <p class="floof__kicker">Surely this level of adorable can't be real</p>
+              <div class="rating" style="--rating: 13">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">13/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="slide">
+            <label class="slide__pick" for="reel-4">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/treacle-emmz.png" alt="Treacle, looking excellent" width="1131" height="1218">
+                <figcaption>Treacle</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
+              <p class="floof__kicker">This dog has seen some things</p>
+              <div class="rating" style="--rating: 11">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">11/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="slide">
+            <label class="slide__pick" for="reel-5">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="Wild Thing and Elmo, looking excellent" width="2048" height="1152">
+                <figcaption>Wild Thing &amp; Elmo</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
+              <p class="floof__kicker">I don't think those count as pets</p>
+              <div class="rating" style="--rating: 6">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">6/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="slide">
+            <label class="slide__pick" for="reel-6">
+              <figure class="polaroid">
+                <img src="../assets/images/floofs/buddha-martin.png" alt="Buddha, looking excellent" width="1330" height="1033">
+                <figcaption>Buddha</figcaption>
+              </figure>
+            </label>
+            <div class="slide__meta">
+              <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
+              <p class="floof__kicker">Lavish me with attention, human</p>
+              <div class="rating" style="--rating: 12">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">12/10</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <label class="reel__arrow reel__arrow--prev" for="reel-6" data-when="1" aria-label="Previous: Buddha">&larr;</label>
+<label class="reel__arrow reel__arrow--next" for="reel-2" data-when="1" aria-label="Next: Archie">&rarr;</label>
+        <label class="reel__arrow reel__arrow--prev" for="reel-1" data-when="2" aria-label="Previous: Lollycat">&larr;</label>
+        <label class="reel__arrow reel__arrow--next" for="reel-3" data-when="2" aria-label="Next: Fia">&rarr;</label>
+        <label class="reel__arrow reel__arrow--prev" for="reel-2" data-when="3" aria-label="Previous: Archie">&larr;</label>
+        <label class="reel__arrow reel__arrow--next" for="reel-4" data-when="3" aria-label="Next: Treacle">&rarr;</label>
+        <label class="reel__arrow reel__arrow--prev" for="reel-3" data-when="4" aria-label="Previous: Fia">&larr;</label>
+        <label class="reel__arrow reel__arrow--next" for="reel-5" data-when="4" aria-label="Next: Wild Thing &amp; Elmo">&rarr;</label>
+        <label class="reel__arrow reel__arrow--prev" for="reel-4" data-when="5" aria-label="Previous: Treacle">&larr;</label>
+        <label class="reel__arrow reel__arrow--next" for="reel-6" data-when="5" aria-label="Next: Buddha">&rarr;</label>
+        <label class="reel__arrow reel__arrow--prev" for="reel-5" data-when="6" aria-label="Previous: Wild Thing &amp; Elmo">&larr;</label>
+        <label class="reel__arrow reel__arrow--next" for="reel-1" data-when="6" aria-label="Next: Lollycat">&rarr;</label>
+
+        <nav class="reel__dots" aria-label="Pick a floof">
+          <label class="reel__dot" for="reel-1" title="Lollycat"></label>
+          <label class="reel__dot" for="reel-2" title="Archie"></label>
+          <label class="reel__dot" for="reel-3" title="Fia"></label>
+          <label class="reel__dot" for="reel-4" title="Treacle"></label>
+          <label class="reel__dot" for="reel-5" title="Wild Thing &amp; Elmo"></label>
+          <label class="reel__dot" for="reel-6" title="Buddha"></label>
+        </nav>
+      </div>
+      <p class="reel__hint">Click a floof, use the arrows or dots, or focus the carousel and press the arrow keys.</p>
+    </main>
+
+    <footer class="tech">
+      <p class="tech__title">Progressive enhancement, live</p>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. The maths the JavaScript version does on every click is a handful of <code>calc()</code>s here, and the browser tweens them.</p>
+
+      <p class="tech__heading">CSS &middot; graded live by <code>@supports</code></p>
+      <ul class="tech__list">
+        <li data-feature="has"><code>:has()</code> the checked radio sets <code>--active</code> on the whole reel</li>
+        <li data-feature="math"><code>sign()</code> / <code>abs()</code> offset &rarr; tilt, scale, depth, stacking</li>
+        <li data-feature="round"><code>round()</code> wraps the offset, so the ring is endless</li>
+        <li data-feature="linear"><code>linear()</code> springy easing on every move</li>
+        <li data-feature="transforms"><code>rotate / scale / translate</code> individual transform properties</li>
+        <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
+      </ul>
+
+      <p class="tech__note">Full disclosure: the state lives in a radio group, so a screen reader hears six radio buttons rather than a carousel. The upside is that arrow keys move between slides for free.</p>
+    </footer>
+
+    <footer class="colophon">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

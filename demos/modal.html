@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Excellent Floofs</title>
+  <title>Spotlight Floofs</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/floof.css">
-  <link rel="stylesheet" href="../css/demos/accordion.css">
+  <link rel="stylesheet" href="../css/demos/modal.css">
 </head>
 <body>
   <div class="page">
@@ -20,11 +20,11 @@
     <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
 
     <header class="masthead">
-      <p class="eyebrow">01 &middot; Accordion &middot; a native <code>&lt;details&gt;</code> demo</p>
+      <p class="eyebrow">03 &middot; Modal &middot; <code>&lt;dialog&gt;</code> + invoker commands</p>
 
-      <h1 class="title">Excellent <span class="title__slab">Floofs</span></h1>
+      <h1 class="title">Spotlight <span class="title__slab">Floofs</span></h1>
 
-      <p class="lede">This is a CSS Only Accordion Demo. Meet the small, fuzzy overlords who manage some of my speaker friends.</p>
+      <p class="lede">Pick a floof and the browser opens a real modal: top layer, backdrop, focus trap, Escape to close. The button says <code>command="show-modal"</code> and that is the whole API.</p>
 
       <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
         <defs>
@@ -39,20 +39,62 @@
       </svg>
     </header>
 
-    <main class="floofs stagger">
+    <main>
+      <div class="floof-grid stagger">
+      <button class="card floof-open" commandfor="floof-1" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/lollycat-jo.jpg" alt="" width="4032" height="3024">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Lollycat</span>
+          <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
+        </span>
+      </button>
+      <button class="card floof-open" commandfor="floof-2" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/archie-michelle.png" alt="" width="923" height="1042">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Archie</span>
+          <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
+        </span>
+      </button>
+      <button class="card floof-open" commandfor="floof-3" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/fia-anders.jpeg" alt="" width="762" height="838">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Fia</span>
+          <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
+        </span>
+      </button>
+      <button class="card floof-open" commandfor="floof-4" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/treacle-emmz.png" alt="" width="1131" height="1218">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Treacle</span>
+          <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
+        </span>
+      </button>
+      <button class="card floof-open" commandfor="floof-5" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="" width="2048" height="1152">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Wild Thing &amp; Elmo</span>
+          <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
+        </span>
+      </button>
+      <button class="card floof-open" commandfor="floof-6" command="show-modal">
+        <img class="floof__thumb" src="../assets/images/floofs/buddha-martin.png" alt="" width="1330" height="1033">
+        <span class="floof__names">
+          <span class="floof__pet lit-text">Buddha</span>
+          <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
+        </span>
+      </button>
+      </div>
 
-      <!-- ─────────────── Floof 1 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+
+      <!-- ─────────────── Dialog 1 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-1" closedby="any" aria-labelledby="floof-1-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Lollycat</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-1-title">Lollycat</span>
             <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/lollycat-jo.jpg" alt="" width="4032" height="3024">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-1" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -72,6 +114,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
             <p class="floof__kicker">She was the sweetest kitty who ever was</p>
             <p>OK so her real name was actually LOL - she was adopted, and before she joined our household she had a brother named ROFL who thought he was a dog.</p>
             <p>She ran our household and every morning we had to let her outside so she could inspect the backyard and drink her own body weight in water from flowerpots until she literally made gurgling sounds if you picked her up. RIP sweet baby.</p>
@@ -82,20 +125,17 @@
             </div>
           </div>
         </div>
-      </details>
+      </dialog>
 
-      <!-- ─────────────── Floof 2 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+      <!-- ─────────────── Dialog 2 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-2" closedby="any" aria-labelledby="floof-2-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Archie</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-2-title">Archie</span>
             <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/archie-michelle.png" alt="" width="923" height="1042">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-2" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -115,6 +155,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
             <p class="floof__kicker">Not all heroes wear capes</p>
             <p>Although, I'm sure you'll agree that Archie would look very dashing in a cape. If you run into Michelle at a conference you might even get to meet him!</p>
             <p>Archie is a trained service dog, and makes sure that Michelle stays safe if she experiences an epileptic seizure.</p>
@@ -125,20 +166,17 @@
             </div>
           </div>
         </div>
-      </details>
+      </dialog>
 
-      <!-- ─────────────── Floof 3 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+      <!-- ─────────────── Dialog 3 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-3" closedby="any" aria-labelledby="floof-3-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Fia</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-3-title">Fia</span>
             <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/fia-anders.jpeg" alt="" width="762" height="838">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-3" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -158,6 +196,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
             <p class="floof__kicker">Surely this level of adorable can't be real</p>
             <p>Friends assure me that this is not in fact a stuffed toy. I'm still on the fence, but she clearly meets the criteria for being an excellent floof.</p>
             <p>One might argue that she has enough hair for both of them...</p>
@@ -168,20 +207,17 @@
             </div>
           </div>
         </div>
-      </details>
+      </dialog>
 
-      <!-- ─────────────── Floof 4 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+      <!-- ─────────────── Dialog 4 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-4" closedby="any" aria-labelledby="floof-4-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Treacle</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-4-title">Treacle</span>
             <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/treacle-emmz.png" alt="" width="1131" height="1218">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-4" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -201,6 +237,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
             <p class="floof__kicker">This dog has seen some things</p>
             <p>Have you ever woken up not knowing where you are and you can't remember the last 24 hours and you have a stamp on your wrist that says 'not today Satan' and you inexplicably smell like popcorn and bad choices?</p>
             <p>Treacle has.</p>
@@ -211,20 +248,17 @@
             </div>
           </div>
         </div>
-      </details>
+      </dialog>
 
-      <!-- ─────────────── Floof 5 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+      <!-- ─────────────── Dialog 5 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-5" closedby="any" aria-labelledby="floof-5-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Wild Thing &amp; Elmo</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-5-title">Wild Thing &amp; Elmo</span>
             <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="" width="2048" height="1152">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-5" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -244,6 +278,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
             <p class="floof__kicker">I don't think those count as pets</p>
             <p>I included them anyway for the LOLs but this is what Luise sent through when I asked in the group chat for pet photos. Although admittedly these two do seem much less likely to set your house on fire or get arrested for selling drugs than Treacle.</p>
             <div class="rating" style="--rating: 6">
@@ -253,20 +288,17 @@
             </div>
           </div>
         </div>
-      </details>
+      </dialog>
 
-      <!-- ─────────────── Floof 6 ─────────────── -->
-      <details class="card floof" name="floofs">
-        <summary>
-          <span class="ordinal" aria-hidden="true"></span>
+      <!-- ─────────────── Dialog 6 ─────────────── -->
+      <dialog class="card floof-dialog" id="floof-6" closedby="any" aria-labelledby="floof-6-title">
+        <header class="floof-dialog__head">
           <span class="floof__names">
-            <span class="floof__pet lit-text">Buddha</span><span class="visually-hidden">,</span>
+            <span class="floof__pet lit-text" id="floof-6-title">Buddha</span>
             <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
           </span>
-          <img class="floof__thumb" src="../assets/images/floofs/buddha-martin.png" alt="" width="1330" height="1033">
-          <span class="floof__toggle plus-x" aria-hidden="true"></span>
-        </summary>
-
+          <button class="plus-x" commandfor="floof-6" command="close" aria-label="Close" style="--x: 1"></button>
+        </header>
         <div class="floof__body">
           <div class="floof__photos">
             <figure class="polaroid">
@@ -286,6 +318,7 @@
           </div>
 
           <div class="floof__blurb">
+            <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
             <p class="floof__kicker">Lavish me with attention, human</p>
             <p>Do you ever look at a cat and just think - I wish that was me? She looks so relaxed. I bet she's never woken up having inexplicably sprained an ankle in her sleep...</p>
             <div class="rating" style="--rating: 12">
@@ -295,29 +328,31 @@
             </div>
           </div>
         </div>
-      </details>
-
+      </dialog>
     </main>
 
     <footer class="tech">
       <p class="tech__title">Progressive enhancement, live</p>
-      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Open it in another browser and compare.</p>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Opening and closing animate with <code>@starting-style</code> and discrete transitions; the dialog stays in the top layer while it fades out thanks to <code>overlay</code>.</p>
+
       <p class="tech__heading">CSS &middot; graded live by <code>@supports</code></p>
       <ul class="tech__list">
-        <li data-feature="details-content"><code>::details-content</code> animate open <em>and</em> close</li>
-        <li data-feature="interpolate-size"><code>interpolate-size</code> glide to <code>height: auto</code></li>
-        <li data-feature="starting-style"><code>@starting-style</code> cards enter on load</li>
-        <li data-feature="has"><code>:has()</code> dim the others</li>
-        <li data-feature="linear"><code>linear()</code> springy easing</li>
-        <li data-feature="clip-text"><code>background-clip: text</code> gradient names</li>
+        <li data-feature="starting-style"><code>@starting-style</code> the dialog fades and lifts in</li>
+        <li data-feature="allow-discrete"><code>transition-behavior: allow-discrete</code> animate to and from <code>display: none</code></li>
+        <li data-feature="overlay"><code>overlay</code> stay in the top layer while closing</li>
+        <li data-feature="backdrop-filter"><code>backdrop-filter</code> blur the page behind <code>::backdrop</code></li>
+        <li data-feature="container"><code>@container</code> the profile stacks when the dialog is narrow</li>
         <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
       </ul>
 
       <p class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></p>
       <ul class="tech__list tech__list--links">
-        <li><a href="https://caniuse.com/mdn-html_elements_details_name"><code>&lt;details name="…"&gt;</code> one open at a time</a></li>
-        <li><a href="https://caniuse.com/details"><code>&lt;details&gt;</code> + <code>&lt;summary&gt;</code> the disclosure itself</a></li>
+        <li><a href="https://caniuse.com/dialog"><code>&lt;dialog&gt;</code> modal with focus trap and Escape</a></li>
+        <li><a href="https://caniuse.com/?search=commandfor"><code>command / commandfor</code> open and close it from a button</a></li>
+        <li><a href="https://caniuse.com/?search=closedby"><code>closedby="any"</code> click outside to close</a></li>
       </ul>
+
+      <p class="tech__note">Full disclosure: Safari has invoker commands from 26.2 and no <code>closedby</code> yet, so there a click outside won't close the dialog. Escape and the close button still will.</p>
     </footer>
 
     <footer class="colophon">

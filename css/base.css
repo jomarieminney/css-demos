@@ -8,6 +8,12 @@
 
 html { scroll-behavior: smooth; }
 
+/* TRICK: cross-document view transitions. One line, and same-origin
+   navigations between these pages cross-fade; elements that share a
+   view-transition-name (the badge, the title slab) morph into place.
+   Needs the pages served over http(s) — file:// URLs are separate origins. */
+@view-transition { navigation: auto; }
+
 body {
   min-height: 100dvh;
   padding-block: clamp(2rem, 6vw, 5rem);

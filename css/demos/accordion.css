@@ -58,29 +58,9 @@
   .floof:hover .floof__thumb { rotate: 6deg; scale: 1.08; }
   .floof[open] .floof__thumb { scale: 0; opacity: 0; }   /* big photo takes over */
 
-  /* Plus → cross toggle */
-  .floof__toggle {
-    position: relative;
-    width: 2.4rem;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: color-mix(in oklab, var(--lavender) 10%, transparent);
-    transition: rotate var(--dur) var(--ease-spring), background .3s;
-  }
-  .floof__toggle::before,
-  .floof__toggle::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    background: var(--paper);
-    border-radius: 2px;
-    transition: background .3s;
-  }
-  .floof__toggle::before { width: 1rem; height: 2px; }
-  .floof__toggle::after  { width: 2px; height: 1rem; }
+  /* Plus → cross toggle (shared .plus-x, see components) */
   .floof:hover .floof__toggle { background: color-mix(in oklab, var(--magenta) 30%, transparent); }
-  .floof[open] .floof__toggle { rotate: 135deg; background: var(--magenta); }
+  .floof[open] .floof__toggle { --x: 1; background: var(--magenta); }
 
   /* ----- TRICK: ::details-content — the animatable hidden part ----- */
   .floof::details-content {

@@ -41,6 +41,7 @@
 
 /* The "Widely Available" slide treatment: a tilted gradient slab */
 .title__slab {
+  view-transition-name: slab;       /* morphs between pages, see base.css */
   display: inline-block;
   padding: .05em .18em .02em;
   margin-inline-start: .08em;
@@ -51,6 +52,7 @@
   box-shadow: .12em .12em 0 var(--teal);
 }
 
+.lede + .lede { margin-block-start: .75rem; }   /* a second lede is just the next paragraph */
 .lede {
   margin: 1.75rem 0 0;
   max-width: 48ch;
@@ -65,6 +67,7 @@
   inset-block-start: -.5rem;
   width: clamp(6rem, 12vw, 9rem);
   filter: drop-shadow(0 .5rem 1.25rem rgb(0 0 0 / .45));
+  view-transition-name: badge;
   animation: badge-in 1s var(--ease-spring) .35s backwards;
   transition: rotate var(--dur) var(--ease-spring), scale var(--dur) var(--ease-spring);
 }
@@ -97,6 +100,7 @@
 /* ----- Card surface, shared by the demo index and the accordion ----- */
 .card {
   position: relative;
+  container-type: inline-size;      /* lets the floof profile query the card's width */
   border-radius: var(--radius-card);
   background: var(--surface);
   border: 1px solid var(--surface-border);
@@ -123,6 +127,32 @@
 .stagger > :nth-child(6) { --enter-delay: 350ms; }
 .stagger > :nth-child(7) { --enter-delay: 420ms; }
 .stagger > :nth-child(8) { --enter-delay: 490ms; }
+
+/* ----- Plus → cross toggle. Set --x: 1 to show the cross. ----- */
+.plus-x {
+  position: relative;
+  width: 2.4rem;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--lavender) 10%, transparent);
+  rotate: calc(var(--x, 0) * 135deg);
+  transition: rotate var(--dur) var(--ease-spring), background .3s;
+}
+.plus-x::before,
+.plus-x::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: var(--paper);
+  border-radius: 2px;
+}
+.plus-x::before { width: 1rem; height: 2px; }
+.plus-x::after  { width: 2px; height: 1rem; }
+button.plus-x { cursor: pointer; }
+button.plus-x:hover { background: var(--magenta); }
 
 /* ----- Ordinal: "01", "02"… from a CSS counter, no JS ----- */
 .ordinal {
@@ -297,6 +327,41 @@ a.demo-card:hover .demo-card__go { translate: .35rem 0; color: var(--magenta); }
 }
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   [data-feature="clip-text"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (transition-behavior: allow-discrete) {
+  [data-feature="allow-discrete"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (overlay: auto) {
+  [data-feature="overlay"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (backdrop-filter: blur(1px)) {
+  [data-feature="backdrop-filter"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (container-type: inline-size) {
+  [data-feature="container"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (anchor-name: --a) {
+  [data-feature="anchor"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (position-try-fallbacks: flip-block) {
+  [data-feature="position-try"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports selector(:popover-open) {
+  [data-feature="popover-open"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (scale: abs(-1)) and (rotate: calc(sign(1) * 1deg)) {
+  [data-feature="math"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (scale: round(1.4)) {
+  [data-feature="round"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+@supports (rotate: y 1deg) and (scale: 1) and (translate: 1px) {
+  [data-feature="transforms"] { --tick: "\2713"; --tick-hue: var(--teal); }
+}
+/* Only at-rule() can test this one (Chrome 148+). Safari supports the
+   feature but not the test, so it shows a cross there for now. */
+@supports at-rule(@view-transition) {
+  [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); }
 }
 /* Layers need no @supports: this file only arrives via @import … layer().
    A browser without @layer would show an unstyled page, not a wrong tick. */

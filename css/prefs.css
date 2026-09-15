@@ -7,4 +7,5 @@
     transition-delay: 0s;
     animation: none;
   }
+  @view-transition { navigation: none; }
 }

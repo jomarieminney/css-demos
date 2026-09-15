@@ -2,7 +2,9 @@
    Floof profile — the polaroid, the hooman, the blurb and the rating.
    Shared by the accordion and tabs demos, so it lives in `components`.
 
-   Reveal state is keyed on the nearest open <details>, two ways:
+   Reveal state is keyed on the nearest open <details>, <dialog> or popover
+   (the :is() list is forgiving, so an unknown :popover-open is skipped, not
+   fatal). It works two ways:
    · the closed-state rules give the accordion something to animate FROM
      (its content stays in the tree while closed), and something to animate
      back TO when it closes;
@@ -37,7 +39,10 @@
     align-items: start;
     padding: .5rem 1.6rem 2rem 1.6rem;
   }
-  @media (width < 44rem) {
+  /* TRICK: container query — the profile stacks when ITS CARD is narrow,
+     not when the viewport is. The same markup sits in a wide accordion card,
+     a tab panel, a dialog and a 24rem popover. */
+  @container (width < 44rem) {
     .floof__body { grid-template-columns: 1fr; }
   }
 
@@ -79,13 +84,13 @@
     text-align: center;
     color: var(--purple);
   }
-  details[open] .polaroid {
+  :is(details[open], dialog[open], :popover-open) .polaroid {
     rotate: -3deg;
     translate: 0;
     opacity: 1;
     transition-delay: .1s;
   }
-  details[open] .polaroid:hover { rotate: 0deg; scale: 1.02; transition-delay: 0s; }
+  :is(details[open], dialog[open], :popover-open) .polaroid:hover { rotate: 0deg; scale: 1.02; transition-delay: 0s; }
 
   /* The hooman: small circle overlapping the polaroid's corner */
   .hooman {
@@ -119,7 +124,7 @@
     white-space: nowrap;
     rotate: 4deg;
   }
-  details[open] .hooman { scale: 1; rotate: 0deg; transition-delay: .35s; }
+  :is(details[open], dialog[open], :popover-open) .hooman { scale: 1; rotate: 0deg; transition-delay: .35s; }
 
   /* Hand-drawn arrow that draws itself — pathLength="1" makes the maths trivial.
      Flipped so it points back up at the circle from the label. */
@@ -140,23 +145,24 @@
     stroke-dashoffset: 1;
     transition: stroke-dashoffset .5s var(--ease-out);
   }
-  details[open] .hooman__arrow path:first-child { stroke-dashoffset: 0; transition-delay: .6s; }
-  details[open] .hooman__arrow path:last-child  { stroke-dashoffset: 0; transition-delay: .95s; }
+  :is(details[open], dialog[open], :popover-open) .hooman__arrow path:first-child { stroke-dashoffset: 0; transition-delay: .6s; }
+  :is(details[open], dialog[open], :popover-open) .hooman__arrow path:last-child  { stroke-dashoffset: 0; transition-delay: .95s; }
 
-  /* One column: no room to the right of the circle, so the label swaps to
-     the left and the arrow is mirrored to point back up-right at it */
-  @media (width < 44rem) {
+  /* One column: no room beside the circle, so the label drops beneath it
+     (the photos area keeps 3.5rem of padding there) and the arrow points up */
+  @container (width < 44rem) {
     .hooman figcaption {
       inset-inline-start: auto;
-      inset-inline-end: calc(100% + 1.5rem);
+      inset-inline-end: .25rem;
+      inset-block-start: calc(100% + .6rem);
       text-align: right;
-      rotate: -4deg;
+      rotate: -3deg;
     }
     .hooman__arrow {
       inset-inline-end: auto;
-      inset-inline-start: calc(100% - .1rem);
-      scale: 1 -1;
-      rotate: -10deg;
+      inset-inline-start: -.75rem;
+      bottom: 60%;
+      rotate: -80deg;
     }
   }
 
@@ -167,12 +173,12 @@
     opacity: 0;
     transition: translate .6s var(--ease-out), opacity .5s var(--ease-out);
   }
-  details[open] .floof__blurb > * { translate: 0; opacity: 1; }
-  details[open] .floof__blurb > :nth-child(1) { transition-delay: .15s; }
-  details[open] .floof__blurb > :nth-child(2) { transition-delay: .25s; }
-  details[open] .floof__blurb > :nth-child(3) { transition-delay: .35s; }
-  details[open] .floof__blurb > :nth-child(4) { transition-delay: .45s; }
-  details[open] .floof__blurb > :nth-child(5) { transition-delay: .55s; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > * { translate: 0; opacity: 1; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > :nth-child(1) { transition-delay: .15s; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > :nth-child(2) { transition-delay: .25s; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > :nth-child(3) { transition-delay: .35s; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > :nth-child(4) { transition-delay: .45s; }
+  :is(details[open], dialog[open], :popover-open) .floof__blurb > :nth-child(5) { transition-delay: .55s; }
 
   .floof__kicker {
     margin: 0 0 .5rem;
@@ -231,7 +237,7 @@
     translate: -50% 0;
     background: var(--ink);
   }
-  details[open] .rating__fill { scale: 1 1; transition-delay: .6s; }
+  :is(details[open], dialog[open], :popover-open) .rating__fill { scale: 1 1; transition-delay: .6s; }
   .rating__value {
     font-family: var(--font-display);
     font-weight: 700;
@@ -244,11 +250,11 @@
      the first time (tab panels go display:none → shown). Same values as the
      closed-state rules above, so both demos play the same reveal. */
   @starting-style {
-    details[open] .polaroid { rotate: 8deg; translate: 0 1.5rem; opacity: 0; }
-    details[open] .hooman { scale: 0; rotate: 25deg; }
-    details[open] .hooman__arrow path { stroke-dashoffset: 1; }
-    details[open] .floof__blurb > * { translate: 0 .75rem; opacity: 0; }
-    details[open] .rating__fill { scale: 0 1; }
+    :is(details[open], dialog[open], :popover-open) .polaroid { rotate: 8deg; translate: 0 1.5rem; opacity: 0; }
+    :is(details[open], dialog[open], :popover-open) .hooman { scale: 0; rotate: 25deg; }
+    :is(details[open], dialog[open], :popover-open) .hooman__arrow path { stroke-dashoffset: 1; }
+    :is(details[open], dialog[open], :popover-open) .floof__blurb > * { translate: 0 .75rem; opacity: 0; }
+    :is(details[open], dialog[open], :popover-open) .rating__fill { scale: 0 1; }
   }
 
 }
