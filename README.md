@@ -5,7 +5,7 @@ Things you really don't need JavaScript for.
 2. Tabs — `<details>` + grid + subgrid, `:has()` quantity query
 3. Modal — `<dialog>`, invoker commands, `@starting-style`, `allow-discrete`, `overlay`
 4. Popover — `popover`, anchor positioning, `position-try-fallbacks`
-5. Carousel — `:has()` state, `sign()` / `abs()` maths, 3D transforms
+5. Carousel — scroll snap, `scroll-state()` container query, `::scroll-marker`, `::scroll-button()`, `@property`
 
 Everything lives in one stylesheet, `css/main.css`, split into cascade layers (reset, theme, base, components, demo, utilities, prefs) with each demo under its own heading in the demo layer. Also shared: `@supports`-graded feature chips, container queries, cross-document view transitions.
 

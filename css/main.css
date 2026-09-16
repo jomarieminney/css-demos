@@ -22,6 +22,16 @@
    ========================================================================== */
 @layer reset, theme, base, components, demo, utilities, prefs;
 
+/* TRICK: @property — registering a custom property gives it a type, and a
+   typed property can transition. These are the carousel's dials (see
+   "05 · Carousel"). Registrations are global and Chrome ignores them inside
+   a layer, so they live up here. */
+@property --tilt  { syntax: "<angle>";  inherits: false; initial-value: 0deg; }
+@property --depth { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --dir   { syntax: "<number>"; inherits: true;  initial-value: 1; }
+@property --band  { syntax: "<number>"; inherits: true;  initial-value: 1; }
+@property --bar   { syntax: "<length>"; inherits: false; initial-value: .65rem; }
+
 
 /* ==========================================================================
    RESET
@@ -44,7 +54,7 @@
 
 
 /* ==========================================================================
-   THEME — brand tokens (lifted from the PowerPoint theme)
+   THEME
    ========================================================================== */
 @layer theme {
   :root {
@@ -376,7 +386,7 @@
     font: 700 1.5rem var(--font-display);
     cursor: pointer;
     transition: background .3s, border-color .3s, scale .4s var(--ease-spring), rotate var(--dur) var(--ease-spring);
-    &:is(button, label):hover { background: var(--magenta); }
+    &:is(button):hover { background: var(--magenta); }
   }
 
   /* Plus → cross. Set --x: 1 to show the cross. */
@@ -823,10 +833,13 @@
   @supports (anchor-name: --a)                 { [data-feature="anchor"]         { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (position-try-fallbacks: flip-block) { [data-feature="position-try"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports selector(:popover-open)            { [data-feature="popover-open"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
-  @supports (scale: abs(-1)) and (rotate: calc(sign(1) * 1deg)) { [data-feature="math"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (animation-timeline: view())       { [data-feature="scroll-timeline"] { --tick: "\2713"; --tick-hue: var(--teal); } }
-  @supports (scale: round(1.4))                { [data-feature="round"]          { --tick: "\2713"; --tick-hue: var(--teal); } }
-  @supports (rotate: y 1deg) and (scale: 1) and (translate: 1px) { [data-feature="transforms"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (scroll-snap-type: x mandatory)    { [data-feature="snap"]           { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (container-type: scroll-state)     { [data-feature="scroll-state"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(::scroll-button(*))       { [data-feature="scroll-buttons"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(::scroll-marker)          { [data-feature="scroll-markers"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (scrollbar-width: none)            { [data-feature="scrollbar-width"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (scroll-initial-target: nearest)   { [data-feature="scroll-initial-target"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
@@ -1141,7 +1154,7 @@
     }
 
     .floof__pet { --lit: 100%; }
-    .plus-x { background: var(--magenta); }
+    .plus-x { --x: 1; background: var(--magenta); }
     .plus-x:hover { background: var(--purple); }
     /* the header already carries the owner, so hide the copy in the blurb */
     .floof__blurb .floof__owner { display: none; }
@@ -1231,7 +1244,7 @@
        this face's popover is open (see the :has() rules below) so it reads
        as "click again to close" */
     &::after {
-      content: "\2715";
+      content: "\2715" / "";        /* decorative: the button already says what it does */
       position: absolute;
       inset-block-start: var(--pad);
       inset-inline-start: calc(50% - var(--thumb) / 2);
@@ -1353,7 +1366,7 @@
        popover is small enough that where it lands is the whole show */
     .floof__body { grid-template-columns: 1fr; padding: 1rem 1.25rem 1.1rem; }
     .floof__blurb { padding-block-start: 0; }
-    .floof__pet { font-size: 2rem; margin: 0 0 .15rem; }
+    .floof__pet { --lit: 100%; font-size: 2rem; margin: 0 0 .15rem; }
     .floof__kicker { font-size: 1.6rem; }
     .rating { margin-block-start: .9rem; }
   }
@@ -1408,94 +1421,64 @@
 
 
   /* ==========================================================================
-     05 · Carousel (demos/carousel.html) — state in a radio group, geometry
-     in calc(), motion in transitions. No JS:
-     · :has() reads which radio is checked and sets --active on the reel
-     · each slide knows its own index (--i) so --offset = --i - --active
-     · round() wraps the offset so the ring is endless
-     · sign() and abs() turn the offset into tilt, scale, depth and z-index
-     · every one of those properties transitions, so each move is tweened
+     05 · Carousel (demos/carousel.html) — a scroll-snap reel that swipes,
+     with a coverflow tilt that reacts to which slide is snapped.
+     No JS:
+     · overflow + scroll-snap do the swiping and the settling, in every browser
+     · scroll-state(snapped) tells the snapped slide to flatten and the rest to
+       tilt; registered custom properties make that a spring transition
+     · a view() timeline says which SIDE of the centre a slide is on
+     · ::scroll-marker draws the dots and ::scroll-button() the arrows
      ========================================================================== */
+
   .reel {
-    --active: 3;                     /* matches the radio that starts checked */
-    --n: 1;                          /* slide count, set by the quantity query */
     --slide: min(27rem, 82vw);       /* front slide width */
-    --step: min(15rem, 46vw);        /* horizontal distance per slide */
-    --tilt: 52deg;
-    --move: .9s;                     /* one move, start to settle */
-    position: relative;
-    display: grid;
-    gap: 1.5rem;
-    padding-block: 1rem;
-
-    /* TRICK: :has() as a quantity query — how many slides are there? */
-    &:has(> .reel__stage > :last-child:nth-child(2)) { --n: 2; }
-    &:has(> .reel__stage > :last-child:nth-child(3)) { --n: 3; }
-    &:has(> .reel__stage > :last-child:nth-child(4)) { --n: 4; }
-    &:has(> .reel__stage > :last-child:nth-child(5)) { --n: 5; }
-    &:has(> .reel__stage > :last-child:nth-child(6)) { --n: 6; }
-    &:has(> .reel__stage > :last-child:nth-child(7)) { --n: 7; }
-    &:has(> .reel__stage > :last-child:nth-child(8)) { --n: 8; }
-
-    /* TRICK: :has() — the checked radio anywhere inside sets the reel's state */
-    &:has(#reel-1:checked) { --active: 1; }
-    &:has(#reel-2:checked) { --active: 2; }
-    &:has(#reel-3:checked) { --active: 3; }
-    &:has(#reel-4:checked) { --active: 4; }
-    &:has(#reel-5:checked) { --active: 5; }
-    &:has(#reel-6:checked) { --active: 6; }
-    &:has(#reel-7:checked) { --active: 7; }
-    &:has(#reel-8:checked) { --active: 8; }
-  }
-
-  /* The stage: every slide in the same grid cell */
-  .reel__stage {
+    --overlap: 0rem;                 /* set below, once the tilt is known to work */
+    --move: 1.2s;                    /* one tilt/flatten, start to settle */
     list-style: none;
     margin: 0;
-    padding: 0;
-    display: grid;
-    justify-items: center;
-    perspective: 70rem;              /* the 3D room the slides sit in */
-    > * { grid-area: 1 / 1; }
+    padding: 1.5rem calc(50% - var(--slide) / 2) 2rem;   /* first and last can centre */
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;         /* arrows, dots and keys glide, not jump */
+    scrollbar-width: none;           /* swipe, don't scroll-bar */
+    anchor-name: --reel;             /* the arrows hang off this */
+    scroll-marker-group: after;      /* the dots go underneath */
+  }
+  .slide {
+    flex: 0 0 var(--slide);
+    scroll-snap-align: center;
+    scroll-snap-stop: always;        /* one slide per swipe, however hard */
+    margin-inline: calc(var(--overlap) / -2);
+    container-type: scroll-state;    /* lets the card inside ask "am I snapped?" */
+    /* Stacking lives on the slide, not the card inside it: a slide with a
+       filter is a stacking context, so a card's z-index could never beat a
+       neighbouring slide. --band comes from the view timeline below. */
+    z-index: var(--band);
+    &:first-child { margin-inline-start: 0; }
+    &:last-child  { margin-inline-end: 0; }
+    /* TRICK: scroll-initial-target — start the reel on this slide instead
+       of at the left edge. Snap then centres it. */
+    &:nth-child(3) { scroll-initial-target: nearest; }
   }
 
-  .slide {
-    &:nth-child(1) { --i: 1; }
-    &:nth-child(2) { --i: 2; }
-    &:nth-child(3) { --i: 3; }
-    &:nth-child(4) { --i: 4; }
-    &:nth-child(5) { --i: 5; }
-    &:nth-child(6) { --i: 6; }
-    &:nth-child(7) { --i: 7; }
-    &:nth-child(8) { --i: 8; }
-
-    /* TRICK: the whole coverflow is these few lines of maths.
-       round() wraps the raw offset into -n/2..n/2, so the ring is endless:
-       the last slide sits just left of the first, and stepping off either
-       end is an ordinary one-slide move. */
-    --raw: calc(var(--i) - var(--active));
-    --offset: calc(var(--raw) - var(--n) * round(var(--raw) / var(--n)));
-    --dist: min(abs(var(--offset)), 3);            /* clamp the far ones together */
-    width: var(--slide);
+  /* The card inside each slide carries the transforms (a container can only
+     style its descendants, not itself) */
+  .slide__card {
     display: grid;
     gap: 1.25rem;
     align-content: start;
-    translate: calc(var(--offset) * var(--step)) calc(min(var(--dist), 1) * 1.25rem);
-    rotate: y calc(sign(var(--offset)) * var(--tilt) * -1);
-    scale: calc(1 - var(--dist) * .12);
-    z-index: calc(10 - var(--dist));
-    /* darker with distance, never see-through… */
-    filter: brightness(calc(1 - var(--dist) * .27));
-    /* …except the slide opposite the front, which fades out so its trip
-       round the back of the ring is never seen */
-    opacity: clamp(0, 3 - var(--dist), 1);
+    /* perspective() first in the list so it applies to the rotated card */
+    transform:
+      perspective(70rem)
+      rotateY(calc(var(--dir) * var(--tilt) * -1))
+      scale(calc(1 - var(--depth) * .14))
+      translateY(calc(var(--depth) * 1.25rem));
     transition:
-      translate var(--move) var(--ease-spring),
-      rotate var(--move) var(--ease-spring),
-      scale var(--move) var(--ease-spring),
-      filter var(--move) var(--ease-out),
-      opacity var(--move) var(--ease-out),
-      z-index calc(var(--move) * .4) step-end;   /* hand over stacking part-way through */
+      --tilt var(--move) var(--ease-spring),
+      --depth var(--move) var(--ease-spring);
 
     /* the polaroid normally waits for an open <details> — not here */
     .polaroid {
@@ -1507,93 +1490,117 @@
     }
     .rating__fill { scale: 1 1; }
   }
-  .slide__pick { cursor: pointer; display: block; }
-  .reel:has(#reel-1:checked) .slide:nth-child(1) .slide__pick,
-  .reel:has(#reel-2:checked) .slide:nth-child(2) .slide__pick,
-  .reel:has(#reel-3:checked) .slide:nth-child(3) .slide__pick,
-  .reel:has(#reel-4:checked) .slide:nth-child(4) .slide__pick,
-  .reel:has(#reel-5:checked) .slide:nth-child(5) .slide__pick,
-  .reel:has(#reel-6:checked) .slide:nth-child(6) .slide__pick { cursor: default; }
-
-  /* the blurb only for the front slide, fading with its distance */
   .slide__meta {
     padding-inline: .75rem;
     text-align: center;
-    opacity: calc(1 - var(--dist));
-    transition: opacity var(--move) var(--ease-out);
     .floof__owner { margin: 0 0 .25rem; }
     .floof__kicker { font-size: 1.6rem; }
     .rating { margin-block-start: .75rem; }
   }
 
-  /* Arrows: one pair per slide, only the current pair shown */
-  .reel__arrow {
-    display: none;
-    position: absolute;
-    inset-block-start: calc(var(--slide) * .5);   /* level with the polaroid's middle */
-    z-index: 20;
-    width: 2.6rem;
-    border-color: var(--surface-border);
-    background: var(--surface);
-    &:hover { border-color: var(--magenta); scale: 1.08; }
-    &.reel__arrow--prev { inset-inline-start: 0; }
-    &.reel__arrow--next { inset-inline-end: 0; }
-    /* On wide screens, step out of the page column into the viewport margin:
-       the reel is centred, so 50% − 50vw is the viewport's edge */
-    @media (width >= 78rem) {
-      &.reel__arrow--prev { inset-inline-start: calc(50% - 50vw + 2.5rem); }
-      &.reel__arrow--next { inset-inline-end:   calc(50% - 50vw + 2.5rem); }
+  /* ----- Enhancement 1: the coverflow tilt ----- */
+  @supports (container-type: scroll-state) {
+    .reel { --overlap: 12rem; }      /* neighbours tuck well behind the front card */
+    /* everyone tilted and pushed back… */
+    .slide__card { --tilt: 52deg; --depth: 1; }
+    .slide__meta {
+      opacity: 0;
+      translate: 0 .5rem;
+      transition: opacity var(--move) var(--ease-out), translate var(--move) var(--ease-out);
+    }
+    /* TRICK: scroll-state container query — "…unless my slide is the snapped
+       one", in which case flatten, come forward and show the blurb */
+    @container scroll-state(snapped: inline) {
+      .slide__card { --tilt: 0deg; --depth: 0; }
+      .slide__meta { opacity: 1; translate: 0; }
+    }
+    /* TRICK: view() timeline as a compass. Progress is the slide's position
+       across the scrollport: 0% entering from the right, 50% centred, 100%
+       gone off the left. From it, three things:
+       · --dir  which side of the centre: ±1, ramping through 0 across the
+         middle 10% so a slide squares up as it arrives from either side
+         (a hard step here made slides arriving from the right flip over)
+       · --band stacking: outer 1, neighbours 5, centre 9 (a step)
+       · brightness: continuous, so the outermost slides are darkest and
+         every slide brightens as it approaches the centre */
+    @supports (animation-timeline: view()) {
+      .slide {
+        animation: which-side linear both;
+        animation-timeline: view(inline);
+      }
+      @keyframes which-side {
+        0%            { --dir:  1; --band: 1; filter: brightness(.2); }   /* far right */
+        30%           { --dir:  1; --band: 1; filter: brightness(.4); }
+        30.01%        { --dir:  1; --band: 5; }
+        45%           { --dir:  1; --band: 5; }
+        45.01%        { --dir:  1; --band: 9; }
+        50%           { --dir:  0; --band: 9; filter: brightness(1);  }   /* centred: square on */
+        54.99%        { --dir: -1; --band: 9; }
+        55%           { --dir: -1; --band: 5; }
+        69.99%        { --dir: -1; --band: 5; }
+        70%           { --dir: -1; --band: 1; filter: brightness(.4); }
+        100%          { --dir: -1; --band: 1; filter: brightness(.2); }   /* far left */
+      }
     }
   }
-  .reel:has(#reel-1:checked) .reel__arrow[data-when="1"],
-  .reel:has(#reel-2:checked) .reel__arrow[data-when="2"],
-  .reel:has(#reel-3:checked) .reel__arrow[data-when="3"],
-  .reel:has(#reel-4:checked) .reel__arrow[data-when="4"],
-  .reel:has(#reel-5:checked) .reel__arrow[data-when="5"],
-  .reel:has(#reel-6:checked) .reel__arrow[data-when="6"],
-  .reel:has(#reel-7:checked) .reel__arrow[data-when="7"],
-  .reel:has(#reel-8:checked) .reel__arrow[data-when="8"] { display: grid; }
 
-  /* Dots: each is a fixed slot, so the row never reflows; the pill inside
-     grows from its own centre into a bar when active */
-  .reel__dots {
-    display: flex;
-    justify-content: center;
-  }
-  .reel__dot {
-    width: 2.1rem;
-    height: 1.4rem;
-    display: grid;
-    place-items: center;
-    border-radius: 1rem;
-    cursor: pointer;
-    &::before {
-      content: "";
-      width: .65rem;
-      height: .65rem;
-      border-radius: 1rem;
-      background: color-mix(in oklab, var(--lilac) 30%, transparent);
-      transition: background .3s, width var(--move) var(--ease-spring);
+  /* ----- Enhancement 2: dots and arrows the browser draws ----- */
+  @supports selector(::scroll-marker) {
+    .reel::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      padding-block: .75rem;
     }
-    &:hover::before { background: color-mix(in oklab, var(--lilac) 60%, transparent); }
+    /* TRICK: ::scroll-marker — one per slide, a real link to it. Every marker
+       is a fixed 2.1rem slot so the row never reflows; the visible pill is a
+       clip-path centred in the slot, and --bar (registered at the top of the
+       file) transitions from dot width to slot width. */
+    .slide::scroll-marker {
+      content: "";
+      --bar: .65rem;
+      width: 2.1rem;
+      height: .65rem;
+      margin-block: .4rem;
+      background: color-mix(in oklab, var(--lilac) 30%, transparent);
+      clip-path: inset(0 calc(50% - var(--bar) / 2) round 1rem);
+      transition: background .3s, --bar var(--move) var(--ease-spring);
+    }
+    /* (no nesting here: a pseudo-element can't be a nesting parent) */
+    .slide::scroll-marker:hover { background: color-mix(in oklab, var(--lilac) 60%, transparent); }
+    .slide::scroll-marker:target-current { background: var(--grad-brand); --bar: 2.1rem; }
+    .slide::scroll-marker:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   }
-  .reel:has(#reel-1:checked) .reel__dot[for="reel-1"]::before,
-  .reel:has(#reel-2:checked) .reel__dot[for="reel-2"]::before,
-  .reel:has(#reel-3:checked) .reel__dot[for="reel-3"]::before,
-  .reel:has(#reel-4:checked) .reel__dot[for="reel-4"]::before,
-  .reel:has(#reel-5:checked) .reel__dot[for="reel-5"]::before,
-  .reel:has(#reel-6:checked) .reel__dot[for="reel-6"]::before,
-  .reel:has(#reel-7:checked) .reel__dot[for="reel-7"]::before,
-  .reel:has(#reel-8:checked) .reel__dot[for="reel-8"]::before { background: var(--grad-brand); width: 2.1rem; }
-  /* keyboard focus lives on the hidden radio; show it on its dot */
-  .reel:has(#reel-1:focus-visible) .reel__dot[for="reel-1"],
-  .reel:has(#reel-2:focus-visible) .reel__dot[for="reel-2"],
-  .reel:has(#reel-3:focus-visible) .reel__dot[for="reel-3"],
-  .reel:has(#reel-4:focus-visible) .reel__dot[for="reel-4"],
-  .reel:has(#reel-5:focus-visible) .reel__dot[for="reel-5"],
-  .reel:has(#reel-6:focus-visible) .reel__dot[for="reel-6"],
-  .reel:has(#reel-7:focus-visible) .reel__dot[for="reel-7"],
-  .reel:has(#reel-8:focus-visible) .reel__dot[for="reel-8"] { outline: 2px solid var(--teal); outline-offset: 3px; }
+  @supports selector(::scroll-button(*)) {
+    /* TRICK: ::scroll-button() — a real <button> that scrolls one snap
+       point. The browser disables it at either end. Anchored to the reel. */
+    .reel::scroll-button(*) {
+      position: absolute;
+      position-anchor: --reel;
+      inset-block-start: calc(anchor(center) - 1.3rem - 1rem);   /* reel centre, minus half the button, nudged up past the dots row */
+      width: 2.6rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid var(--surface-border);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--paper);
+      font: 700 1.5rem var(--font-display);
+      cursor: pointer;
+      z-index: 20;
+      transition: background .3s, border-color .3s, scale .4s var(--ease-spring), opacity .3s;
+    }
+    .reel::scroll-button(*):hover { background: var(--magenta); border-color: var(--magenta); scale: 1.08; }
+    .reel::scroll-button(*):disabled { opacity: .3; cursor: default; scale: 1; }
+    .reel::scroll-button(inline-start) { content: "\2190" / "Previous"; inset-inline-start: anchor(start); }
+    .reel::scroll-button(inline-end)   { content: "\2192" / "Next";     inset-inline-end:   anchor(end); }
+    /* On wide screens, step out of the page column into the viewport margin */
+    @media (width >= 78rem) {
+      .reel::scroll-button(inline-start) { inset-inline-start: calc(anchor(start) - 3.75rem); }
+      .reel::scroll-button(inline-end)   { inset-inline-end:   calc(anchor(end) - 3.75rem); }
+    }
+  }
 
   .reel__hint {
     margin: 1rem 0 0;
@@ -1630,5 +1637,6 @@
       animation: none;
     }
     @view-transition { navigation: none; }
+    html, .reel { scroll-behavior: auto; }
   }
 }
