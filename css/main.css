@@ -824,6 +824,7 @@
   @supports (position-try-fallbacks: flip-block) { [data-feature="position-try"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports selector(:popover-open)            { [data-feature="popover-open"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (scale: abs(-1)) and (rotate: calc(sign(1) * 1deg)) { [data-feature="math"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (animation-timeline: view())       { [data-feature="scroll-timeline"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (scale: round(1.4))                { [data-feature="round"]          { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (rotate: y 1deg) and (scale: 1) and (translate: 1px) { [data-feature="transforms"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
@@ -1166,7 +1167,7 @@
     --count: 1;
     position: relative;
     display: grid;
-    grid-template-columns: repeat(var(--count), 1fr);
+    grid-template-columns: repeat(var(--count), minmax(0, 1fr));   /* never wider than the page */
     gap: .25rem;
     &:has(> :last-child:nth-child(2)) { --count: 2; }
     &:has(> :last-child:nth-child(3)) { --count: 3; }
@@ -1205,9 +1206,12 @@
   }
 
   .anchor-btn {
+    --thumb: 5rem;
+    --pad: .5rem;
+    position: relative;
     appearance: none;
     border: 0;
-    padding: .5rem;
+    padding: var(--pad);
     background: none;
     font: inherit;
     color: inherit;
@@ -1217,9 +1221,34 @@
     gap: .5rem;
 
     .floof__thumb {
-      width: 5rem;
+      width: var(--thumb);
       border-width: 3px;
       background: var(--ink);        /* the line runs behind, not through */
+      transition: scale var(--dur) var(--ease-spring), rotate var(--dur) var(--ease-spring), border-color .3s;
+    }
+
+    /* A magenta disc with a cross, sat exactly over the thumb, shown while
+       this face's popover is open (see the :has() rules below) so it reads
+       as "click again to close" */
+    &::after {
+      content: "\2715";
+      position: absolute;
+      inset-block-start: var(--pad);
+      inset-inline-start: calc(50% - var(--thumb) / 2);
+      width: var(--thumb);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in oklab, var(--magenta) 80%, transparent);
+      color: var(--paper);
+      font: 700 calc(var(--thumb) * .45) var(--font-display);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s var(--ease-out);
+      /* a quarter turn in one way, a quarter turn out the other; two
+         keyframe sets because a transition only knows one rest state */
+      animation: cross-out .55s var(--ease-spring) both;
     }
     .floof__pet { font-size: 1.6rem; }
     &:hover .floof__thumb { scale: 1.08; rotate: 6deg; border-color: var(--magenta); }
@@ -1238,7 +1267,44 @@
     &:nth-child(8 of .anchor-btn) { anchor-name: --floof-8; }
     &:first-child .floof__thumb { anchor-name: --face-first; }   /* for the line */
     &:last-child  .floof__thumb { anchor-name: --face-last; }
+
+    /* Narrow screens: cells are too tight for a label under each face, so
+       the label floats beside it — right of the first half, left of the
+       rest — and takes no room in the grid. Same size thumb for everyone. */
+    @media (width < 48rem) {
+      --thumb: 3.5rem;
+      --pad: .25rem;
+      .floof__thumb { max-width: none; }
+      .floof__pet {
+        position: absolute;
+        inset-block-start: 50%;
+        translate: 0 -50%;
+        white-space: nowrap;
+        font-size: 1.4rem;
+      }
+      &:nth-child(-n + 3) .floof__pet { inset-inline-start: calc(100% + .25rem); }
+      &:nth-child(n + 4)  .floof__pet { inset-inline-end:   calc(100% + .25rem); }
+    }
   }
+  @media (width < 48rem) {
+    .anchors { row-gap: 1.5rem; }
+  }
+
+  /* TRICK: :has() — the popover is not inside its button, so ask the page:
+     "is popover n open?" and style face n accordingly */
+  .peekaboo:has(#pop-1:popover-open) .anchor-btn:nth-child(1 of .anchor-btn),
+  .peekaboo:has(#pop-2:popover-open) .anchor-btn:nth-child(2 of .anchor-btn),
+  .peekaboo:has(#pop-3:popover-open) .anchor-btn:nth-child(3 of .anchor-btn),
+  .peekaboo:has(#pop-4:popover-open) .anchor-btn:nth-child(4 of .anchor-btn),
+  .peekaboo:has(#pop-5:popover-open) .anchor-btn:nth-child(5 of .anchor-btn),
+  .peekaboo:has(#pop-6:popover-open) .anchor-btn:nth-child(6 of .anchor-btn),
+  .peekaboo:has(#pop-7:popover-open) .anchor-btn:nth-child(7 of .anchor-btn),
+  .peekaboo:has(#pop-8:popover-open) .anchor-btn:nth-child(8 of .anchor-btn) {
+    .floof__thumb { border-color: var(--magenta); scale: 1; rotate: 0deg; }
+    &::after { opacity: 1; animation-name: cross-in; }
+  }
+  @keyframes cross-in  { from { rotate: -90deg; scale: .5; } to { rotate: 0deg;  scale: 1;  } }
+  @keyframes cross-out { from { rotate: 0deg;   scale: 1;  } to { rotate: 90deg; scale: .5; } }
 
   .floof-pop {
     /* the popover UA style is position: fixed; inset: 0; .card says relative.
@@ -1272,13 +1338,64 @@
       flip-block flip-inline,        /* to its left, extending upwards */
       --centred;
 
-    /* compact profile: a smaller polaroid and no hooman circle, so the
-       popover stays short enough to fit beside a face more often */
-    .floof__body { padding: 1rem 1.25rem 1.25rem; gap: 1rem; }
-    .floof__photos { padding: .75rem .5rem .25rem 0; }
-    .polaroid { max-width: 15rem; margin-inline: auto; }
+    /* Narrow screens: nowhere to sit beside a face, so sit BELOW it, spanning
+       the full width, or flip ABOVE when the bottom of the window is close.
+       anchor-center alignment keeps it centred on the face where it can and
+       slides it to stay inside the viewport where it can't. */
+    @media (width < 48rem) {
+      margin: .6rem 0;
+      position-area: block-end span-all;
+      justify-self: center;          /* centred in the viewport, not on the face */
+      position-try-fallbacks: flip-block, --centred;
+    }
+
+    /* compact profile: name, owner, kicker, rating — no photos, so the
+       popover is small enough that where it lands is the whole show */
+    .floof__body { grid-template-columns: 1fr; padding: 1rem 1.25rem 1.1rem; }
     .floof__blurb { padding-block-start: 0; }
-    .floof__kicker { font-size: 1.7rem; }
+    .floof__pet { font-size: 2rem; margin: 0 0 .15rem; }
+    .floof__kicker { font-size: 1.6rem; }
+    .rating { margin-block-start: .9rem; }
+  }
+
+  /* ----- Scroll-driven dismissal ----- */
+  /* CSS can't close a popover (open is DOM state), but it can watch the
+     face. Each face publishes a named view timeline; timeline-scope lifts
+     those names to the shared parent so a popover — a sibling, not a
+     descendant — can animate against ITS face's timeline. */
+  @supports (animation-timeline: view()) {
+    .peekaboo {
+      timeline-scope: --face-1, --face-2, --face-3, --face-4, --face-5, --face-6, --face-7, --face-8;
+    }
+    .anchor-btn {
+      &:nth-child(1 of .anchor-btn) { view-timeline-name: --face-1; }
+      &:nth-child(2 of .anchor-btn) { view-timeline-name: --face-2; }
+      &:nth-child(3 of .anchor-btn) { view-timeline-name: --face-3; }
+      &:nth-child(4 of .anchor-btn) { view-timeline-name: --face-4; }
+      &:nth-child(5 of .anchor-btn) { view-timeline-name: --face-5; }
+      &:nth-child(6 of .anchor-btn) { view-timeline-name: --face-6; }
+      &:nth-child(7 of .anchor-btn) { view-timeline-name: --face-7; }
+      &:nth-child(8 of .anchor-btn) { view-timeline-name: --face-8; }
+    }
+    .floof-pop {
+      /* TRICK: animation-timeline — progress is the face's position in the
+         viewport (0% entering at the bottom, 100% gone off the top), not time */
+      animation: track-face linear both;
+      &:nth-child(1 of .floof-pop) { animation-timeline: --face-1; }
+      &:nth-child(2 of .floof-pop) { animation-timeline: --face-2; }
+      &:nth-child(3 of .floof-pop) { animation-timeline: --face-3; }
+      &:nth-child(4 of .floof-pop) { animation-timeline: --face-4; }
+      &:nth-child(5 of .floof-pop) { animation-timeline: --face-5; }
+      &:nth-child(6 of .floof-pop) { animation-timeline: --face-6; }
+      &:nth-child(7 of .floof-pop) { animation-timeline: --face-7; }
+      &:nth-child(8 of .floof-pop) { animation-timeline: --face-8; }
+    }
+    /* filter, not opacity: opacity belongs to the open/close transition,
+       and an animation on it would win. visibility stops hit-testing. */
+    @keyframes track-face {
+      0%, 100%  { filter: opacity(0); visibility: hidden; }
+      12%, 88%  { filter: opacity(1); visibility: visible; }
+    }
   }
 
   /* TRICK: @position-try — a named set of positioning overrides for the

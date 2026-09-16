@@ -23,7 +23,7 @@
       <h1 class="title">Peekaboo <span class="title__slab">Floofs</span></h1>
 
       <p class="lede">Each face is an anchor. Its popover is tethered to it with <code>position-anchor</code>, placed with <code>position-area</code>, and given a list of fallbacks to try when it would run off screen.</p>
-      <p class="lede">Every popover asks to sit to the right of its face. The faces on the right have no room there, so theirs flip left; open one near the bottom of the window and it flips up.</p>
+      <p class="lede">Every popover asks to sit to the right of its face. The faces on the right have no room there, so theirs flip left; open one near the bottom of the window and it flips up. On a narrow screen there is no room beside a face, so they sit below it instead, or above when the bottom is close. Click the face again to close. Scroll while one is open and it fades out as its face leaves the window.</p>
 
       <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
         <defs>
@@ -38,7 +38,7 @@
       </svg>
     </header>
 
-    <main>
+    <main class="peekaboo">
       <div class="anchors">
         <button class="anchor-btn" popovertarget="pop-1">
           <img class="floof__thumb" src="../assets/images/floofs/lollycat-jo.jpg" alt="" width="4032" height="3024">
@@ -69,14 +69,9 @@
       <!-- ─────────────── Popover 1 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-1" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="4032" height="3024">
-              <figcaption>Lollycat</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Lollycat</p>
             <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
             <p class="floof__kicker">She was the sweetest kitty who ever was</p>
             <div class="rating" style="--rating: 15">
@@ -91,14 +86,9 @@
       <!-- ─────────────── Popover 2 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-2" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/archie-michelle.png" alt="Archie, looking excellent" width="923" height="1042">
-              <figcaption>Archie</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Archie</p>
             <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
             <p class="floof__kicker">Not all heroes wear capes</p>
             <div class="rating" style="--rating: 15">
@@ -113,14 +103,9 @@
       <!-- ─────────────── Popover 3 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-3" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/fia-anders.jpeg" alt="Fia, looking excellent" width="762" height="838">
-              <figcaption>Fia</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Fia</p>
             <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
             <p class="floof__kicker">Surely this level of adorable can't be real</p>
             <div class="rating" style="--rating: 13">
@@ -135,14 +120,9 @@
       <!-- ─────────────── Popover 4 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-4" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/treacle-emmz.png" alt="Treacle, looking excellent" width="1131" height="1218">
-              <figcaption>Treacle</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Treacle</p>
             <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
             <p class="floof__kicker">This dog has seen some things</p>
             <div class="rating" style="--rating: 11">
@@ -157,14 +137,9 @@
       <!-- ─────────────── Popover 5 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-5" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="Wild Thing and Elmo, looking excellent" width="2048" height="1152">
-              <figcaption>Wild Thing &amp; Elmo</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Wild Thing &amp; Elmo</p>
             <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
             <p class="floof__kicker">I don't think those count as pets</p>
             <div class="rating" style="--rating: 6">
@@ -179,14 +154,9 @@
       <!-- ─────────────── Popover 6 ─────────────── -->
       <div class="card pop-in floof-pop" id="pop-6" popover>
         <div class="floof__body">
-          <div class="floof__photos">
-            <figure class="polaroid">
-              <img src="../assets/images/floofs/buddha-martin.png" alt="Buddha, looking excellent" width="1330" height="1033">
-              <figcaption>Buddha</figcaption>
-            </figure>
-          </div>
 
           <div class="floof__blurb">
+            <p class="floof__pet lit-text" style="--lit: 100%">Buddha</p>
             <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
             <p class="floof__kicker">Lavish me with attention, human</p>
             <div class="rating" style="--rating: 12">
@@ -210,9 +180,10 @@
         <li data-feature="position-try"><code>position-try-fallbacks</code> flip when it would overflow</li>
         <li data-feature="position-try"><code>@position-try</code> a custom last resort: centre it</li>
         <li data-feature="popover-open"><code>:popover-open</code> style the open state</li>
+        <li data-feature="has"><code>:has()</code> the face shows a cross while its popover is open</li>
         <li data-feature="starting-style"><code>@starting-style</code> popovers scale in</li>
         <li data-feature="allow-discrete"><code>transition-behavior: allow-discrete</code> and scale back out</li>
-        <li data-feature="container"><code>@container</code> the profile stacks in a 24rem popover</li>
+        <li data-feature="scroll-timeline"><code>animation-timeline</code> the popover fades as its face scrolls away</li>
         <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
       </ul>
 
@@ -222,7 +193,7 @@
         <li><a href="https://caniuse.com/?search=popovertarget"><code>popovertarget</code> open it from a button</a></li>
       </ul>
 
-      <p class="tech__note">Without anchor positioning the popover still opens, centred in the viewport like any popover. That is the fallback, and it is fine.</p>
+      <p class="tech__note">Full disclosure: CSS cannot close a popover, because open is DOM state. What it can do is watch the face with a scroll-driven animation and hide the popover once the face leaves the window. It is still open underneath; Escape or a click elsewhere closes it for real. Without anchor positioning the popover opens centred in the viewport like any popover, which is a fine fallback.</p>
     </footer>
 
     <footer class="colophon">
