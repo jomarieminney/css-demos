@@ -910,10 +910,6 @@
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
-  /* Layers need no @supports: without @layer, the first line of this file
-     would be ignored and the cascade would still mostly work — but the page
-     would look different enough that the tick is a fair claim. */
-  [data-feature="layers"] { --tick: "\2713"; --tick-hue: var(--teal); }
 
   /* ----- Colophon ----- */
   .colophon {

@@ -163,7 +163,6 @@
         <li data-feature="scroll-markers"><code>::scroll-marker</code> the dots, drawn by the browser</li>
         <li data-feature="scroll-buttons"><code>::scroll-button()</code> the arrows, drawn by the browser</li>
         <li data-feature="linear"><code>linear()</code> springy easing on the tilt</li>
-        <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
       </ul>
 
       <p class="tech__note">Full disclosure: the tilt, dots and arrows are Chrome only for now, and typed custom properties via <code>@property</code> are what let the tilt transition at all. Everywhere else this is a flat carousel that still swipes, snaps and scrolls with the keyboard. There is an alternative method that you can use for this (see the archive folder) using <code>:has()</code>, which worked in every browser, but could not swipe. Because it is an expected behaviour that essentially made the slider unusable on mobile, swipe won. One thing that the other method gives you though is infinite scroll - which if you are doing an automated carousel (that doesn't need swipe) is still pretty neat!</p>
