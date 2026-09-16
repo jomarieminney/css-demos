@@ -1636,26 +1636,38 @@
        It paints the page's own fixed background, which lines up exactly with
        what <body> paints beneath, and a mask fades its inner edges — so the
        fade is into the real canvas, glow and all, not a flat colour. */
-    @media (width >= 48rem) and (hover: hover) {
-      .reel-wrap { position: relative; }
-      .reel-wrap::after {
-        content: "";
-        position: absolute;
-        position-anchor: --reel;
-        inset-block-start: anchor(top);
-        inset-block-end: calc(anchor(bottom) + 1.75rem);
-        inset-inline-start: anchor(start);
-        inset-inline-end: anchor(end);
-        pointer-events: none;
-        z-index: 1;
-        background-color: var(--ink);
-        background-image: var(--canvas);
-        background-attachment: fixed;
-        animation: drift 24s ease-in-out infinite alternate;   /* in step with <body> */
-        mask: linear-gradient(to right,
-          #000, transparent 7rem,
-          transparent calc(100% - 7rem), #000);
+    .reel-wrap { position: relative; }
+    .reel-wrap::after {
+      --fade: 7rem;
+      content: "";
+      position: absolute;
+      position-anchor: --reel;
+      inset-block-start: anchor(top);
+      inset-block-end: calc(anchor(bottom) + 1.75rem);
+      inset-inline-start: anchor(start);
+      inset-inline-end: anchor(end);
+      pointer-events: none;
+      z-index: 1;
+      background-color: var(--ink);
+      background-image: var(--canvas);
+      background-attachment: fixed;
+      animation: drift 24s ease-in-out infinite alternate;   /* in step with <body> */
+      mask: linear-gradient(to right,
+        #000, transparent var(--fade),
+        transparent calc(100% - var(--fade)), #000);
+    }
+    /* Narrow screens: bleed the reel to the viewport edges so slides are cut
+       by the screen, not the column, and widen the fade so the neighbours'
+       peeking captions melt into the background instead of half-showing */
+    @media (width < 48rem) {
+      .reel {
+        margin-inline: calc(50% - 50vw);
+        padding-inline: calc(50vw - var(--slide) / 2);
       }
+      .reel-wrap::after { --fade: 16vw; }
+      /* keep each slide's caption out of the strip that peeks in from the
+         neighbours, so only the polaroid's edge ever shows at the screen edge */
+      .slide__meta { padding-inline: 12vw; }
     }
   }
 }
