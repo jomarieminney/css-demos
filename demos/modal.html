@@ -11,6 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
 </head>
 <body>
   <div class="page">
@@ -353,7 +357,7 @@
       <p class="tech__note">Full disclosure: Safari has invoker commands from 26.2 and no <code>closedby</code> yet, so there a click outside won't close the dialog. Escape and the close button still will.</p>
     </footer>
 
-    <footer class="colophon">
+    <footer class="colophon" id="end">
       <p>
         Made by <a href="https://jominney.com">Jo Minney</a>
         &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>

@@ -11,6 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
 </head>
 <body>
   <div class="page">
@@ -309,7 +313,7 @@
       <p class="tech__note">Full disclosure: these are six summary elements in a row, not an ARIA <code>tablist</code>. Screen readers announce them as disclosures, and there is no arrow-key navigation between tabs (it's still keyboard accessible - you just need to use tab instead of arrow keys). The open tab ignores mouse clicks so it can't be closed, but Enter or Space on it still can, because CSS can't veto a keypress. This example is mainly showing off how subgrid works, and a genuine tablist is probably a good argument for a few lines of lightweight JavaScript in order to provide a better user experience for assistive tech.</p>
     </footer>
 
-    <footer class="colophon">
+    <footer class="colophon" id="end">
       <p>
         Made by <a href="https://jominney.com">Jo Minney</a>
         &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>

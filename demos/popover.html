@@ -11,6 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
 </head>
 <body>
   <div class="page">
@@ -196,7 +200,7 @@
       <p class="tech__note">Full disclosure: CSS cannot close a popover, because open is DOM state. What it can do is watch the face with a scroll-driven animation and hide the popover once the face leaves the window. It is still open underneath; Escape or a click elsewhere closes it for real. Without anchor positioning the popover opens centred in the viewport like any popover, which is a fine fallback.</p>
     </footer>
 
-    <footer class="colophon">
+    <footer class="colophon" id="end">
       <p>
         Made by <a href="https://jominney.com">Jo Minney</a>
         &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>
