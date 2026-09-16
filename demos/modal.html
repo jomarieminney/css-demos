@@ -11,8 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Maven+Pro:wght@400..700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../css/floof.css">
-  <link rel="stylesheet" href="../css/demos/modal.css">
 </head>
 <body>
   <div class="page">
@@ -41,42 +39,42 @@
 
     <main>
       <div class="floof-grid stagger">
-      <button class="card floof-open" commandfor="floof-1" command="show-modal">
+      <button class="card launch" commandfor="floof-1" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/lollycat-jo.jpg" alt="" width="4032" height="3024">
         <span class="floof__names">
           <span class="floof__pet lit-text">Lollycat</span>
           <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
         </span>
       </button>
-      <button class="card floof-open" commandfor="floof-2" command="show-modal">
+      <button class="card launch" commandfor="floof-2" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/archie-michelle.png" alt="" width="923" height="1042">
         <span class="floof__names">
           <span class="floof__pet lit-text">Archie</span>
           <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
         </span>
       </button>
-      <button class="card floof-open" commandfor="floof-3" command="show-modal">
+      <button class="card launch" commandfor="floof-3" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/fia-anders.jpeg" alt="" width="762" height="838">
         <span class="floof__names">
           <span class="floof__pet lit-text">Fia</span>
           <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
         </span>
       </button>
-      <button class="card floof-open" commandfor="floof-4" command="show-modal">
+      <button class="card launch" commandfor="floof-4" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/treacle-emmz.png" alt="" width="1131" height="1218">
         <span class="floof__names">
           <span class="floof__pet lit-text">Treacle</span>
           <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
         </span>
       </button>
-      <button class="card floof-open" commandfor="floof-5" command="show-modal">
+      <button class="card launch" commandfor="floof-5" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/wild-thing-elmo-luise.jpeg" alt="" width="2048" height="1152">
         <span class="floof__names">
           <span class="floof__pet lit-text">Wild Thing &amp; Elmo</span>
           <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
         </span>
       </button>
-      <button class="card floof-open" commandfor="floof-6" command="show-modal">
+      <button class="card launch" commandfor="floof-6" command="show-modal">
         <img class="floof__thumb" src="../assets/images/floofs/buddha-martin.png" alt="" width="1330" height="1033">
         <span class="floof__names">
           <span class="floof__pet lit-text">Buddha</span>
@@ -87,13 +85,13 @@
 
 
       <!-- ─────────────── Dialog 1 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-1" closedby="any" aria-labelledby="floof-1-title">
+      <dialog class="card pop-in floof-dialog" id="floof-1" closedby="any" aria-labelledby="floof-1-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-1-title">Lollycat</span>
             <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-1" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-1" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">
@@ -128,13 +126,13 @@
       </dialog>
 
       <!-- ─────────────── Dialog 2 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-2" closedby="any" aria-labelledby="floof-2-title">
+      <dialog class="card pop-in floof-dialog" id="floof-2" closedby="any" aria-labelledby="floof-2-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-2-title">Archie</span>
             <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-2" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-2" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">
@@ -169,13 +167,13 @@
       </dialog>
 
       <!-- ─────────────── Dialog 3 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-3" closedby="any" aria-labelledby="floof-3-title">
+      <dialog class="card pop-in floof-dialog" id="floof-3" closedby="any" aria-labelledby="floof-3-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-3-title">Fia</span>
             <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-3" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-3" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">
@@ -210,13 +208,13 @@
       </dialog>
 
       <!-- ─────────────── Dialog 4 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-4" closedby="any" aria-labelledby="floof-4-title">
+      <dialog class="card pop-in floof-dialog" id="floof-4" closedby="any" aria-labelledby="floof-4-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-4-title">Treacle</span>
             <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-4" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-4" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">
@@ -251,13 +249,13 @@
       </dialog>
 
       <!-- ─────────────── Dialog 5 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-5" closedby="any" aria-labelledby="floof-5-title">
+      <dialog class="card pop-in floof-dialog" id="floof-5" closedby="any" aria-labelledby="floof-5-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-5-title">Wild Thing &amp; Elmo</span>
             <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-5" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-5" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">
@@ -291,13 +289,13 @@
       </dialog>
 
       <!-- ─────────────── Dialog 6 ─────────────── -->
-      <dialog class="card floof-dialog" id="floof-6" closedby="any" aria-labelledby="floof-6-title">
+      <dialog class="card pop-in floof-dialog" id="floof-6" closedby="any" aria-labelledby="floof-6-title">
         <header class="floof-dialog__head">
           <span class="floof__names">
             <span class="floof__pet lit-text" id="floof-6-title">Buddha</span>
             <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
           </span>
-          <button class="plus-x" commandfor="floof-6" command="close" aria-label="Close" style="--x: 1"></button>
+          <button class="round-btn plus-x" commandfor="floof-6" command="close" aria-label="Close" style="--x: 1"></button>
         </header>
         <div class="floof__body">
           <div class="floof__photos">

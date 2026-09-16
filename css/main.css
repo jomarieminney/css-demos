@@ -1,18 +1,1517 @@
 /* ==========================================================================
-   css-demos — shared stylesheet
-   Every page links this file, then its own demo file.
+   css-demos — the whole stylesheet
+   "Things you really don't need JavaScript for" · jominney.com
 
-   TRICK: the @layer statement fixes the cascade order up front. From here on
-   a later layer always beats an earlier one, whatever the specificity — so
-   `prefs` can override `.floof[open] .polaroid` with a bare `*` selector and
-   no !important.
+   HOW THIS FILE IS ORGANISED
+   One file, seven cascade layers, declared on the first line so the order
+   is fixed before anything else is read. A later layer always beats an
+   earlier one, whatever the specificity — that is how `prefs` at the end
+   can override any component with a bare `*` and no !important.
+
+     reset       undo the handful of browser defaults we always undo
+     theme       brand tokens: colours, fonts, easing, surfaces
+     base        the page canvas and plain elements
+     components  shared building blocks: masthead, cards, buttons, the
+                 floof profile, the feature chips
+     demo        one heading per demo (01 Accordion … 05 Carousel);
+                 nothing in here is used outside its own page
+     utilities   single-purpose helpers that always win over components
+     prefs       user preferences (reduced motion): the last word
+
+   Every "TRICK:" comment marks a modern CSS feature worth pointing at.
    ========================================================================== */
 @layer reset, theme, base, components, demo, utilities, prefs;
 
-@import url("reset.css")      layer(reset);
-@import url("theme.css")      layer(theme);
-@import url("base.css")       layer(base);
-@import url("components.css") layer(components);
-/* `demo` is filled by each page's own file, e.g. css/demos/accordion.css */
-@import url("utilities.css")  layer(utilities);
-@import url("prefs.css")      layer(prefs);
+
+/* ==========================================================================
+   RESET
+   ========================================================================== */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body { margin: 0; }
+
+  img, svg {
+    display: block;
+    max-width: 100%;
+  }
+  /* width="" / height="" attributes become presentational hints. Keep them
+     (they stop layout shift) but let CSS decide the rendered box. */
+  img { height: auto; }
+
+  figure { margin: 0; }
+}
+
+
+/* ==========================================================================
+   THEME — brand tokens (lifted from the PowerPoint theme)
+   ========================================================================== */
+@layer theme {
+  :root {
+    --ink:      #0b0910;   /* Dark 1 */
+    --ink-2:    #15111d;   /* Dark 2 */
+    --paper:    #f6f4fa;   /* Light 1 */
+    --paper-2:  #dfe3ee;   /* Light 2 */
+    --magenta:  #d61a96;   /* Accent 1 */
+    --purple:   #7d3c98;   /* Accent 2 */
+    --teal:     #0e9490;   /* Accent 3 */
+    --lilac:    #c9a3dc;   /* Accent 4 */
+    --pink:     #f4c4e3;   /* Accent 5 */
+    --lavender: #e4e7f7;   /* Accent 6 */
+
+    --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, #ff5fb3 100%);
+
+    /* Card surfaces */
+    --surface:           color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%);
+    --surface-border:    color-mix(in oklab, var(--lilac) 14%, transparent);
+    --surface-highlight: 0 1px 0 rgb(255 255 255 / .04) inset;   /* top-edge glint */
+    --surface-drop:      0 .75rem 2rem -1.25rem rgb(0 0 0 / .8);
+    --surface-shadow:    var(--surface-highlight), var(--surface-drop);
+    --radius-card:       1.25rem;
+    --accent-border:     color-mix(in oklab, var(--magenta) 45%, transparent);
+
+    --font-display: "Amatic SC", "Impact", sans-serif;
+    --font-body: "Maven Pro", system-ui, sans-serif;
+
+    /* A springy overshoot curve — pure CSS, no animation library */
+    --ease-spring: linear(
+      0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%,
+      0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%,
+      1.015 55%, 1.017 63.9%, 1.001
+    );
+    --ease-out: cubic-bezier(.2, .8, .2, 1);
+    --dur: .65s;
+  }
+}
+
+
+/* ==========================================================================
+   BASE — the page canvas and plain elements
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* TRICK: lets height/width transition to `auto` (Chromium, Safari 26+) */
+    interpolate-size: allow-keywords;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  /* TRICK: cross-document view transitions. One line, and same-origin
+     navigations between these pages cross-fade; elements that share a
+     view-transition-name (the badge, the title slab) morph into place. */
+  @view-transition { navigation: auto; }
+
+  body {
+    min-height: 100dvh;
+    padding-block: clamp(2rem, 6vw, 5rem);
+    padding-inline: clamp(1rem, 4vw, 3rem);
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(1rem, .95rem + .3vw, 1.15rem);
+    line-height: 1.55;
+    color: var(--paper);
+    background-color: var(--ink);
+    /* Two slow-drifting colour blobs, like the gradient slide */
+    background-image:
+      radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--purple) 55%, transparent), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 110%, color-mix(in oklab, var(--magenta) 40%, transparent), transparent 60%);
+    background-attachment: fixed;
+    animation: drift 24s ease-in-out infinite alternate;
+    overflow-x: clip;
+
+    /* Film grain so the gradient doesn't look like a flat render */
+    &::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .14;
+      mix-blend-mode: soft-light;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+  }
+  @keyframes drift {
+    to { background-position: 6% 8%, -6% -8%; }
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 62rem;
+    margin-inline: auto;
+  }
+
+  a {
+    color: var(--pink);
+    text-decoration-color: color-mix(in oklab, var(--pink) 40%, transparent);
+    text-underline-offset: .2em;
+    &:hover { text-decoration-color: currentColor; }
+  }
+
+  /* Disclosure widgets: we always draw our own affordance */
+  summary {
+    cursor: pointer;
+    list-style: none;                 /* kill the default triangle… */
+    user-select: none;
+    &::-webkit-details-marker { display: none; }  /* …and in old Safari */
+    &::marker { content: ""; }
+  }
+
+  code {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: .9em;
+    padding: .1em .4em;
+    border-radius: .35em;
+    background: color-mix(in oklab, var(--lavender) 12%, transparent);
+    color: var(--pink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 3px;
+  }
+}
+
+
+/* ==========================================================================
+   COMPONENTS — shared building blocks
+   ========================================================================== */
+@layer components {
+
+  /* ----- Breadcrumb back to the index ----- */
+  .crumbs {
+    margin-block-end: 1.5rem;
+    font-size: .85rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    a { text-decoration: none; color: var(--lilac); }
+    a:hover { color: var(--pink); }
+  }
+
+  /* ----- Masthead ----- */
+  .masthead {
+    position: relative;
+    display: grid;
+    gap: .5rem;
+    margin-block-end: clamp(2.5rem, 6vw, 4.5rem);
+    padding-inline-end: clamp(0rem, 12vw, 9rem);
+  }
+
+  .eyebrow {
+    margin: 0 0 1rem;
+    font-size: .85rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(4rem, 12vw, 8.5rem);
+    line-height: .9;
+    letter-spacing: .02em;
+    text-wrap: balance;
+  }
+
+  /* The "Widely Available" slide treatment: a tilted gradient slab */
+  .title__slab {
+    view-transition-name: slab;       /* morphs between pages, see @view-transition in base */
+    display: inline-block;
+    padding: .05em .18em .02em;
+    margin-inline-start: .08em;
+    background: var(--grad-brand);
+    color: var(--ink);
+    rotate: -2.5deg;
+    border-radius: .08em;
+    box-shadow: .12em .12em 0 var(--teal);
+  }
+
+  .lede {
+    margin: 1.75rem 0 0;
+    max-width: 48ch;
+    line-height: 1.6;
+    color: var(--paper-2);
+    & + & { margin-block-start: .75rem; }   /* a second lede is just the next paragraph */
+  }
+
+  /* "0 KB of JS" badge — drops in once on load, spins its ring on hover */
+  .badge {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: -.5rem;
+    width: clamp(6rem, 12vw, 9rem);
+    filter: drop-shadow(0 .5rem 1.25rem rgb(0 0 0 / .45));
+    view-transition-name: badge;
+    animation: badge-in 1s var(--ease-spring) .35s backwards;
+    transition: rotate var(--dur) var(--ease-spring), scale var(--dur) var(--ease-spring);
+
+    &:hover { rotate: -8deg; scale: 1.06; }
+    &.badge--still { animation: none; }   /* index page: no entrance, hover only */
+
+    .badge__disc { fill: var(--ink-2); stroke: var(--magenta); stroke-width: 2; }
+    .badge__ring {
+      transform-origin: 70px 70px;
+      transition: transform 1.4s var(--ease-spring);
+      fill: var(--pink);
+      font: 600 12.5px var(--font-body);
+      letter-spacing: .12em;
+    }
+    /* Half a turn lands the repeated text exactly where it started */
+    &:hover .badge__ring { transform: rotate(.5turn); }
+    .badge__big   { fill: var(--paper); font: 700 34px var(--font-display); }
+    .badge__small { fill: var(--lilac); font: 400 12px var(--font-body); text-transform: uppercase; letter-spacing: .15em; }
+  }
+  @keyframes badge-in {
+    from { opacity: 0; transform: scale(0) rotate(-120deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  @media (width < 40rem) {
+    .masthead { padding-inline-end: 0; }
+    .badge { position: static; justify-self: end; margin-block-start: .5rem; }
+  }
+
+  /* ----- Card surface, shared by the demo index, the accordion, tab
+           panels, the dialog and the popovers ----- */
+  .card {
+    position: relative;
+    container-type: inline-size;      /* TRICK: lets the floof profile query the card's width */
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--surface-shadow);
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity .5s var(--ease-out),
+      translate .6s var(--ease-out) var(--enter-delay, 0ms);
+
+    /* TRICK: @starting-style — the "before" state for an element's first
+       render, so a plain transition doubles as an entrance. */
+    @starting-style {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+
+    /* Gradient bar that sweeps in just outside the left edge */
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block: .9rem;
+      inset-inline-end: calc(100% + .75rem);   /* floats .75rem left of the card */
+      width: .3rem;
+      border-radius: 1rem;
+      background: var(--grad-brand);
+      scale: 1 0;
+      transform-origin: top;
+      transition: scale .5s var(--ease-spring);
+    }
+    &:hover::before { scale: 1 1; }
+  }
+
+  /* Stagger: children of a .stagger list slide in a beat after the one
+     before. --enter-delay inherits, so it reaches a card nested in an <li>. */
+  .stagger > :nth-child(2) { --enter-delay: 70ms; }
+  .stagger > :nth-child(3) { --enter-delay: 140ms; }
+  .stagger > :nth-child(4) { --enter-delay: 210ms; }
+  .stagger > :nth-child(5) { --enter-delay: 280ms; }
+  .stagger > :nth-child(6) { --enter-delay: 350ms; }
+  .stagger > :nth-child(7) { --enter-delay: 420ms; }
+  .stagger > :nth-child(8) { --enter-delay: 490ms; }
+
+  /* ----- Launcher: a card that is a link or a button to somewhere.
+           Thumb (or ordinal) · names · arrow. ----- */
+  .launch {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.1rem 1.25rem 1.1rem 1.6rem;
+    color: inherit;
+    text-decoration: none;
+    appearance: none;                 /* it may be a <button> */
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition:
+      opacity .5s var(--ease-out),
+      translate .4s var(--ease-spring) var(--enter-delay, 0ms),
+      border-color .3s;
+
+    .floof__thumb { rotate: -6deg; }
+    .launch__go {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--lilac);
+      transition: translate .4s var(--ease-spring), color .3s;
+    }
+    .launch__sub { font-size: .95rem; color: var(--paper-2); }
+    .launch__sub code { font-size: .85em; }
+
+    &:hover {
+      border-color: var(--accent-border);
+      translate: 0 -2px;
+      .lit-text { --lit: 100%; }
+      .floof__thumb { rotate: 6deg; scale: 1.08; }
+      .launch__go { translate: .35rem 0; color: var(--magenta); }
+    }
+  }
+
+  /* ----- Round button: the circle behind the toggle, the close, the arrows ----- */
+  .round-btn {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--lavender) 10%, transparent);
+    color: var(--paper);
+    font: 700 1.5rem var(--font-display);
+    cursor: pointer;
+    transition: background .3s, border-color .3s, scale .4s var(--ease-spring), rotate var(--dur) var(--ease-spring);
+    &:is(button, label):hover { background: var(--magenta); }
+  }
+
+  /* Plus → cross. Set --x: 1 to show the cross. */
+  .plus-x {
+    position: relative;
+    rotate: calc(var(--x, 0) * 135deg);
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      background: var(--paper);
+      border-radius: 2px;
+    }
+    &::before { width: 1rem; height: 2px; }
+    &::after  { width: 2px; height: 1rem; }
+  }
+
+  /* ----- Pop-in: anything in the top layer (dialog, popover) that fades
+           and scales in, and — thanks to allow-discrete — back out ----- */
+  .pop-in {
+    opacity: 0;
+    scale: .94;
+    translate: 0 .75rem;
+    /* TRICK: display and overlay are discrete, but allow-discrete lets them
+       wait until the fade is done — that is the whole close animation. */
+    transition:
+      opacity .35s var(--ease-out),
+      scale .55s var(--ease-spring),
+      translate .55s var(--ease-spring),
+      display .55s allow-discrete,
+      overlay .55s allow-discrete;
+
+    &:is([open], :popover-open) {
+      opacity: 1;
+      scale: 1;
+      translate: 0;
+      /* TRICK: @starting-style — the FROM state for the open transition,
+         because a closed dialog/popover is display:none and has no styles
+         to transition from */
+      @starting-style {
+        opacity: 0;
+        scale: .94;
+        translate: 0 .75rem;
+      }
+    }
+  }
+
+  /* ----- Ordinal: "01", "02"… from a CSS counter, no JS ----- */
+  .ordinal {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--lilac);
+    min-width: 2ch;
+    transition: color .3s;
+    &::before { content: counter(item, decimal-leading-zero); }
+  }
+
+  /* ----- Lit text: gradient that slides in from the right when --lit is 100% ----- */
+  .lit-text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .02em;
+    background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
+    background-size: 210% 100%;
+    background-position: var(--lit, 0%) 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position .55s var(--ease-out);
+  }
+
+  /* ==========================================================================
+     Floof profile — polaroid, hooman, blurb, rating.
+     Used by the accordion, tabs, modal and popover demos.
+
+     Reveal state is keyed on the nearest open <details>, <dialog> or popover
+     (the :is() list is forgiving, so an unknown :popover-open is skipped,
+     not fatal). It works two ways:
+     · the closed-state rules give the accordion something to animate FROM
+       (its content stays in the tree while closed) and back TO on close;
+     · @starting-style gives the tabs, dialog and popover the same FROM
+       state, because their content goes display:none → shown and has no
+       previous style to transition from.
+     ========================================================================== */
+
+  /* Pieces that also appear in summaries, tabs and launchers */
+  .floof__pet { font-size: clamp(2rem, 4.5vw, 2.8rem); }
+  .floof__names { display: grid; gap: .1rem; min-width: 0; }
+  .floof__owner {
+    font-size: .95rem;
+    color: var(--paper-2);
+    strong { font-weight: 500; color: var(--pink); }
+  }
+  .floof__thumb {
+    width: 3.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--lilac);
+    transition: scale var(--dur) var(--ease-spring), opacity .3s, rotate var(--dur) var(--ease-spring), border-color .3s;
+  }
+
+  /* The expanded body: photos beside blurb, stacking when its CARD is narrow */
+  .floof__body {
+    display: grid;
+    grid-template-columns: minmax(14rem, 1fr) 1.4fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    padding: .5rem 1.6rem 2rem 1.6rem;
+    /* TRICK: container query — the same markup sits in a wide accordion
+       card, a tab panel, a dialog and a 24rem popover. Ask the card, not
+       the viewport. */
+    @container (width < 44rem) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .floof__photos {
+    position: relative;
+    padding: 1rem 1rem 3.5rem 0;
+  }
+
+  /* Polaroid that drops in and settles at a jaunty tilt */
+  .polaroid {
+    padding: .7rem .7rem 2.4rem;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: .35rem;
+    box-shadow: 0 1.25rem 2.5rem -1rem rgb(0 0 0 / .7);
+    rotate: 8deg;
+    translate: 0 1.5rem;
+    opacity: 0;
+    transition:
+      rotate .8s var(--ease-spring),
+      translate .8s var(--ease-spring),
+      opacity .4s var(--ease-out);
+
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: .15rem;
+      filter: saturate(1.1) contrast(1.05);
+    }
+    figcaption {
+      position: absolute;
+      inset-inline: .7rem;
+      bottom: .55rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.75rem;
+      line-height: 1;
+      text-align: center;
+      color: var(--purple);
+    }
+
+    :is(details[open], dialog[open], :popover-open) & {
+      rotate: -3deg;
+      translate: 0;
+      opacity: 1;
+      transition-delay: .1s;
+      &:hover { rotate: 0deg; scale: 1.02; transition-delay: 0s; }
+    }
+  }
+
+  /* The hooman: small circle overlapping the polaroid's corner */
+  .hooman {
+    position: absolute;
+    inset-inline-end: -.25rem;
+    inset-block-end: 3.5rem;    /* overlaps the photo's corner, clear of the caption */
+    width: 6rem;
+    scale: 0;
+    rotate: 25deg;
+    transition: scale .7s var(--ease-spring), rotate .7s var(--ease-spring);
+
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--teal);
+      box-shadow: 0 .75rem 1.5rem -.5rem rgb(0 0 0 / .8);
+    }
+    figcaption {
+      position: absolute;
+      inset-inline-start: calc(100% + 2.25rem);   /* to the lower right of the circle */
+      inset-block-start: 88%;
+      width: 6rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: var(--pink);
+      text-align: left;
+      white-space: nowrap;
+      rotate: 4deg;
+    }
+
+    :is(details[open], dialog[open], :popover-open) & { scale: 1; rotate: 0deg; transition-delay: .35s; }
+  }
+
+  /* Hand-drawn arrow that draws itself — pathLength="1" makes the maths trivial.
+     Flipped so it points back up at the circle from the label. */
+  .hooman__arrow {
+    position: absolute;
+    inset-inline-end: calc(100% - .1rem);
+    bottom: 45%;
+    width: 3rem;
+    rotate: 190deg;
+    fill: none;
+    stroke: var(--pink);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset .5s var(--ease-out);
+    }
+    :is(details[open], dialog[open], :popover-open) & path:first-child { stroke-dashoffset: 0; transition-delay: .6s; }
+    :is(details[open], dialog[open], :popover-open) & path:last-child  { stroke-dashoffset: 0; transition-delay: .95s; }
+  }
+
+  /* One column: no room beside the circle, so the label drops beneath it
+     (the photos area keeps 3.5rem of padding there) and the arrow points up */
+  @container (width < 44rem) {
+    .hooman figcaption {
+      inset-inline-start: auto;
+      inset-inline-end: .25rem;
+      inset-block-start: calc(100% + .6rem);
+      text-align: right;
+      rotate: -3deg;
+    }
+    .hooman__arrow {
+      inset-inline-end: auto;
+      inset-inline-start: -.75rem;
+      bottom: 60%;
+      rotate: -80deg;
+    }
+  }
+
+  /* Blurb — lines fade up in a stagger */
+  .floof__blurb {
+    padding-block-start: .5rem;
+
+    > * {
+      translate: 0 .75rem;
+      opacity: 0;
+      transition: translate .6s var(--ease-out), opacity .5s var(--ease-out);
+    }
+    p { margin: 0 0 1rem; color: var(--paper-2); }
+    .floof__owner { margin-block-end: .35rem; }
+
+    :is(details[open], dialog[open], :popover-open) & > * { translate: 0; opacity: 1; }
+    :is(details[open], dialog[open], :popover-open) & > :nth-child(1) { transition-delay: .15s; }
+    :is(details[open], dialog[open], :popover-open) & > :nth-child(2) { transition-delay: .25s; }
+    :is(details[open], dialog[open], :popover-open) & > :nth-child(3) { transition-delay: .35s; }
+    :is(details[open], dialog[open], :popover-open) & > :nth-child(4) { transition-delay: .45s; }
+    :is(details[open], dialog[open], :popover-open) & > :nth-child(5) { transition-delay: .55s; }
+  }
+
+  .floof__kicker {
+    margin: 0 0 .5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--lilac);
+  }
+
+  /* Floof rating bar — no JS, the maths does the branching:
+     · over ten  → bar is full; brand gradient covers the first ten points,
+                   the excess spills into teal, a notch marks 10/10
+     · ten or under → ordinary part-filled bar, empty track showing, no notch */
+  .rating {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: .75rem;
+    margin-block-start: 1.25rem;
+    font-size: .85rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .rating__track {
+    height: .55rem;
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--lavender) 12%, transparent);
+    overflow: hidden;
+  }
+  .rating__fill {
+    /* TRICK: min()/clamp() as an if-statement */
+    --ten:   min(100%, calc(10 / var(--rating) * 100%));         /* where 10/10 lands */
+    --notch: clamp(0px, calc((var(--rating) - 10) * 100px), 2px); /* 0 unless over ten */
+    position: relative;
+    display: block;
+    height: 100%;
+    width: min(100%, calc(var(--rating) / 10 * 100%));
+    border-radius: inherit;
+    background:
+      var(--grad-brand) 0 0 / var(--ten) 100% no-repeat,
+      linear-gradient(90deg, var(--teal), #3fd4c9);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale .9s var(--ease-spring);
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: var(--ten);
+      width: var(--notch);
+      translate: -50% 0;
+      background: var(--ink);
+    }
+    :is(details[open], dialog[open], :popover-open) & { scale: 1 1; transition-delay: .6s; }
+  }
+  .rating__value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0;
+    color: var(--pink);
+  }
+
+  /* TRICK: @starting-style — the FROM state for profile content rendered
+     for the first time (tab panels, dialogs, popovers). Same values as the
+     closed-state rules above, so every demo plays the same reveal. */
+  @starting-style {
+    :is(details[open], dialog[open], :popover-open) .polaroid { rotate: 8deg; translate: 0 1.5rem; opacity: 0; }
+    :is(details[open], dialog[open], :popover-open) .hooman { scale: 0; rotate: 25deg; }
+    :is(details[open], dialog[open], :popover-open) .hooman__arrow path { stroke-dashoffset: 1; }
+    :is(details[open], dialog[open], :popover-open) .floof__blurb > * { translate: 0 .75rem; opacity: 0; }
+    :is(details[open], dialog[open], :popover-open) .rating__fill { scale: 0 1; }
+  }
+
+  /* ==========================================================================
+     Tech cheat-sheet footer + feature chips
+     ========================================================================== */
+  .tech {
+    margin-block-start: clamp(3rem, 8vw, 6rem);
+    padding-block-start: 2rem;
+    border-top: 1px dashed color-mix(in oklab, var(--lilac) 30%, transparent);
+  }
+  .tech__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--pink);
+  }
+  .tech__note {
+    margin: 1.5rem 0 0;
+    max-width: 60ch;
+    font-size: .9rem;
+    color: var(--paper-2);
+  }
+  .tech__heading {
+    margin: 1.5rem 0 .6rem;
+    font-size: .8rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--lilac);
+    code { font-size: .95em; text-transform: none; letter-spacing: 0; }
+  }
+  .tech__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem .9rem;
+    font-size: .9rem;
+    color: var(--paper-2);
+
+    li {
+      padding: .4rem .8rem;
+      border-radius: 2rem;
+      border: 1px solid color-mix(in oklab, var(--lilac) 25%, transparent);
+      transition: border-color .3s, translate .4s var(--ease-spring);
+      &:hover { border-color: var(--tick-hue, var(--magenta)); translate: 0 -2px; }
+    }
+    code { background: none; padding: 0; color: var(--lilac); }
+
+    /* Feature chips: a cross until an @supports block below flips them to a
+       tick. No JS — the browser is grading itself. :where() zeroes the
+       specificity so the plain [data-feature="…"] rules can override. */
+    :where(li[data-feature]) {
+      --tick: "\2717";            /* ✗ */
+      --tick-hue: var(--magenta);
+    }
+    li[data-feature] {
+      border-color: color-mix(in oklab, var(--tick-hue) 45%, transparent);
+      &::before {
+        content: var(--tick);
+        margin-inline-end: .5em;
+        font-weight: 700;
+        color: var(--tick-hue);
+      }
+      code { color: var(--paper-2); }
+    }
+
+    /* Chips that are links: the whole pill is the target, with an "out" arrow */
+    &.tech__list--links {
+      li { padding: 0; }
+      li:hover { border-color: var(--teal); }
+      a {
+        display: block;
+        padding: .4rem .8rem;
+        border-radius: inherit;
+        color: inherit;
+        text-decoration: none;
+        &::after { content: " \2197"; color: var(--lilac); font-size: .85em; }
+        &:hover::after { color: var(--teal); }
+      }
+    }
+  }
+
+  /* One @supports per graded feature. The chip text lives in the HTML;
+     these only decide tick or cross. */
+  @supports selector(::details-content)        { [data-feature="details-content"]  { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (interpolate-size: allow-keywords) { [data-feature="interpolate-size"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  /* at-rule() is brand new (Chrome 148, Firefox 157). Until it lands
+     everywhere, fall back to transition-behavior, which shipped in the same
+     releases as @starting-style. */
+  @supports at-rule(@starting-style) or (transition-behavior: allow-discrete) {
+    [data-feature="starting-style"] { --tick: "\2713"; --tick-hue: var(--teal); }
+  }
+  @supports (grid-template-columns: subgrid)   { [data-feature="subgrid"]        { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(:has(a))                  { [data-feature="has"]            { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (transition-timing-function: linear(0, 1)) { [data-feature="linear"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (background-clip: text) or (-webkit-background-clip: text) { [data-feature="clip-text"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (transition-behavior: allow-discrete) { [data-feature="allow-discrete"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (overlay: auto)                    { [data-feature="overlay"]        { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (backdrop-filter: blur(1px))       { [data-feature="backdrop-filter"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (container-type: inline-size)      { [data-feature="container"]      { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (anchor-name: --a)                 { [data-feature="anchor"]         { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (position-try-fallbacks: flip-block) { [data-feature="position-try"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(:popover-open)            { [data-feature="popover-open"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (scale: abs(-1)) and (rotate: calc(sign(1) * 1deg)) { [data-feature="math"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (scale: round(1.4))                { [data-feature="round"]          { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (rotate: y 1deg) and (scale: 1) and (translate: 1px) { [data-feature="transforms"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  /* Only at-rule() can test this one (Chrome 148+). Safari supports the
+     feature but not the test, so it shows a cross there for now. */
+  @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  /* Layers need no @supports: without @layer, the first line of this file
+     would be ignored and the cascade would still mostly work — but the page
+     would look different enough that the tick is a fair claim. */
+  [data-feature="layers"] { --tick: "\2713"; --tick-hue: var(--teal); }
+
+  /* ----- Colophon ----- */
+  .colophon {
+    margin-block-start: clamp(2rem, 5vw, 3.5rem);
+    padding-block-start: 1.25rem;
+    border-top: 1px dashed color-mix(in oklab, var(--lilac) 30%, transparent);
+    font-size: .85rem;
+    letter-spacing: .04em;
+    color: var(--lilac);
+    p { margin: 0; }
+    a { color: var(--pink); }
+    a:hover { color: var(--paper); }
+  }
+}
+
+
+/* ==========================================================================
+   DEMO — page-specific rules. Each demo under its own heading; nothing in
+   one heading is used by another page.
+   ========================================================================== */
+@layer demo {
+
+  /* ==========================================================================
+     00 · Index (index.html)
+     ========================================================================== */
+  .demos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: .85rem;
+    counter-reset: item;
+    > li { counter-increment: item; }
+  }
+  .demos .launch__name { display: block; font-size: clamp(2rem, 4.5vw, 2.8rem); }
+
+
+  /* ==========================================================================
+     01 · Accordion (demos/accordion.html) — <details name>, ::details-content
+     ========================================================================== */
+  .floofs {
+    display: grid;
+    gap: .85rem;
+    counter-reset: item;    /* TRICK: numbering without JS */
+  }
+
+  .floof {
+    counter-increment: item;
+    transition:
+      opacity .45s var(--ease-out),
+      translate .6s var(--ease-out) var(--enter-delay, 0ms),
+      scale var(--dur) var(--ease-spring),
+      border-color .45s var(--ease-out),
+      box-shadow .45s var(--ease-out);
+
+    > summary {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 1.1rem;
+      padding: 1.1rem 1.25rem 1.1rem 1.6rem;
+      border-radius: inherit;
+    }
+    .floof__thumb { rotate: -6deg; }
+
+    &:hover {
+      .floof__pet { --lit: 100%; }
+      .floof__thumb { rotate: 6deg; scale: 1.08; }
+      .floof__toggle { background: color-mix(in oklab, var(--magenta) 30%, transparent); }
+    }
+
+    &[open] {
+      border-color: var(--accent-border);
+      box-shadow:
+        0 1px 0 rgb(255 255 255 / .06) inset,
+        0 2rem 4rem -1.5rem var(--accent-border);
+      &::before { scale: 1 1; }
+      .ordinal { color: var(--magenta); }
+      .floof__pet { --lit: 100%; }
+      .floof__thumb { scale: 0; opacity: 0; }   /* big photo takes over */
+      .floof__toggle { --x: 1; background: var(--magenta); }
+    }
+
+    /* TRICK: ::details-content — the animatable hidden part */
+    &::details-content {
+      block-size: 0;
+      overflow: hidden;
+      content-visibility: hidden;
+      transition:
+        block-size var(--dur) var(--ease-spring),
+        content-visibility var(--dur) allow-discrete;
+    }
+    &[open]::details-content {
+      block-size: auto;               /* animates thanks to interpolate-size */
+      content-visibility: visible;
+    }
+  }
+
+  /* TRICK: :has() — when one floof is open, gently dim the rest */
+  .floofs:has(.floof[open]) .floof:not([open]) {
+    opacity: .55;
+    scale: .985;
+    &:hover { opacity: 1; scale: 1; }
+  }
+
+
+  /* ==========================================================================
+     02 · Tabs (demos/tabs.html) — <details> + grid + subgrid
+     Technique after Sladjan Petrovic on CSS-Tricks: every <details> is laid
+     over ONE grid. Each is a subgrid spanning every column and both rows, so
+     its <summary> sits in row 1 at its own column while its content
+     (::details-content) fills row 2. name="" keeps exactly one open.
+     Base layout is a stack of disclosures; the strip is layered on top only
+     when the browser has ::details-content AND subgrid AND the room.
+     ========================================================================== */
+  .tabs {
+    display: grid;
+    gap: .85rem;
+  }
+
+  .tab {
+    > summary {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .7rem 1rem .7rem .9rem;
+      border-radius: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--surface-shadow);
+      transition: border-color .3s, background .3s, translate .4s var(--ease-spring);
+    }
+    &:not([open]) > summary:hover { border-color: var(--accent-border); translate: 0 -2px; }
+    &[open] > summary {
+      border-color: var(--magenta);
+      background: color-mix(in oklab, var(--surface) 80%, var(--magenta) 20%);
+    }
+
+    .floof__thumb { width: 2.25rem; }
+    &[open] .floof__thumb { border-color: var(--magenta); }
+    .floof__pet {
+      font-size: clamp(1.5rem, 2.2vw, 1.85rem);
+      line-height: .9;
+      text-wrap: balance;
+    }
+    > summary:hover .floof__pet,
+    &[open] .floof__pet { --lit: 100%; }
+  }
+
+  .tab__panel { padding-block-start: 1.25rem; }
+
+  /* ----- Enhancement: the tab strip ----- */
+  @supports selector(::details-content) and (grid-template-columns: subgrid) {
+    @media (width >= 48rem) {
+
+      .tabs {
+        /* TRICK: :has() as a quantity query — count the tabs, size the grid */
+        --tabs: 1;
+        display: grid;
+        grid-template-columns: repeat(var(--tabs), minmax(0, 1fr));
+        grid-template-rows: auto auto;
+        gap: 0 .5rem;
+        padding-block-start: .9rem;    /* room for the floating bar above */
+        &:has(> :last-child:nth-child(2)) { --tabs: 2; }
+        &:has(> :last-child:nth-child(3)) { --tabs: 3; }
+        &:has(> :last-child:nth-child(4)) { --tabs: 4; }
+        &:has(> :last-child:nth-child(5)) { --tabs: 5; }
+        &:has(> :last-child:nth-child(6)) { --tabs: 6; }
+        &:has(> :last-child:nth-child(7)) { --tabs: 7; }
+        &:has(> :last-child:nth-child(8)) { --tabs: 8; }
+      }
+
+      /* TRICK: subgrid — every <details> covers the whole grid and borrows
+         its tracks, so all six summaries share ONE row and line up. */
+      .tab {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
+        grid-column: 1 / -1;
+        grid-row: 1 / span 2;
+        &:nth-child(1) { --n: 1; }
+        &:nth-child(2) { --n: 2; }
+        &:nth-child(3) { --n: 3; }
+        &:nth-child(4) { --n: 4; }
+        &:nth-child(5) { --n: 5; }
+        &:nth-child(6) { --n: 6; }
+        &:nth-child(7) { --n: 7; }
+        &:nth-child(8) { --n: 8; }
+
+        /* The <details> boxes all overlap, so the parts you can interact
+           with are lifted above them: closed panels at 1, the open panel at
+           2, the open tab at 3 so it covers the panel's top border. */
+        > summary {
+          grid-row: 1;
+          grid-column: var(--n);
+          z-index: 1;
+          padding: .8rem 1rem;
+          border-radius: 1rem 1rem 0 0;
+          border-block-end-width: 0;     /* the panel's top border does that job */
+          box-shadow: none;
+
+          /* Active tab indicator: a gradient bar floating above the tab with
+             a gap, the same idea as the bar beside each card */
+          &::after {
+            content: "";
+            position: absolute;
+            inset-inline: .9rem;
+            inset-block-start: -.9rem;
+            height: .3rem;
+            border-radius: 1rem;
+            background: var(--grad-brand);
+            scale: 0 1;
+            transform-origin: left;
+            transition: scale .5s var(--ease-spring);
+          }
+        }
+        /* Active tab joins the panel: same surface, reaching 1px down to
+           cover the panel's top border. A <details> in a name group can
+           still be closed by clicking its own summary, which would leave
+           no tab open — so the open tab ignores the pointer. (Keyboard
+           toggling still works; the page says so.) */
+        &[open] > summary {
+          z-index: 3;
+          margin-block-end: -1px;
+          background: var(--surface);
+          border-color: var(--accent-border);
+          pointer-events: none;
+          &::after { scale: 1 1; }
+        }
+
+        /* Every panel stays rendered, stacked in the same cell, so row 2 is
+           always as tall as the tallest panel — nothing below ever jumps.
+           Closed panels are hidden with visibility (no hit-testing) and
+           cross-fade with the one opening. content-visibility overrides the
+           UA's "hidden" for closed details. */
+        &::details-content {
+          grid-row: 2;
+          grid-column: 1 / -1;
+          z-index: 1;
+          display: block;
+          content-visibility: visible;
+          visibility: hidden;
+          opacity: 0;
+          transition: opacity .4s var(--ease-out), visibility .4s;
+        }
+        &[open]::details-content {
+          z-index: 2;
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+
+      /* The panel: square top corners so the tabs sit flush on it, no top
+         glint (it showed under the tab), and no slide on entrance — sliding
+         would tear it away from its tab */
+      .tab__panel {
+        padding-block-start: 1.5rem;
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
+        border-color: var(--accent-border);
+        box-shadow: var(--surface-drop);
+        @starting-style { translate: 0; }
+      }
+    }
+  }
+
+
+  /* ==========================================================================
+     03 · Modal (demos/modal.html) — <dialog> opened by invoker commands
+     No JS: <button command="show-modal"> opens, <button command="close">
+     closes, closedby="any" light-dismisses, and the browser does focus
+     trapping and Escape.
+     ========================================================================== */
+  .floof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: .85rem;
+    .launch { padding: 1rem 1.25rem 1rem 1.1rem; gap: 1rem; }
+    .floof__pet { font-size: clamp(1.6rem, 3vw, 2.1rem); }
+  }
+
+  .floof-dialog {
+    position: fixed;                 /* .card says relative; a modal must not */
+    inset: 0;
+    margin: auto;
+    width: min(56rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    color: var(--paper);
+    overflow: auto;
+
+    &::backdrop {
+      background: color-mix(in oklab, var(--ink) 72%, transparent);
+      backdrop-filter: blur(10px) saturate(1.2);
+      opacity: 0;
+      transition:
+        opacity .35s var(--ease-out),
+        display .55s allow-discrete,
+        overlay .55s allow-discrete;
+    }
+    &[open]::backdrop {
+      opacity: 1;
+      @starting-style { opacity: 0; }
+    }
+
+    .floof__pet { --lit: 100%; }
+    .plus-x { background: var(--magenta); }
+    .plus-x:hover { background: var(--purple); }
+    /* the header already carries the owner, so hide the copy in the blurb */
+    .floof__blurb .floof__owner { display: none; }
+  }
+  .floof-dialog__head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 1rem;
+    padding: 1.25rem 1.25rem 0 1.6rem;
+  }
+
+
+  /* ==========================================================================
+     04 · Popover (demos/popover.html) — popover + CSS anchor positioning
+     No JS: popovertarget opens and closes, anchor-name / position-anchor
+     tether, position-area places, position-try-fallbacks flips.
+     ========================================================================== */
+
+  /* The faces run diagonally: face n sits in column n, row n */
+  .anchors {
+    /* TRICK: :has() as a quantity query — count the faces, size the grid */
+    --count: 1;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--count), 1fr);
+    gap: .25rem;
+    &:has(> :last-child:nth-child(2)) { --count: 2; }
+    &:has(> :last-child:nth-child(3)) { --count: 3; }
+    &:has(> :last-child:nth-child(4)) { --count: 4; }
+    &:has(> :last-child:nth-child(5)) { --count: 5; }
+    &:has(> :last-child:nth-child(6)) { --count: 6; }
+    &:has(> :last-child:nth-child(7)) { --count: 7; }
+    &:has(> :last-child:nth-child(8)) { --count: 8; }
+    > :nth-child(1) { grid-area: 1 / 1; }
+    > :nth-child(2) { grid-area: 2 / 2; }
+    > :nth-child(3) { grid-area: 3 / 3; }
+    > :nth-child(4) { grid-area: 4 / 4; }
+    > :nth-child(5) { grid-area: 5 / 5; }
+    > :nth-child(6) { grid-area: 6 / 6; }
+    > :nth-child(7) { grid-area: 7 / 7; }
+    > :nth-child(8) { grid-area: 8 / 8; }
+    > * { justify-self: center; }
+
+    /* TRICK: anchor() as a measuring tape. The line's box is pinned to the
+       centres of the first and last faces, then a diagonal gradient is drawn
+       corner to corner — so it passes through every face on the way. */
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset-block-start:  anchor(--face-first center);
+      inset-inline-start: anchor(--face-first center);
+      inset-block-end:    anchor(--face-last center);
+      inset-inline-end:   anchor(--face-last center);
+      --line: color-mix(in oklab, var(--lilac) 40%, transparent);
+      /* bands run across the gradient, so "to top right" draws the TL→BR diagonal */
+      background: linear-gradient(to top right,
+        transparent calc(50% - 1px), var(--line) calc(50% - 1px),
+        var(--line) calc(50% + 1px), transparent calc(50% + 1px));
+    }
+  }
+
+  .anchor-btn {
+    appearance: none;
+    border: 0;
+    padding: .5rem;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: grid;
+    justify-items: center;
+    gap: .5rem;
+
+    .floof__thumb {
+      width: 5rem;
+      border-width: 3px;
+      background: var(--ink);        /* the line runs behind, not through */
+    }
+    .floof__pet { font-size: 1.6rem; }
+    &:hover .floof__thumb { scale: 1.08; rotate: 6deg; border-color: var(--magenta); }
+    &:hover .floof__pet { --lit: 100%; }
+
+    /* TRICK: anchor-name — each button becomes a named anchor.
+       :nth-child(n of S) counts only matching siblings, so other elements
+       in between can't throw the numbering off. */
+    &:nth-child(1 of .anchor-btn) { anchor-name: --floof-1; }
+    &:nth-child(2 of .anchor-btn) { anchor-name: --floof-2; }
+    &:nth-child(3 of .anchor-btn) { anchor-name: --floof-3; }
+    &:nth-child(4 of .anchor-btn) { anchor-name: --floof-4; }
+    &:nth-child(5 of .anchor-btn) { anchor-name: --floof-5; }
+    &:nth-child(6 of .anchor-btn) { anchor-name: --floof-6; }
+    &:nth-child(7 of .anchor-btn) { anchor-name: --floof-7; }
+    &:nth-child(8 of .anchor-btn) { anchor-name: --floof-8; }
+    &:first-child .floof__thumb { anchor-name: --face-first; }   /* for the line */
+    &:last-child  .floof__thumb { anchor-name: --face-last; }
+  }
+
+  .floof-pop {
+    /* the popover UA style is position: fixed; inset: 0; .card says relative.
+       Anchor positioning needs fixed/absolute and auto insets. */
+    position: fixed;
+    inset: auto;
+    margin: 0 .75rem;                /* breathing room from the anchor */
+    width: min(24rem, calc(100vw - 2rem));
+    padding: 0;
+    color: var(--paper);
+
+    /* TRICK: position-anchor — which named anchor each popover is tethered to */
+    &:nth-child(1 of .floof-pop) { position-anchor: --floof-1; }
+    &:nth-child(2 of .floof-pop) { position-anchor: --floof-2; }
+    &:nth-child(3 of .floof-pop) { position-anchor: --floof-3; }
+    &:nth-child(4 of .floof-pop) { position-anchor: --floof-4; }
+    &:nth-child(5 of .floof-pop) { position-anchor: --floof-5; }
+    &:nth-child(6 of .floof-pop) { position-anchor: --floof-6; }
+    &:nth-child(7 of .floof-pop) { position-anchor: --floof-7; }
+    &:nth-child(8 of .floof-pop) { position-anchor: --floof-8; }
+
+    /* TRICK: position-area — where to sit relative to the anchor.
+       To its right, top edges aligned, extending downwards. */
+    position-area: inline-end span-block-end;
+    /* TRICK: position-try-fallbacks — tried in order until one fits.
+       If nothing beside the face fits, the last resort is a custom
+       @position-try that centres it in the viewport, which always does. */
+    position-try-fallbacks:
+      flip-inline,                   /* to its left */
+      flip-block,                    /* to its right, extending upwards */
+      flip-block flip-inline,        /* to its left, extending upwards */
+      --centred;
+
+    /* compact profile: a smaller polaroid and no hooman circle, so the
+       popover stays short enough to fit beside a face more often */
+    .floof__body { padding: 1rem 1.25rem 1.25rem; gap: 1rem; }
+    .floof__photos { padding: .75rem .5rem .25rem 0; }
+    .polaroid { max-width: 15rem; margin-inline: auto; }
+    .floof__blurb { padding-block-start: 0; }
+    .floof__kicker { font-size: 1.7rem; }
+  }
+
+  /* TRICK: @position-try — a named set of positioning overrides for the
+     fallback list. This one lets go of the anchor and sits mid-viewport. */
+  @position-try --centred {
+    position-area: none;
+    inset: 0;
+    margin: auto;
+  }
+
+
+  /* ==========================================================================
+     05 · Carousel (demos/carousel.html) — state in a radio group, geometry
+     in calc(), motion in transitions. No JS:
+     · :has() reads which radio is checked and sets --active on the reel
+     · each slide knows its own index (--i) so --offset = --i - --active
+     · round() wraps the offset so the ring is endless
+     · sign() and abs() turn the offset into tilt, scale, depth and z-index
+     · every one of those properties transitions, so each move is tweened
+     ========================================================================== */
+  .reel {
+    --active: 3;                     /* matches the radio that starts checked */
+    --n: 1;                          /* slide count, set by the quantity query */
+    --slide: min(27rem, 82vw);       /* front slide width */
+    --step: min(15rem, 46vw);        /* horizontal distance per slide */
+    --tilt: 52deg;
+    --move: .9s;                     /* one move, start to settle */
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    padding-block: 1rem;
+
+    /* TRICK: :has() as a quantity query — how many slides are there? */
+    &:has(> .reel__stage > :last-child:nth-child(2)) { --n: 2; }
+    &:has(> .reel__stage > :last-child:nth-child(3)) { --n: 3; }
+    &:has(> .reel__stage > :last-child:nth-child(4)) { --n: 4; }
+    &:has(> .reel__stage > :last-child:nth-child(5)) { --n: 5; }
+    &:has(> .reel__stage > :last-child:nth-child(6)) { --n: 6; }
+    &:has(> .reel__stage > :last-child:nth-child(7)) { --n: 7; }
+    &:has(> .reel__stage > :last-child:nth-child(8)) { --n: 8; }
+
+    /* TRICK: :has() — the checked radio anywhere inside sets the reel's state */
+    &:has(#reel-1:checked) { --active: 1; }
+    &:has(#reel-2:checked) { --active: 2; }
+    &:has(#reel-3:checked) { --active: 3; }
+    &:has(#reel-4:checked) { --active: 4; }
+    &:has(#reel-5:checked) { --active: 5; }
+    &:has(#reel-6:checked) { --active: 6; }
+    &:has(#reel-7:checked) { --active: 7; }
+    &:has(#reel-8:checked) { --active: 8; }
+  }
+
+  /* The stage: every slide in the same grid cell */
+  .reel__stage {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    justify-items: center;
+    perspective: 70rem;              /* the 3D room the slides sit in */
+    > * { grid-area: 1 / 1; }
+  }
+
+  .slide {
+    &:nth-child(1) { --i: 1; }
+    &:nth-child(2) { --i: 2; }
+    &:nth-child(3) { --i: 3; }
+    &:nth-child(4) { --i: 4; }
+    &:nth-child(5) { --i: 5; }
+    &:nth-child(6) { --i: 6; }
+    &:nth-child(7) { --i: 7; }
+    &:nth-child(8) { --i: 8; }
+
+    /* TRICK: the whole coverflow is these few lines of maths.
+       round() wraps the raw offset into -n/2..n/2, so the ring is endless:
+       the last slide sits just left of the first, and stepping off either
+       end is an ordinary one-slide move. */
+    --raw: calc(var(--i) - var(--active));
+    --offset: calc(var(--raw) - var(--n) * round(var(--raw) / var(--n)));
+    --dist: min(abs(var(--offset)), 3);            /* clamp the far ones together */
+    width: var(--slide);
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    translate: calc(var(--offset) * var(--step)) calc(min(var(--dist), 1) * 1.25rem);
+    rotate: y calc(sign(var(--offset)) * var(--tilt) * -1);
+    scale: calc(1 - var(--dist) * .12);
+    z-index: calc(10 - var(--dist));
+    /* darker with distance, never see-through… */
+    filter: brightness(calc(1 - var(--dist) * .27));
+    /* …except the slide opposite the front, which fades out so its trip
+       round the back of the ring is never seen */
+    opacity: clamp(0, 3 - var(--dist), 1);
+    transition:
+      translate var(--move) var(--ease-spring),
+      rotate var(--move) var(--ease-spring),
+      scale var(--move) var(--ease-spring),
+      filter var(--move) var(--ease-out),
+      opacity var(--move) var(--ease-out),
+      z-index calc(var(--move) * .4) step-end;   /* hand over stacking part-way through */
+
+    /* the polaroid normally waits for an open <details> — not here */
+    .polaroid {
+      opacity: 1;
+      rotate: 0deg;
+      translate: 0;
+      margin-inline: .5rem;
+      transition: none;
+    }
+    .rating__fill { scale: 1 1; }
+  }
+  .slide__pick { cursor: pointer; display: block; }
+  .reel:has(#reel-1:checked) .slide:nth-child(1) .slide__pick,
+  .reel:has(#reel-2:checked) .slide:nth-child(2) .slide__pick,
+  .reel:has(#reel-3:checked) .slide:nth-child(3) .slide__pick,
+  .reel:has(#reel-4:checked) .slide:nth-child(4) .slide__pick,
+  .reel:has(#reel-5:checked) .slide:nth-child(5) .slide__pick,
+  .reel:has(#reel-6:checked) .slide:nth-child(6) .slide__pick { cursor: default; }
+
+  /* the blurb only for the front slide, fading with its distance */
+  .slide__meta {
+    padding-inline: .75rem;
+    text-align: center;
+    opacity: calc(1 - var(--dist));
+    transition: opacity var(--move) var(--ease-out);
+    .floof__owner { margin: 0 0 .25rem; }
+    .floof__kicker { font-size: 1.6rem; }
+    .rating { margin-block-start: .75rem; }
+  }
+
+  /* Arrows: one pair per slide, only the current pair shown */
+  .reel__arrow {
+    display: none;
+    position: absolute;
+    inset-block-start: calc(var(--slide) * .5);   /* level with the polaroid's middle */
+    z-index: 20;
+    width: 2.6rem;
+    border-color: var(--surface-border);
+    background: var(--surface);
+    &:hover { border-color: var(--magenta); scale: 1.08; }
+    &.reel__arrow--prev { inset-inline-start: 0; }
+    &.reel__arrow--next { inset-inline-end: 0; }
+    /* On wide screens, step out of the page column into the viewport margin:
+       the reel is centred, so 50% − 50vw is the viewport's edge */
+    @media (width >= 78rem) {
+      &.reel__arrow--prev { inset-inline-start: calc(50% - 50vw + 2.5rem); }
+      &.reel__arrow--next { inset-inline-end:   calc(50% - 50vw + 2.5rem); }
+    }
+  }
+  .reel:has(#reel-1:checked) .reel__arrow[data-when="1"],
+  .reel:has(#reel-2:checked) .reel__arrow[data-when="2"],
+  .reel:has(#reel-3:checked) .reel__arrow[data-when="3"],
+  .reel:has(#reel-4:checked) .reel__arrow[data-when="4"],
+  .reel:has(#reel-5:checked) .reel__arrow[data-when="5"],
+  .reel:has(#reel-6:checked) .reel__arrow[data-when="6"],
+  .reel:has(#reel-7:checked) .reel__arrow[data-when="7"],
+  .reel:has(#reel-8:checked) .reel__arrow[data-when="8"] { display: grid; }
+
+  /* Dots: each is a fixed slot, so the row never reflows; the pill inside
+     grows from its own centre into a bar when active */
+  .reel__dots {
+    display: flex;
+    justify-content: center;
+  }
+  .reel__dot {
+    width: 2.1rem;
+    height: 1.4rem;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    cursor: pointer;
+    &::before {
+      content: "";
+      width: .65rem;
+      height: .65rem;
+      border-radius: 1rem;
+      background: color-mix(in oklab, var(--lilac) 30%, transparent);
+      transition: background .3s, width var(--move) var(--ease-spring);
+    }
+    &:hover::before { background: color-mix(in oklab, var(--lilac) 60%, transparent); }
+  }
+  .reel:has(#reel-1:checked) .reel__dot[for="reel-1"]::before,
+  .reel:has(#reel-2:checked) .reel__dot[for="reel-2"]::before,
+  .reel:has(#reel-3:checked) .reel__dot[for="reel-3"]::before,
+  .reel:has(#reel-4:checked) .reel__dot[for="reel-4"]::before,
+  .reel:has(#reel-5:checked) .reel__dot[for="reel-5"]::before,
+  .reel:has(#reel-6:checked) .reel__dot[for="reel-6"]::before,
+  .reel:has(#reel-7:checked) .reel__dot[for="reel-7"]::before,
+  .reel:has(#reel-8:checked) .reel__dot[for="reel-8"]::before { background: var(--grad-brand); width: 2.1rem; }
+  /* keyboard focus lives on the hidden radio; show it on its dot */
+  .reel:has(#reel-1:focus-visible) .reel__dot[for="reel-1"],
+  .reel:has(#reel-2:focus-visible) .reel__dot[for="reel-2"],
+  .reel:has(#reel-3:focus-visible) .reel__dot[for="reel-3"],
+  .reel:has(#reel-4:focus-visible) .reel__dot[for="reel-4"],
+  .reel:has(#reel-5:focus-visible) .reel__dot[for="reel-5"],
+  .reel:has(#reel-6:focus-visible) .reel__dot[for="reel-6"],
+  .reel:has(#reel-7:focus-visible) .reel__dot[for="reel-7"],
+  .reel:has(#reel-8:focus-visible) .reel__dot[for="reel-8"] { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .reel__hint {
+    margin: 1rem 0 0;
+    text-align: center;
+    font-size: .9rem;
+    color: var(--lilac);
+  }
+}
+
+
+/* ==========================================================================
+   UTILITIES — single-purpose helpers, always win over components
+   ========================================================================== */
+@layer utilities {
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+
+/* ==========================================================================
+   PREFS — user preferences, the last word. This is the last layer, so a
+   universal selector here beats every component rule — no !important.
+   ========================================================================== */
+@layer prefs {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: .01ms;
+      transition-delay: 0s;
+      animation: none;
+    }
+    @view-transition { navigation: none; }
+  }
+}

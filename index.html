@@ -38,53 +38,53 @@
     <main>
       <ol class="demos stagger">
         <li>
-          <a class="card demo-card" href="demos/accordion.html">
+          <a class="card launch" href="demos/accordion.html">
             <span class="ordinal" aria-hidden="true"></span>
             <span>
-              <span class="demo-card__name lit-text">Accordion</span>
-              <span class="demo-card__sub">Excellent Floofs &middot; <code>&lt;details&gt;</code>, <code>::details-content</code>, <code>interpolate-size</code></span>
+              <span class="launch__name lit-text">Accordion</span>
+              <span class="launch__sub">Excellent Floofs &middot; <code>&lt;details&gt;</code>, <code>::details-content</code>, <code>interpolate-size</code></span>
             </span>
-            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+            <span class="launch__go" aria-hidden="true">&rarr;</span>
           </a>
         </li>
         <li>
-          <a class="card demo-card" href="demos/tabs.html">
+          <a class="card launch" href="demos/tabs.html">
             <span class="ordinal" aria-hidden="true"></span>
             <span>
-              <span class="demo-card__name lit-text">Tabs</span>
-              <span class="demo-card__sub">Tabbed Floofs &middot; <code>&lt;details&gt;</code>, <code>subgrid</code>, <code>:has()</code> quantity query</span>
+              <span class="launch__name lit-text">Tabs</span>
+              <span class="launch__sub">Tabbed Floofs &middot; <code>&lt;details&gt;</code>, <code>subgrid</code>, <code>:has()</code> quantity query</span>
             </span>
-            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+            <span class="launch__go" aria-hidden="true">&rarr;</span>
           </a>
         </li>
         <li>
-          <a class="card demo-card" href="demos/modal.html">
+          <a class="card launch" href="demos/modal.html">
             <span class="ordinal" aria-hidden="true"></span>
             <span>
-              <span class="demo-card__name lit-text">Modal</span>
-              <span class="demo-card__sub">Spotlight Floofs &middot; <code>&lt;dialog&gt;</code>, invoker commands, <code>allow-discrete</code>, <code>overlay</code></span>
+              <span class="launch__name lit-text">Modal</span>
+              <span class="launch__sub">Spotlight Floofs &middot; <code>&lt;dialog&gt;</code>, invoker commands, <code>allow-discrete</code>, <code>overlay</code></span>
             </span>
-            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+            <span class="launch__go" aria-hidden="true">&rarr;</span>
           </a>
         </li>
         <li>
-          <a class="card demo-card" href="demos/popover.html">
+          <a class="card launch" href="demos/popover.html">
             <span class="ordinal" aria-hidden="true"></span>
             <span>
-              <span class="demo-card__name lit-text">Popover</span>
-              <span class="demo-card__sub">Peekaboo Floofs &middot; <code>popover</code>, anchor positioning, <code>position-try-fallbacks</code></span>
+              <span class="launch__name lit-text">Popover</span>
+              <span class="launch__sub">Peekaboo Floofs &middot; <code>popover</code>, anchor positioning, <code>position-try-fallbacks</code></span>
             </span>
-            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+            <span class="launch__go" aria-hidden="true">&rarr;</span>
           </a>
         </li>
         <li>
-          <a class="card demo-card" href="demos/carousel.html">
+          <a class="card launch" href="demos/carousel.html">
             <span class="ordinal" aria-hidden="true"></span>
             <span>
-              <span class="demo-card__name lit-text">Carousel</span>
-              <span class="demo-card__sub">Coverflow Floofs &middot; <code>:has()</code> state, <code>sign()</code> and <code>abs()</code> maths, 3D transforms</span>
+              <span class="launch__name lit-text">Carousel</span>
+              <span class="launch__sub">Coverflow Floofs &middot; <code>:has()</code> state, <code>sign()</code> and <code>abs()</code> maths, 3D transforms</span>
             </span>
-            <span class="demo-card__go" aria-hidden="true">&rarr;</span>
+            <span class="launch__go" aria-hidden="true">&rarr;</span>
           </a>
         </li>
       </ol>
@@ -92,13 +92,13 @@
 
     <footer class="tech">
       <p class="tech__title">How the stylesheet is put together</p>
-      <p class="tech__sub">One shared <code>main.css</code> declares the cascade order, then <code>@import</code>s each file into its layer. Every demo page adds its own file into the <code>demo</code> layer.</p>
+      <p class="tech__sub">One stylesheet. Its first line declares the cascade order, and every rule after it lives inside a named layer. Each demo's rules sit under their own heading in the <code>demo</code> layer, so you can read a demo top to bottom in one place.</p>
       <ul class="tech__list">
         <li><code>reset</code> undo browser defaults</li>
         <li><code>theme</code> brand tokens</li>
         <li><code>base</code> page canvas</li>
         <li><code>components</code> masthead, cards, badge</li>
-        <li><code>demo</code> one file per page</li>
+        <li><code>demo</code> one heading per page</li>
         <li><code>utilities</code> helpers that always win</li>
         <li><code>prefs</code> reduced motion, last word</li>
       </ul>
