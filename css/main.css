@@ -70,6 +70,12 @@
 
     --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, #ff5fb3 100%);
 
+    /* The page canvas: two slow colour blobs, like the gradient slide.
+       Painted by <body>, and by anything that must match it exactly. */
+    --canvas:
+      radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--purple) 55%, transparent), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 110%, color-mix(in oklab, var(--magenta) 40%, transparent), transparent 60%);
+
     /* Card surfaces */
     --surface:           color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%);
     --surface-border:    color-mix(in oklab, var(--lilac) 14%, transparent);
@@ -121,10 +127,7 @@
     line-height: 1.55;
     color: var(--paper);
     background-color: var(--ink);
-    /* Two slow-drifting colour blobs, like the gradient slide */
-    background-image:
-      radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--purple) 55%, transparent), transparent 60%),
-      radial-gradient(50rem 35rem at 100% 110%, color-mix(in oklab, var(--magenta) 40%, transparent), transparent 60%);
+    background-image: var(--canvas);
     background-attachment: fixed;
     animation: drift 24s ease-in-out infinite alternate;
     overflow-x: clip;
@@ -1606,6 +1609,54 @@
     text-align: center;
     font-size: .9rem;
     color: var(--lilac);
+  }
+
+  /* ----- Fallback: no CSS-drawn dots or arrows (Firefox, Safari) -----
+     Give the scrollbar back so there is a visible way to move, and swap the
+     hint for one that doesn't mention controls that aren't there. */
+  .reel__hint--full { display: none; }
+  @supports selector(::scroll-marker) {
+    .reel__hint--full  { display: block; }
+    .reel__hint--basic { display: none; }
+  }
+  @supports not selector(::scroll-marker) {
+    /* a scrollbar only where there is a pointer to drag it; touch swipes */
+    @media (hover: hover) {
+      .reel {
+        scrollbar-width: thin;
+        scrollbar-color: var(--magenta) color-mix(in oklab, var(--lilac) 15%, transparent);
+        padding-block-end: 1.25rem;  /* room between the slides and the bar */
+      }
+    }
+    /* Desktop: the flat reel just stops dead at the page edges, so fade its
+       ends. One overlay on the parent, pinned to the reel with anchor(), so
+       it sits still while the slides scroll underneath; it stops short of
+       the bar. (::after, not ::before — an anchor has to come earlier in the
+       tree than the thing anchored to it.)
+       It paints the page's own fixed background, which lines up exactly with
+       what <body> paints beneath, and a mask fades its inner edges — so the
+       fade is into the real canvas, glow and all, not a flat colour. */
+    @media (width >= 48rem) and (hover: hover) {
+      .reel-wrap { position: relative; }
+      .reel-wrap::after {
+        content: "";
+        position: absolute;
+        position-anchor: --reel;
+        inset-block-start: anchor(top);
+        inset-block-end: calc(anchor(bottom) + 1.75rem);
+        inset-inline-start: anchor(start);
+        inset-inline-end: anchor(end);
+        pointer-events: none;
+        z-index: 1;
+        background-color: var(--ink);
+        background-image: var(--canvas);
+        background-attachment: fixed;
+        animation: drift 24s ease-in-out infinite alternate;   /* in step with <body> */
+        mask: linear-gradient(to right,
+          #000, transparent 7rem,
+          transparent calc(100% - 7rem), #000);
+      }
+    }
   }
 }
 

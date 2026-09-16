@@ -37,7 +37,7 @@
       </svg>
     </header>
 
-    <main>
+    <main class="reel-wrap">
       <ul class="reel" aria-label="Floofs" tabindex="0">
         <li class="slide">
           <div class="slide__card">
@@ -142,7 +142,8 @@
           </div>
         </li>
       </ul>
-      <p class="reel__hint">Swipe, scroll sideways, use the dots and arrows, or focus the reel and press the arrow keys.</p>
+      <p class="reel__hint reel__hint--full">Swipe, scroll sideways, use the dots and arrows, or focus the reel and press the arrow keys.</p>
+      <p class="reel__hint reel__hint--basic">Swipe or scroll sideways, or focus the reel and press the arrow keys. This browser doesn't draw the dots and arrows yet.</p>
     </main>
 
     <footer class="tech">
@@ -162,7 +163,7 @@
         <li data-feature="layers"><code>@layer</code> cascade order &middot; no layers, no styles at all</li>
       </ul>
 
-      <p class="tech__note">Full disclosure: the tilt, dots and arrows are Chrome only for now, and typed custom properties via <code>@property</code> are what let the tilt transition at all. Everywhere else this is a flat carousel that still swipes, snaps and scrolls with the keyboard. The coverflow used to be driven by a radio group and <code>:has()</code>, which worked in every browser but could not swipe; swipe won.</p>
+      <p class="tech__note">Full disclosure: the tilt, dots and arrows are Chrome only for now, and typed custom properties via <code>@property</code> are what let the tilt transition at all. Everywhere else this is a flat carousel that still swipes, snaps and scrolls with the keyboard. There is an alternative method that you can use for this (see the archive folder) using <code>:has()</code>, which worked in every browser, but could not swipe. Because it is an expected behaviour that essentially made the slider unusable on mobile, swipe won. One thing that the other method gives you though is infinite scroll - which if you are doing an automated carousel (that doesn't need swipe) is still pretty neat!</p>
     </footer>
 
     <footer class="colophon">
