@@ -30,7 +30,6 @@
 @property --depth { syntax: "<number>"; inherits: false; initial-value: 0; }
 @property --dir   { syntax: "<number>"; inherits: true;  initial-value: 1; }
 @property --band  { syntax: "<number>"; inherits: true;  initial-value: 1; }
-@property --bar   { syntax: "<length>"; inherits: false; initial-value: .65rem; }
 
 
 /* ==========================================================================
@@ -1553,8 +1552,8 @@
     }
     /* TRICK: ::scroll-marker — one per slide, a real link to it. Every marker
        is a fixed 2.1rem slot so the row never reflows; the visible pill is a
-       clip-path centred in the slot, and --bar (registered at the top of the
-       file) transitions from dot width to slot width. */
+       clip-path centred in the slot, and the clip-path transitions, so the
+       active dot grows into a bar from its own centre. */
     .slide::scroll-marker {
       content: "";
       --bar: .65rem;
@@ -1563,7 +1562,7 @@
       margin-block: .4rem;
       background: color-mix(in oklab, var(--lilac) 30%, transparent);
       clip-path: inset(0 calc(50% - var(--bar) / 2) round 1rem);
-      transition: background .3s, --bar var(--move) var(--ease-spring);
+      transition: background .3s, clip-path var(--move, .9s) var(--ease-spring);
     }
     /* (no nesting here: a pseudo-element can't be a nesting parent) */
     .slide::scroll-marker:hover { background: color-mix(in oklab, var(--lilac) 60%, transparent); }
