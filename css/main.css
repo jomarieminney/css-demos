@@ -149,6 +149,7 @@
     );
     --ease-out: cubic-bezier(.2, .8, .2, 1);
     --dur: .65s;
+    --gutter: clamp(1rem, 4vw, 3rem);   /* page side padding; the peekaboo grid breaks out to it */
   }
 }
 
@@ -184,7 +185,7 @@
   body {
     min-height: 100dvh;
     padding-block: clamp(2rem, 6vw, 5rem);
-    padding-inline: clamp(1rem, 4vw, 3rem);
+    padding-inline: var(--gutter);
     font-family: var(--font-body);
     font-weight: 300;
     font-size: clamp(1rem, .95rem + .3vw, 1.15rem);
@@ -1262,6 +1263,18 @@
     > :nth-child(8) { grid-area: 8 / 8; }
     > * { justify-self: center; }
 
+    /* Wide screens: the diagonal wants the whole window, not the 62rem
+       page column, so break out to the body's padding edge (50% is half
+       of .page, 50vw is half the window). Columns shrink to their faces
+       and space-between pushes the first and last to the edges, so the
+       line runs corner to corner instead of a steep zigzag. */
+    @media (width >= 48rem) {
+      width: calc(100vw - 2 * var(--gutter));
+      margin-inline-start: calc(50% - 50vw + var(--gutter));
+      grid-template-columns: repeat(var(--count), auto);
+      justify-content: space-between;
+    }
+
     /* TRICK: anchor() as a measuring tape. The line's box is pinned to the
        centres of the first and last faces, then a diagonal gradient is drawn
        corner to corner — so it passes through every face on the way. */
@@ -1387,7 +1400,7 @@
        Anchor positioning needs fixed/absolute and auto insets. */
     position: fixed;
     inset: auto;
-    margin: 0 .75rem;                /* breathing room from the anchor */
+    margin: 1rem .75rem;             /* .75rem from the face, 1rem from the window's top and bottom */
     width: min(24rem, calc(100vw - 2rem));
     padding: 0;
     color: var(--paper);
@@ -1402,16 +1415,19 @@
     &:nth-child(7 of .floof-pop) { position-anchor: --floof-7; }
     &:nth-child(8 of .floof-pop) { position-anchor: --floof-8; }
 
-    /* TRICK: position-area — where to sit relative to the anchor.
-       To its right, top edges aligned, extending downwards. */
-    position-area: inline-end span-block-end;
+    /* TRICK: position-area — where to sit relative to the anchor. To its
+       right; the block axis is left open (a single keyword means span-all)
+       so alignment decides the vertical position. */
+    position-area: inline-end;
+    /* TRICK: anchor-center — centred on the face, and when the face is near
+       the top or bottom of the window it slides along the face's side to
+       stay fully on screen (the margin keeps it off the edge). */
+    align-self: anchor-center;
     /* TRICK: position-try-fallbacks — tried in order until one fits.
        If nothing beside the face fits, the last resort is a custom
        @position-try that centres it in the viewport, which always does. */
     position-try-fallbacks:
       flip-inline,                   /* to its left */
-      flip-block,                    /* to its right, extending upwards */
-      flip-block flip-inline,        /* to its left, extending upwards */
       --centred;
 
     /* Narrow screens: nowhere to sit beside a face, so sit BELOW it, spanning
@@ -1421,6 +1437,7 @@
     @media (width < 48rem) {
       margin: .6rem 0;
       position-area: block-end span-all;
+      align-self: normal;            /* flush under the face, not centred on it */
       justify-self: center;          /* centred in the viewport, not on the face */
       position-try-fallbacks: flip-block, --centred;
     }
@@ -1478,6 +1495,7 @@
      fallback list. This one lets go of the anchor and sits mid-viewport. */
   @position-try --centred {
     position-area: none;
+    align-self: center;              /* let go of anchor-center too */
     inset: 0;
     margin: auto;
   }
