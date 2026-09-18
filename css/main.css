@@ -11,8 +11,8 @@
      reset       undo the handful of browser defaults we always undo
      theme       brand tokens: colours, fonts, easing, surfaces
      base        the page canvas and plain elements
-     components  shared building blocks: masthead, cards, buttons, the
-                 floof profile, the feature chips
+     components  shared building blocks: masthead, site menu, cards,
+                 buttons, the floof profile, the feature chips
      demo        one heading per demo (01 Accordion … 05 Carousel);
                  nothing in here is used outside its own page
      utilities   single-purpose helpers that always win over components
@@ -478,7 +478,7 @@
   .pop-in {
     opacity: 0;
     scale: .94;
-    translate: 0 .75rem;
+    translate: 0 var(--pop-from, .75rem);   /* where it comes in from (and goes back to) */
     /* TRICK: display and overlay are discrete, but allow-discrete lets them
        wait until the fade is done — that is the whole close animation. */
     transition:
@@ -498,7 +498,7 @@
       @starting-style {
         opacity: 0;
         scale: .94;
-        translate: 0 .75rem;
+        translate: 0 var(--pop-from, .75rem);
       }
     }
   }
@@ -911,6 +911,119 @@
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+
+  /* ----- Site menu: a round hamburger fixed top right on every page that
+           opens a popover listing the demos. It never becomes a full-width
+           nav bar. No JS: popovertarget opens and closes it, the browser
+           handles Esc and click-outside, and :has() reads the popover's
+           open state back onto the button so its two lines can pivot into
+           a cross. ----- */
+  .menu {
+    --menu-edge: 1.1rem;             /* gap from the top and the right of the window */
+    --menu-size: 2.6rem;             /* the round button */
+  }
+  .menu__toggle {
+    position: fixed;
+    inset: var(--menu-edge) var(--menu-edge) auto auto;
+    z-index: 30;                     /* above the carousel arrows (20) */
+    width: var(--menu-size);
+    border-color: var(--surface-border);
+    background: var(--surface);
+    box-shadow: var(--surface-shadow);
+    /* Same spot on every page, so it holds still while the page cross-fades */
+    view-transition-name: menu;
+    &:hover { border-color: var(--magenta); }
+  }
+  /* Two lines → a cross. --open goes 0 → 1: each line slides to the middle
+     and pivots 45° its own way, on the same spring as everything else. */
+  .burger {
+    --open: 0;
+    position: relative;
+    width: 1.1rem;
+    height: 1rem;
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--paper);
+      transition: translate var(--dur) var(--ease-spring), rotate var(--dur) var(--ease-spring);
+    }
+    &::before { translate: 0 calc((1 - var(--open)) * -.27rem); rotate: calc(var(--open) *  45deg); }
+    &::after  { translate: 0 calc((1 - var(--open)) *  .27rem); rotate: calc(var(--open) * -45deg); }
+  }
+  /* TRICK: :has() — a button can't see whether its popover is open, but the
+     parent they share can, and hands the state down */
+  .menu:has(#site-menu:popover-open) {
+    .menu__toggle { background: var(--magenta); border-color: var(--magenta); }
+    .menu__toggle:hover { background: var(--purple); border-color: var(--purple); }
+    .burger { --open: 1; }
+  }
+
+  /* The panel: a card in the top layer, hung under the button. Both are
+     fixed to the window's corner, so no anchor is needed to line them up. */
+  .menu__panel {
+    /* the popover UA style is position: fixed; inset: 0; margin: auto */
+    position: fixed;
+    inset: calc(var(--menu-edge) + var(--menu-size) + .6rem) var(--menu-edge) auto auto;
+    margin: 0;
+    width: min(19rem, 100vw - 2 * var(--menu-edge));
+    max-height: calc(100dvh - var(--menu-edge) - var(--menu-size) - 1.6rem);
+    overflow: auto;
+    padding: 1rem .75rem .9rem;
+    color: var(--paper);
+    transform-origin: top right;     /* grows out of the button… */
+    --pop-from: -.5rem;              /* …and drops down from it */
+    &::before { display: none; }     /* no gradient bar on a menu */
+  }
+  .menu__kicker {
+    margin: 0 .6rem .5rem;
+    font-size: .75rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: item;             /* the .ordinal counts from this */
+    > li { counter-increment: item; }
+    a {
+      display: flex;
+      align-items: baseline;
+      gap: .7rem;
+      padding: .4rem .6rem;
+      border-radius: .6rem;
+      text-decoration: none;
+      transition: background .3s;
+      .ordinal  { font-size: 1.3rem; min-width: 1.6ch; }
+      .lit-text { font-size: 1.75rem; }
+      &:hover, &:focus-visible { background: color-mix(in oklab, var(--lavender) 8%, transparent); }
+      &:hover, &:focus-visible, &[aria-current="page"] {
+        .lit-text { --lit: 100%; }
+        .ordinal  { color: var(--magenta); }
+      }
+    }
+  }
+  .menu__repo {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: .7rem .35rem 0;
+    padding: .85rem .25rem 0;
+    border-top: 1px dashed color-mix(in oklab, var(--lilac) 30%, transparent);
+    font-size: .85rem;
+    letter-spacing: .04em;
+    color: var(--pink);
+    text-decoration: none;
+    &:hover { color: var(--paper); }
+  }
+  /* A masthead straight after the menu (the index, which has no breadcrumb)
+     leaves the button its own row, as the breadcrumb does elsewhere */
+  .menu + .masthead { margin-block-start: 2.8rem; }
 
   /* ----- Colophon ----- */
   .colophon {

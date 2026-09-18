@@ -18,6 +18,23 @@
 <body>
   <div class="page">
 
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker">The demos</p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html" aria-current="page"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
     <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
 
     <header class="masthead">

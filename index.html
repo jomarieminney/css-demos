@@ -18,6 +18,23 @@
 <body>
   <div class="page">
 
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker">The demos</p>
+        <ol class="menu__list">
+          <li><a href="demos/accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="demos/tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="demos/modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="demos/popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="demos/carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
     <header class="masthead">
       <p class="eyebrow">Things you really don't need JavaScript for</p>
 
@@ -100,7 +117,7 @@
         <li><code>reset</code> undo browser defaults</li>
         <li><code>theme</code> brand tokens</li>
         <li><code>base</code> page canvas</li>
-        <li><code>components</code> masthead, cards, badge</li>
+        <li><code>components</code> masthead, menu, cards, badge</li>
         <li><code>demo</code> one heading per page</li>
         <li><code>utilities</code> helpers that always win</li>
         <li><code>prefs</code> reduced motion, last word</li>
