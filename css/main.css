@@ -109,31 +109,37 @@
    THEME
    ========================================================================== */
 @layer theme {
+  /* TRICK: light-dark() — every colour token carries both its light and its
+     dark value, and the browser picks one from the element's color-scheme.
+     So a whole theme switch is one property, set by the radios below. */
   :root {
-    --ink:      #0b0910;   /* Dark 1 */
-    --ink-2:    #15111d;   /* Dark 2 */
-    --paper:    #f6f4fa;   /* Light 1 */
-    --paper-2:  #dfe3ee;   /* Light 2 */
-    --magenta:  #d61a96;   /* Accent 1 */
-    --purple:   #7d3c98;   /* Accent 2 */
-    --teal:     #0e9490;   /* Accent 3 */
-    --lilac:    #c9a3dc;   /* Accent 4 */
-    --pink:     #f4c4e3;   /* Accent 5 */
-    --lavender: #e4e7f7;   /* Accent 6 */
+    --ink:      light-dark(#f5f2fa, #0b0910);   /* Dark 1: the canvas */
+    --ink-2:    light-dark(#ffffff, #15111d);   /* Dark 2: card base */
+    --paper:    light-dark(#1b1226, #f6f4fa);   /* Light 1: text */
+    --paper-2:  light-dark(#463a58, #dfe3ee);   /* Light 2: quieter text */
+    --magenta:  light-dark(#c4128b, #d61a96);   /* Accent 1 */
+    --purple:   #7d3c98;                        /* Accent 2 */
+    --teal:     light-dark(#0b7d7a, #0e9490);   /* Accent 3 */
+    --lilac:    light-dark(#7a5b93, #c9a3dc);   /* Accent 4: eyebrows, ordinals, borders */
+    --pink:     light-dark(#b0157d, #f4c4e3);   /* Accent 5: links */
+    --lavender: light-dark(#2a1f3d, #e4e7f7);   /* Accent 6: the tint behind buttons and code */
 
     --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, #ff5fb3 100%);
 
     /* The page canvas: two slow colour blobs, like the gradient slide.
        Painted by <body>, and by anything that must match it exactly. */
     --canvas:
-      radial-gradient(60rem 40rem at 10% -10%, color-mix(in oklab, var(--purple) 55%, transparent), transparent 60%),
-      radial-gradient(50rem 35rem at 100% 110%, color-mix(in oklab, var(--magenta) 40%, transparent), transparent 60%);
+      radial-gradient(60rem 40rem at 10% -10%, var(--blob-1), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 110%, var(--blob-2), transparent 60%);
+    --blob-1: light-dark(color-mix(in oklab, var(--purple)  22%, transparent), color-mix(in oklab, var(--purple)  55%, transparent));
+    --blob-2: light-dark(color-mix(in oklab, var(--magenta) 16%, transparent), color-mix(in oklab, var(--magenta) 40%, transparent));
 
     /* Card surfaces */
-    --surface:           color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%);
-    --surface-border:    color-mix(in oklab, var(--lilac) 14%, transparent);
-    --surface-highlight: 0 1px 0 rgb(255 255 255 / .04) inset;   /* top-edge glint */
-    --surface-drop:      0 .75rem 2rem -1.25rem rgb(0 0 0 / .8);
+    --surface:           light-dark(color-mix(in oklab, var(--ink-2) 93%, var(--purple) 7%), color-mix(in oklab, var(--ink-2) 85%, var(--purple) 15%));
+    --surface-border:    light-dark(color-mix(in oklab, var(--lilac) 30%, transparent), color-mix(in oklab, var(--lilac) 14%, transparent));
+    --surface-highlight: 0 1px 0 light-dark(rgb(255 255 255 / .7), rgb(255 255 255 / .04)) inset;   /* top-edge glint */
+    --surface-drop:      0 .75rem 2rem -1.25rem light-dark(rgb(60 30 90 / .35), rgb(0 0 0 / .8));
+    --shadow-ink:        light-dark(rgb(60 30 90 / .3), rgb(0 0 0 / .75));   /* photo and thumb drop shadows */
     --surface-shadow:    var(--surface-highlight), var(--surface-drop);
     --radius-card:       1.25rem;
     --accent-border:     color-mix(in oklab, var(--magenta) 45%, transparent);
@@ -150,7 +156,27 @@
     --ease-out: cubic-bezier(.2, .8, .2, 1);
     --dur: .65s;
     --gutter: clamp(1rem, 4vw, 3rem);   /* page side padding; the peekaboo grid breaks out to it */
+
+    /* The scheme. Dark is the default (it's the one on the slides); the
+       radios in the corner pick light, or hand the choice to the OS. */
+    color-scheme: dark;
+    --on-light: 0;                      /* 1 in light mode, for the odd non-colour that must change too */
   }
+  /* TRICK: :has() reaches back up to the root from a radio anywhere in the
+     page, so a form control can restyle the whole document */
+  :root:has(#theme-light:checked) { color-scheme: light; --on-light: 1; }
+  /* TRICK: prefers-color-scheme — "auto" reads the OS or browser setting */
+  @media (prefers-color-scheme: light) {
+    :root:has(#theme-auto:checked) { color-scheme: light; --on-light: 1; }
+  }
+  /* To follow the OS setting for everyone, with no radios at all, this is
+     the whole change. Off for now: dark is the default on purpose (it is
+     what the slides use), and the light scheme needs a visual pass on every
+     demo before it goes live.
+  @media (prefers-color-scheme: light) {
+    :root { color-scheme: light; --on-light: 1; }
+  }
+  */
 }
 
 
@@ -159,7 +185,6 @@
    ========================================================================== */
 @layer base {
   :root {
-    color-scheme: dark;
     /* TRICK: lets height/width transition to `auto` (Chromium, Safari 26+) */
     interpolate-size: allow-keywords;
   }
@@ -322,7 +347,7 @@
     inset-inline-end: 0;
     inset-block-start: -.5rem;
     width: clamp(6rem, 12vw, 9rem);
-    filter: drop-shadow(0 .5rem 1.25rem rgb(0 0 0 / .45));
+    filter: drop-shadow(0 .5rem 1.25rem light-dark(rgb(60 30 90 / .3), rgb(0 0 0 / .45)));
     view-transition-name: badge;
     animation: badge-in 1.4s var(--ease-spring) .2s backwards;
     transition: rotate var(--dur) var(--ease-spring), scale var(--dur) var(--ease-spring);
@@ -521,7 +546,7 @@
     font-weight: 700;
     line-height: .95;
     letter-spacing: .02em;
-    background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, #ff7cc0 100%);
+    background: linear-gradient(90deg, var(--paper) 0 50%, var(--magenta) 50%, light-dark(#e9469f, #ff7cc0) 100%);
     background-size: 210% 100%;
     background-position: var(--lit, 0%) 0;
     -webkit-background-clip: text;
@@ -584,10 +609,10 @@
   /* Polaroid that drops in and settles at a jaunty tilt */
   .polaroid {
     padding: .7rem .7rem 2.4rem;
-    background: var(--paper);
-    color: var(--ink);
+    background: light-dark(#fff, #f6f4fa);   /* a polaroid is white paper in any theme */
+    color: #0b0910;
     border-radius: .35rem;
-    box-shadow: 0 1.25rem 2.5rem -1rem rgb(0 0 0 / .7);
+    box-shadow: 0 1.25rem 2.5rem -1rem var(--shadow-ink);
     rotate: 8deg;
     translate: 0 1.5rem;
     opacity: 0;
@@ -640,7 +665,7 @@
       object-fit: cover;
       border-radius: 50%;
       border: 3px solid var(--teal);
-      box-shadow: 0 .75rem 1.5rem -.5rem rgb(0 0 0 / .8);
+      box-shadow: 0 .75rem 1.5rem -.5rem var(--shadow-ink);
     }
     figcaption {
       position: absolute;
@@ -912,13 +937,66 @@
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
 
+  /* ----- Theme picker: three radios in a pill, left of the menu. Sun for
+           light, moon for dark, a half disc for "auto" (the OS setting).
+           No JS: the radios are real, the root reads them with :has(), and
+           light-dark() in the tokens does the rest. Nothing persists
+           between pages without a script, so every page starts dark.
+           Not in the markup yet: the plan is a demo of its own, so the
+           script that makes it stick can be talked about. ----- */
+  .theme {
+    --i: 2;                          /* which option the highlight sits under */
+    --opt: 2.1rem;
+    position: fixed;
+    inset: var(--menu-edge) calc(var(--menu-edge) + var(--menu-size) + .6rem) auto auto;
+    z-index: 30;
+    display: flex;
+    margin: 0;
+    padding: calc((var(--menu-size) - var(--opt)) / 2);
+    border: 1px solid var(--surface-border);
+    border-radius: 100vmax;
+    background: var(--surface);
+    box-shadow: var(--surface-shadow);
+    view-transition-name: theme;
+    /* the highlight: one magenta disc that slides under the checked option */
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block: calc((var(--menu-size) - var(--opt)) / 2);
+      inset-inline-start: calc((var(--menu-size) - var(--opt)) / 2);
+      width: var(--opt);
+      border-radius: 50%;
+      background: var(--magenta);
+      translate: calc(var(--i) * var(--opt)) 0;
+      transition: translate .55s var(--ease-spring);
+    }
+    &:has(#theme-light:checked) { --i: 0; }
+    &:has(#theme-auto:checked)  { --i: 1; }
+    &:has(#theme-dark:checked)  { --i: 2; }
+  }
+  .theme__opt {
+    position: relative;              /* above the highlight */
+    display: grid;
+    place-items: center;
+    width: var(--opt);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: var(--lilac);
+    cursor: pointer;
+    transition: color .3s, scale .4s var(--ease-spring);
+    svg { width: 1.05rem; }
+    &:hover { color: var(--paper); scale: 1.12; }
+    &:has(:checked) { color: light-dark(#fff, var(--paper)); }
+    &:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
+  }
+
   /* ----- Site menu: a round hamburger fixed top right on every page that
            opens a popover listing the demos. It never becomes a full-width
            nav bar. No JS: popovertarget opens and closes it, the browser
            handles Esc and click-outside, and :has() reads the popover's
            open state back onto the button so its two lines can pivot into
            a cross. ----- */
-  .menu {
+  :root {
     --menu-edge: 1.1rem;             /* gap from the top and the right of the window */
     --menu-size: 2.6rem;             /* the round button */
   }
@@ -1716,15 +1794,16 @@
          (a hard step here made slides arriving from the right flip over)
        · --band stacking: outer 1, neighbours 5, centre 9 (a step)
        · brightness: continuous, so the outermost slides are darkest and
-         every slide brightens as it approaches the centre */
+         every slide brightens as it approaches the centre (in light mode
+         the floor lifts, via --on-light, so far slides go grey, not black) */
     @supports (animation-timeline: view()) {
       .slide {
         animation: which-side linear both;
         animation-timeline: view(inline);
       }
       @keyframes which-side {
-        0%            { --dir:  1; --band: 1; filter: brightness(.2); }   /* far right */
-        30%           { --dir:  1; --band: 1; filter: brightness(.4); }
+        0%            { --dir:  1; --band: 1; filter: brightness(calc(.2 + var(--on-light) * .55)); }   /* far right */
+        30%           { --dir:  1; --band: 1; filter: brightness(calc(.4 + var(--on-light) * .4)); }
         30.01%        { --dir:  1; --band: 5; }
         45%           { --dir:  1; --band: 5; }
         45.01%        { --dir:  1; --band: 9; }
@@ -1732,8 +1811,8 @@
         54.99%        { --dir: -1; --band: 9; }
         55%           { --dir: -1; --band: 5; }
         69.99%        { --dir: -1; --band: 5; }
-        70%           { --dir: -1; --band: 1; filter: brightness(.4); }
-        100%          { --dir: -1; --band: 1; filter: brightness(.2); }   /* far left */
+        70%           { --dir: -1; --band: 1; filter: brightness(calc(.4 + var(--on-light) * .4)); }
+        100%          { --dir: -1; --band: 1; filter: brightness(calc(.2 + var(--on-light) * .55)); }   /* far left */
       }
     }
   }
