@@ -169,7 +169,7 @@
 
     <footer class="tech">
       <h2 class="tech__title">Progressive enhancement, live</h2>
-      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Swiping and snapping work everywhere; the tilt, the dots and the arrows are the newest CSS on the site, so where they are missing you get a flat swipe carousel.</p>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. The <code>@property</code> chip is the exception: <code>@supports</code> can't reliably ask about <code>@property</code> yet, so that chip checks that a registered property actually works instead. Swiping and snapping work everywhere; the tilt, the dots and the arrows are the newest CSS on the site, so where they are missing you get a flat swipe carousel.</p>
 
       <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
       <ul class="tech__list">
@@ -181,6 +181,7 @@
         <li data-feature="scroll-markers"><code>::scroll-marker</code> the dots, drawn by the browser</li>
         <li data-feature="scroll-buttons"><code>::scroll-button()</code> the arrows, drawn by the browser</li>
         <li data-feature="linear"><code>linear()</code> springy easing on the tilt</li>
+        <li data-feature="property"><code>@property</code> gives the tilt a type, so it can transition</li>
       </ul>
 
       <p class="tech__note">Full disclosure: the tilt, dots and arrows are Chrome only for now, and typed custom properties via <code>@property</code> are what let the tilt transition at all. Everywhere else this is a flat carousel that still swipes, snaps and scrolls with the keyboard. There is an alternative method that you can use for this (see the archive folder) using <code>:has()</code>, which worked in every browser, but could not swipe. Because it is an expected behaviour that essentially made the slider unusable on mobile, swipe won. One thing that the other method gives you though is infinite scroll - which if you are doing an automated carousel (that doesn't need swipe) is still pretty neat!</p>

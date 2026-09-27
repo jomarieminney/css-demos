@@ -175,6 +175,7 @@
         <div class="strip__sticky">
           <h2 class="scrolly__title" id="strip-title">Sideways, by scrolling down</h2>
           <p class="scrolly__sub">This section is a couple of screens tall. While it passes, the box inside sticks to the window and the row is moved sideways by exactly how much it overflows. The timeline is the section's, shared with the row by name.</p>
+          <p class="strip__hint">This browser doesn't have scroll timelines, or you've asked for less motion, so here it's a row you scroll sideways instead.</p>
           <ul class="strip__track">
             <li>
               <figure class="polaroid">
@@ -246,7 +247,7 @@
 
     <footer class="tech">
       <h2 class="tech__title">Progressive enhancement, live</h2>
-      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Where scroll timelines are missing, or you've asked your system for less motion, the page is all there and simply holds still: the progress bar and the back-to-top button step aside, and the strip is a row you scroll sideways.</p>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. The <code>@property</code> chip is the exception: <code>@supports</code> can't reliably ask about <code>@property</code> yet, so that chip checks that a registered property actually works instead. Where scroll timelines are missing, or you've asked your system for less motion, the page is all there and simply holds still: the progress bar and the back-to-top button step aside, and the strip is a row you scroll sideways.</p>
 
       <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
       <ul class="tech__list">
@@ -256,6 +257,7 @@
         <li data-feature="view-timeline"><code>view-timeline</code> a named timeline the strip shares with its row</li>
         <li data-feature="sticky"><code>position: sticky</code> the strip holds still while it scrolls</li>
         <li data-feature="cq-units"><code>100cqi</code> how far the row has to travel</li>
+        <li data-feature="property"><code>@property</code> gives <code>--tally</code> a type, so it can count</li>
         <li data-feature="prefers-reduced-motion"><code>prefers-reduced-motion</code> motion is opt-in</li>
       </ul>
 

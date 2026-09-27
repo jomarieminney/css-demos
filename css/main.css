@@ -86,6 +86,9 @@
 /* The scroll demo's count-up: an <integer> interpolates in whole steps, and
    counter() can print it (see "09 · Scroll-driven") */
 @property --tally { syntax: "<integer>"; inherits: false; initial-value: 0; }
+/* A switch the @property feature chip reads: 1 wherever registration
+   works, and simply undefined wherever it doesn't (see the chips) */
+@property --has-property { syntax: "<integer>"; inherits: true; initial-value: 1; }
 
 
 /* ==========================================================================
@@ -1059,6 +1062,23 @@
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+
+  /* TRICK: @property grades itself. at-rule(@property) would have the same
+     problem as the view-transition chip, so this chip doesn't ASK, it
+     checks the feature working: --has-property is registered at the top
+     of the file with an initial value of 1, so where @property works it is
+     1 everywhere, and where it doesn't it is undefined and var() falls
+     back to 0. A counter prints that 0 or 1, and a two-symbol counter
+     style turns it into a cross or a tick; color-mix() picks the hue. */
+  @counter-style cross-tick {
+    system: fixed 0;
+    symbols: "\2717" "\2713";      /* 0 → ✗, 1 → ✓ */
+  }
+  .tech__list li[data-feature="property"] {   /* as specific as the list's own li[data-feature]::before */
+    --tick-hue: color-mix(in oklab, var(--teal) calc(var(--has-property, 0) * 100%), var(--magenta));
+    counter-reset: has-property var(--has-property, 0);
+    &::before { content: counter(has-property, cross-tick); }
+  }
 
   /* ----- Theme picker: two radios, Light and Dark, each its own button
            rather than halves of a toggle. Neither starts checked, so the
@@ -2756,20 +2776,35 @@
     img { scale: 1.25; }
   }
 
-  /* ----- 2 · A row of polaroids ----- */
+  /* ----- 2 · A row of polaroids -----
+     The fallback (no scroll timelines, or reduced motion): a full-width row
+     you scroll sideways. CSS can colour a scrollbar but can't stop the
+     system hiding it when idle (that's an OS setting), so the right-hand
+     edge fades out too, as a hint there's more that way. */
   .strip__track {
     list-style: none;
-    margin: 0;
-    padding: 1.5rem .5rem 2rem;
+    margin: 0 calc(50% - 50vw);      /* the whole window, not the page column */
+    padding: 3rem var(--gutter) 3.5rem;   /* the tilted polaroids' corners stick out: keep them clear of the hint and the scrollbar */
     display: flex;
-    gap: clamp(1.5rem, 4vw, 3rem);
-    overflow-x: auto;                /* static fallback: a row you scroll sideways */
+    gap: clamp(2.25rem, 5.5vw, 4.5rem);
+    overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--magenta) transparent;
+    scrollbar-color: var(--magenta) color-mix(in oklab, var(--lilac) 18%, transparent);   /* a faint track, where scrollbars show */
+    mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent);
 
-    > li { flex: 0 0 min(15rem, 62vw); }
+    /* Sized by the window, so six of them always overflow it: about a
+       quarter of its width each, but no taller than fits (a polaroid is
+       about 1.2× as tall as it is wide, plus the heading above), and never
+       smaller than 19rem, or most of a phone screen */
+    > li { flex: 0 0 max(min(19rem, 62vw), min(28vw, 52dvh)); }
     .polaroid { opacity: 1; translate: 0; rotate: -3deg; transition: none; }
     > li:nth-child(even) .polaroid { rotate: 4deg; }
+  }
+
+  .strip__hint {
+    margin: 0;
+    font-size: .9rem;
+    color: var(--lilac);
   }
 
   /* ----- 3 · The tally ----- */
@@ -2980,6 +3015,7 @@
         height: 220vh;
         view-timeline: --strip block;
       }
+      .strip__hint { display: none; }
       .strip__sticky {
         position: sticky;
         inset-block-start: 0;
@@ -2994,11 +3030,11 @@
         container-type: inline-size;   /* 100cqi below = the room the row has */
       }
       .strip__track {
-        /* Sized by the window, so six of them always overflow it: about a
-           quarter of its width each, but no taller than fits (a polaroid
-           is about 1.2× as tall as it is wide, plus the heading above),
-           and never smaller than 19rem, or most of a phone screen */
-        > li { flex-basis: max(min(19rem, 62vw), min(28vw, 52dvh)); }
+        /* the sticky box already spans the window: undo the fallback's
+           bleed, fade and scrolling */
+        margin: 0;
+        padding: 1.5rem .5rem 2rem;
+        mask-image: none;
         width: max-content;
         overflow: visible;
         animation: sideways linear both;
