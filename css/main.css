@@ -2689,6 +2689,10 @@
   .scrolly {
     display: grid;
     gap: clamp(3rem, 8vw, 5rem);
+    /* a grid item's default minimum is its content: the strip's row is far
+       wider than the page and would widen its section, throwing off the
+       sums that stretch the strip to the window */
+    > * { min-width: 0; }
   }
   .scrolly__title {
     margin: 0 0 .5rem;
@@ -2769,12 +2773,72 @@
   }
 
   /* ----- 3 · The tally ----- */
+  /* Narrow: heading, how it works, then the number, in markup order.
+     Wide: the number on the left, heading and how it works beside it. */
   .tally {
+    display: grid;
+    column-gap: clamp(2rem, 6vw, 4rem);  /* rows are spaced like the other sections: title, then text, then the figure */
+    p { margin: 0; color: var(--paper-2); }
+    .tally__how { margin: 0; }
+    @media (width >= 48rem) {
+      /* a flexible row above and below, so the heading and explanation
+         sit centred, as a pair, beside the number */
+      grid-template-columns: auto 1fr;
+      grid-template-rows: 1fr auto auto 1fr;
+      row-gap: 0;
+      .tally__figure { grid-column: 1; grid-row: 1 / -1; align-self: center; }
+      .tally__title  { grid-column: 2; grid-row: 2; }
+      .tally__how    { grid-column: 2; grid-row: 3; }
+    }
+  }
+  /* What the number is: a hand-written note with an arrow, like "the
+     hooman" in the floof profiles (same arrow, same pathLength="1" trick) */
+  .tally__label {
+    position: relative;
+    justify-self: start;             /* over the panel's left side, pointing in */
+    margin-inline-start: .75rem;
+    margin-inline-end: 3rem;         /* room for the arrow, keeping the words centred-ish */
+    font: 700 clamp(1.6rem, 7vw, 2rem)/1 var(--font-display);
+    white-space: nowrap;             /* one line, or the arrow loses track of the words */
+    color: var(--magenta);             /* the bright pink of an open accordion heading */
+    rotate: -4deg;
+  }
+  .tally__arrow {
+    position: absolute;
+    /* from the end of the words, curling down into the panel, head first
+       at the number */
+    inset-inline-start: calc(100% - .3rem);
+    inset-block-start: .95em;        /* so the line starts level with the middle of the words */
+    width: 3rem;
+    rotate: 50deg;
+    fill: none;
+    stroke: var(--magenta);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  }
+  /* The figure: the hand-written label, then a faint panel holding the
+     number (the card surface, see-through, with none of the card's hover
+     effects: there's nothing to click) */
+  .tally__figure {
+    margin: 1.75rem 0 0;             /* the gap the other sections leave under their text */
+    @media (width >= 48rem) { margin: 0; }
+    display: grid;
+    justify-items: center;
+    gap: .9rem;
+  }
+  .tally__panel {
+    > p:last-child { padding-block-start: .75rem; }   /* "That's 120%": a little air under the 60 */
     display: grid;
     justify-items: center;
     gap: .25rem;
+    padding: 1.5rem clamp(1.25rem, 4vw, 2.25rem) 1.75rem;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-card);
+    background: color-mix(in oklab, var(--surface) 55%, transparent);
+    box-shadow: var(--surface-highlight);
     text-align: center;
-    p { margin: 0; color: var(--paper-2); }
   }
   .tally__num {
     display: flex;
@@ -2786,13 +2850,29 @@
   }
   .tally__count {
     --tally: 72;                     /* the answer, for browsers that won't count up to it */
-    min-width: 2ch;                  /* the digits vary in width; stop the "/60" wobbling */
+    min-width: 2ch;                  /* the digits vary in width; stop the slash and 60 wobbling */
     text-align: end;
     color: var(--pink);
     counter-reset: tally var(--tally);
     &::before { content: counter(tally); }
   }
-  .tally__of { color: var(--lilac); font-size: .45em; }
+  /* A diagonal fraction: the count up high, the 60 dropped low, the slash
+     between them */
+  .tally__frac {
+    display: flex;
+    align-items: flex-start;
+  }
+  .tally__slash {
+    margin: .42em -.02em 0 .06em;
+    font-size: .72em;
+    font-weight: 400;
+    color: var(--lilac);
+  }
+  .tally__of {
+    margin-block-start: .62em;
+    font-size: .9em;
+    color: var(--lilac);
+  }
 
   /* ----- Progress bar and back-to-top: only there when they're animated ----- */
   .scroll-progress { display: none; }
@@ -2914,7 +2994,11 @@
         container-type: inline-size;   /* 100cqi below = the room the row has */
       }
       .strip__track {
-        > li { flex-basis: min(19rem, 62vw); }   /* bigger photos, and further to travel */
+        /* Sized by the window, so six of them always overflow it: about a
+           quarter of its width each, but no taller than fits (a polaroid
+           is about 1.2× as tall as it is wide, plus the heading above),
+           and never smaller than 19rem, or most of a phone screen */
+        > li { flex-basis: max(min(19rem, 62vw), min(28vw, 52dvh)); }
         width: max-content;
         overflow: visible;
         animation: sideways linear both;
@@ -2924,7 +3008,10 @@
         animation-range: contain 0% contain 100%;
       }
       @keyframes sideways {
-        to { translate: calc(-100% + 100cqi) 0; }
+        /* -100% + 100cqi is minus the overflow. min() with 0 means that on a
+           window wide enough to fit the whole row it stays put, instead of
+           sliding the wrong way. */
+        to { translate: min(0px, calc(-100% + 100cqi)) 0; }
       }
 
       /* TRICK: animating a registered <integer> (see @property at the top)
@@ -2936,6 +3023,18 @@
         animation-range: entry 40% cover 55%;
       }
       @keyframes count-up { from { --tally: 0; } }
+
+      /* The arrow draws itself as the figure comes up the screen: the line,
+         then the head. The figure names the timeline, because an SVG path
+         is a poor thing to measure. */
+      .tally__figure { view-timeline: --tally-figure block; }
+      .tally__arrow path {
+        animation: draw-on linear both;
+        animation-timeline: --tally-figure;
+        animation-range: entry 50% cover 40%;
+        &:last-child { animation-range: cover 38% cover 48%; }
+      }
+      @keyframes draw-on { from { stroke-dashoffset: 1; } }
     }
   }
 

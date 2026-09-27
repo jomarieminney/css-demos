@@ -216,13 +216,29 @@
         </div>
       </section>
 
+      <!-- Heading and how it works first, like the other sections; on wide
+           screens the grid puts the number to their left. "Combined floof
+           rating" isn't a heading, it's what the number IS, so it labels
+           the figure (a <figcaption> names its <figure>). -->
       <section class="tally" aria-labelledby="tally-title">
-        <h2 class="scrolly__title" id="tally-title">Combined floof rating</h2>
-        <p class="tally__num">
-          <span aria-hidden="true"><span class="tally__count"></span><span class="tally__of">/60</span></span>
-          <span class="visually-hidden">72 out of 60</span>
-        </p>
-        <p>That's 120%. The maths checks out.</p>
+        <h2 class="scrolly__title tally__title" id="tally-title">Counting up as you scroll</h2>
+        <p class="scrolly__sub tally__how">The number is a custom property, <code>--tally</code>, animated from 0 to 72 on a <code>view()</code> timeline, so it counts up as it comes into view. Custom properties can't normally be animated, because the browser doesn't know what they hold; <code>@property</code> registers this one as an <code>&lt;integer&gt;</code>, so it steps through whole numbers. And because <code>content</code> can't show a custom property directly, <code>counter()</code> prints it.</p>
+        <figure class="tally__figure">
+          <figcaption class="tally__label">
+            Combined floof rating
+            <svg class="tally__arrow" viewBox="0 0 60 34" aria-hidden="true">
+              <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+              <path pathLength="1" d="M41 22 L53 26 L55 13" />
+            </svg>
+          </figcaption>
+          <div class="tally__panel">
+            <p class="tally__num">
+              <span class="tally__frac" aria-hidden="true"><span class="tally__count"></span><span class="tally__slash">/</span><span class="tally__of">60</span></span>
+              <span class="visually-hidden">72 out of 60</span>
+            </p>
+            <p>That's 120%. The maths checks out.</p>
+          </div>
+        </figure>
       </section>
 
       <a class="to-top round-btn" href="#top"><span aria-hidden="true">&uarr;</span><span class="visually-hidden">Back to top</span></a>
