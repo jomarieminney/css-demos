@@ -61,9 +61,11 @@
     </header>
 
     <main class="marquees">
-      <!-- Each strip holds its list twice. The second copy is aria-hidden
-           and inert: screen readers hear each floof once and Tab never
-           lands on the copy. -->
+      <!-- Each strip holds its list twice. The copy is aria-hidden, so
+           screen readers hear each floof once, and its buttons are
+           tabindex="-1", so Tab never lands on them. It is NOT inert: inert
+           would also block the mouse, and the copy looks exactly like the
+           original, so half the logos would mysteriously do nothing. -->
       <section class="marquee" aria-labelledby="sponsors-title">
         <h2 class="marquee__kicker" id="sponsors-title">The Glorious Floofs</h2>
         <div class="marquee__viewport">
@@ -75,13 +77,13 @@
             <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="" width="1200" height="675" decoding="async"><span class="lit-text">Wild Thing &amp; Elmo</span></button></li>
             <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="" width="1200" height="932" decoding="async"><span class="lit-text">Buddha</span></button></li>
           </ul>
-          <ul class="marquee__track" aria-hidden="true" inert>
-            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/floofs/lollycat-jo.jpg" alt="" width="1200" height="900" decoding="async"><span class="lit-text">Lollycat</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/floofs/archie-michelle.jpg" alt="" width="923" height="1042" decoding="async"><span class="lit-text">Archie</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/floofs/fia-anders.jpg" alt="" width="762" height="838" decoding="async"><span class="lit-text">Fia</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/floofs/treacle-emmz.jpg" alt="" width="1131" height="1218" decoding="async"><span class="lit-text">Treacle</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="" width="1200" height="675" decoding="async"><span class="lit-text">Wild Thing &amp; Elmo</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="" width="1200" height="932" decoding="async"><span class="lit-text">Buddha</span></button></li>
+          <ul class="marquee__track" aria-hidden="true">
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-1" command="show-modal"><img src="../assets/photos/floofs/lollycat-jo.jpg" alt="" width="1200" height="900" decoding="async"><span class="lit-text">Lollycat</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-2" command="show-modal"><img src="../assets/photos/floofs/archie-michelle.jpg" alt="" width="923" height="1042" decoding="async"><span class="lit-text">Archie</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-3" command="show-modal"><img src="../assets/photos/floofs/fia-anders.jpg" alt="" width="762" height="838" decoding="async"><span class="lit-text">Fia</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-4" command="show-modal"><img src="../assets/photos/floofs/treacle-emmz.jpg" alt="" width="1131" height="1218" decoding="async"><span class="lit-text">Treacle</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-5" command="show-modal"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="" width="1200" height="675" decoding="async"><span class="lit-text">Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-6" command="show-modal"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="" width="1200" height="932" decoding="async"><span class="lit-text">Buddha</span></button></li>
           </ul>
         </div>
       </section>
@@ -97,13 +99,13 @@
             <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/hoomans/luisefreese.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Luise Freese</span><span class="visually-hidden">: meet Wild Thing &amp; Elmo</span></button></li>
             <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/hoomans/martinthwaites.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Martin Thwaites</span><span class="visually-hidden">: meet Buddha</span></button></li>
           </ul>
-          <ul class="marquee__track" aria-hidden="true" inert>
-            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/hoomans/jominney.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Jo Minney</span><span class="visually-hidden">: meet Lollycat</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/hoomans/michellefrost.jpg" alt="" width="340" height="340" decoding="async"><span class="lit-text">Michelle Frost</span><span class="visually-hidden">: meet Archie</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/hoomans/andersnoras.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Anders Noras</span><span class="visually-hidden">: meet Fia</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/hoomans/emmzrendle.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Emmz Rendle</span><span class="visually-hidden">: meet Treacle</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/hoomans/luisefreese.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Luise Freese</span><span class="visually-hidden">: meet Wild Thing &amp; Elmo</span></button></li>
-            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/hoomans/martinthwaites.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Martin Thwaites</span><span class="visually-hidden">: meet Buddha</span></button></li>
+          <ul class="marquee__track" aria-hidden="true">
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-1" command="show-modal"><img src="../assets/photos/hoomans/jominney.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Jo Minney</span><span class="visually-hidden">: meet Lollycat</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-2" command="show-modal"><img src="../assets/photos/hoomans/michellefrost.jpg" alt="" width="340" height="340" decoding="async"><span class="lit-text">Michelle Frost</span><span class="visually-hidden">: meet Archie</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-3" command="show-modal"><img src="../assets/photos/hoomans/andersnoras.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Anders Noras</span><span class="visually-hidden">: meet Fia</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-4" command="show-modal"><img src="../assets/photos/hoomans/emmzrendle.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Emmz Rendle</span><span class="visually-hidden">: meet Treacle</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-5" command="show-modal"><img src="../assets/photos/hoomans/luisefreese.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Luise Freese</span><span class="visually-hidden">: meet Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" tabindex="-1" commandfor="floof-6" command="show-modal"><img src="../assets/photos/hoomans/martinthwaites.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Martin Thwaites</span><span class="visually-hidden">: meet Buddha</span></button></li>
           </ul>
         </div>
       </section>
@@ -370,12 +372,12 @@
 
       <h3 class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></h3>
       <ul class="tech__list tech__list--links">
-        <li><a href="https://caniuse.com/mdn-html_global_attributes_inert"><code>inert</code> the copy can't be focused or clicked</a></li>
+        <li><a href="https://caniuse.com/wai-aria"><code>aria-hidden</code> + <code>tabindex="-1"</code> the copy is skipped by screen readers and Tab, but still clickable</a></li>
         <li><a href="https://caniuse.com/?search=commandfor"><code>command / commandfor</code> each logo opens a dialog</a></li>
         <li><a href="https://caniuse.com/dialog"><code>&lt;dialog&gt;</code> modal with focus trap and Escape</a></li>
       </ul>
 
-      <p class="tech__note">Full disclosure: the logos really are in the page twice, because CSS can't clone an element. The copy is <code>aria-hidden</code> and <code>inert</code>, so it is scenery. Each copy also has to be at least as wide as the strip, or a gap shows before the loop comes round; with six logos that's never a problem, but with two you would repeat them in the markup.</p>
+      <p class="tech__note">Full disclosure: the logos really are in the page twice, because CSS can't clone an element. The copy is <code>aria-hidden</code> and its buttons are <code>tabindex="-1"</code>, so screen readers and the keyboard only meet the originals, but a mouse can still click whichever one is passing. (<code>inert</code> looks like the tidier fix, but it blocks the mouse too, so half the logos would silently do nothing.) Each copy also has to be at least as wide as the strip, or a gap shows before the loop comes round; with six logos that's never a problem, but with two you would repeat them in the markup.</p>
     </footer>
 
     <footer class="colophon" id="end">

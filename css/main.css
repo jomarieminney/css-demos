@@ -2237,8 +2237,10 @@
      end, so a KEYBOARD visit stops the strip outright and lays the whole
      list out as a still, wrapped row: every logo in sight, the copy gone.
      :has(:focus-visible) rather than :focus-within, so a mouse click
-     doesn't make it jump. */
-  .marquee__viewport:has(:focus-visible) {
+     doesn't make it jump, and only focus on the ORIGINAL list: a copy's
+     button can get focus back when its dialog closes, and this rule hides
+     the copy, which would drop that focus on the floor. */
+  .marquee__viewport:has(.marquee__track:not([aria-hidden]) :focus-visible) {
     mask-image: none;
     .marquee__track {
       flex: 1;
