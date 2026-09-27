@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Nocturnal Floofs</title>
+
+  <link rel="preload" href="../assets/fonts/amatic-sc-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/maven-pro-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker">The demos</p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html" aria-current="page"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">06 &middot; Light &amp; dark &middot; <code>light-dark()</code> + <code>prefers-color-scheme</code> + <code>:has()</code></p>
+
+      <h1 class="title">Nocturnal <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">Two radios and one property. Every colour token holds a light value and a dark one, so switching the whole page is a matter of telling the root which <code>color-scheme</code> it is in. This page follows your browser's setting until you say otherwise.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="scheme">
+
+      <div class="scheme__switch">
+        <!-- Both answers are here; prefers-color-scheme shows the true one -->
+        <section class="card pref" aria-label="Your browser preference">
+          <p class="pref__kicker">Your browser preference is set to</p>
+          <p class="pref__value pref__value--light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Light</p>
+          <p class="pref__value pref__value--dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>Dark</p>
+          <p class="pref__note pref__note--follow">so that's what you're seeing. Pick one below to override it.</p>
+          <p class="pref__note pref__note--override">but you've overridden it on this page. Reload to hand it back.</p>
+        </section>
+
+        <!-- Neither radio is checked: until you pick, the OS decides -->
+        <fieldset class="theme" aria-label="Override the colour scheme">
+          <label class="theme__opt">
+            <input class="visually-hidden" type="radio" name="theme" id="theme-light" value="light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <span class="theme__label">Light</span>
+          </label>
+          <label class="theme__opt">
+            <input class="visually-hidden" type="radio" name="theme" id="theme-dark" value="dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+            <span class="theme__label">Dark</span>
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="floofs explainers">
+
+        <details class="card floof" name="explainers">
+          <summary>
+            <span class="ordinal" aria-hidden="true"></span>
+            <span class="floof__names">
+              <span class="floof__pet lit-text">Why the switch isn't sticky</span>
+            </span>
+            <span class="floof__toggle round-btn plus-x" aria-hidden="true"></span>
+          </summary>
+          <div class="explain">
+            <p>There's no light/dark mode toggle in the header, because there is no JS to remember it. A radio's state belongs to the document it is in, and the moment you follow a link the browser builds a fresh document with fresh defaults. CSS has no memory between pages, so a switch set to light on one page comes up dark again on the next. That is worse than no switch at all, so the rest of the site simply stays dark, which is the scheme the slides use.</p>
+            <p>Everything else about a light/dark mode switcher is CSS. The tokens carry both values in <code>light-dark()</code>, and the root reads the radios with <code>:has()</code>. Until either one is checked, a <code>prefers-color-scheme</code> media query makes the call instead, so there is no "auto" button to press: auto is simply what happens before you choose. The only thing missing is memory.</p>
+          </div>
+        </details>
+
+        <details class="card floof" name="explainers">
+          <summary>
+            <span class="ordinal" aria-hidden="true"></span>
+            <span class="floof__names">
+              <span class="floof__pet lit-text">How to make it stick</span>
+            </span>
+            <span class="floof__toggle round-btn plus-x" aria-hidden="true"></span>
+          </summary>
+          <div class="explain">
+            <p>Six lines of JavaScript are needed, and none of them touch styles. This saves the choice when it changes, and on every page it puts the saved radio back. The stylesheet never learns that a script exists; the <code>:has()</code> rule fires exactly as if you had clicked.</p>
+<pre class="code-block"><code><span class="comment">// on every page, right after the radios</span>
+<span class="kw">const</span> saved = localStorage.getItem(<span class="kw">'theme'</span>);   <span class="comment">// "light" | "dark" | null (follow the browser)</span>
+<span class="kw">if</span> (saved) document.getElementById(<span class="kw">'theme-'</span> + saved).checked = <span class="kw">true</span>;
+
+document.querySelector(<span class="kw">'.theme'</span>).addEventListener(<span class="kw">'change'</span>, (e) =&gt; {
+  localStorage.setItem(<span class="kw">'theme'</span>, e.target.value);
+});</code></pre>
+            <p>The usual worry with a stored theme is a flash of the wrong one before the script runs. This site already holds its first paint until the colophon has been parsed (the <code>rel="expect"</code> link in the head, there for the view transitions), so a script placed anywhere before that runs before anything is drawn. No flash, and no need to move it into the head.</p>
+          </div>
+        </details>
+
+        <details class="card floof" name="explainers">
+          <summary>
+            <span class="ordinal" aria-hidden="true"></span>
+            <span class="floof__names">
+              <span class="floof__pet lit-text">In a React app</span>
+            </span>
+            <span class="floof__toggle round-btn plus-x" aria-hidden="true"></span>
+          </summary>
+          <div class="explain">
+            <p>The idea carries over; the plumbing doesn't. React owns the inputs, so nothing goes looking for a radio: the choice lives in state, the radios render from it with <code>checked</code>, and <code>onChange</code> saves it to <code>localStorage</code>. The <code>:has()</code> rule can't tell React ticked the radio instead of you.</p>
+            <p>What doesn't carry over is the no-flash trick. A React app paints before its JavaScript has run, and a server-rendered one can't read <code>localStorage</code> at all, so the saved theme arrives late and the page blinks. The fix is a tiny plain script in the <code>&lt;head&gt;</code>, ahead of React, that marks the root before the first paint:</p>
+<pre class="code-block"><code><span class="comment">&lt;!-- in the &lt;head&gt;, before the app's bundle --&gt;</span>
+&lt;script&gt;
+  <span class="kw">const</span> saved = localStorage.getItem(<span class="kw">'theme'</span>);
+  <span class="kw">if</span> (saved) document.documentElement.dataset.theme = saved;
+&lt;/script&gt;
+
+<span class="comment">/* and each rule gains one selector */</span>
+:root:is([data-theme=<span class="kw">"light"</span>], :has(#theme-light:checked)) { color-scheme: light; }</code></pre>
+            <p>Have the change handler update <code>data-theme</code> as well as storage, so the two never disagree, and read the initial state from that attribute in an effect, not from <code>localStorage</code> during render, or the server and the browser will draw different radios.</p>
+          </div>
+        </details>
+
+      </div>
+
+      <section class="examples" aria-labelledby="examples-title">
+        <h2 class="examples__title" id="examples-title">Example content</h2>
+
+        <ol class="gallery" aria-label="The floofs">
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="1200" height="900" loading="lazy" decoding="async">
+              <figcaption>Lollycat</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
+              <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/archie-michelle.jpg" alt="Archie, looking excellent" width="923" height="1042" loading="lazy" decoding="async">
+              <figcaption>Archie</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
+              <p class="floof__kicker">Not all heroes wear capes</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/fia-anders.jpg" alt="Fia, looking excellent" width="762" height="838" loading="lazy" decoding="async">
+              <figcaption>Fia</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
+              <p class="floof__kicker">Surely this level of adorable can't be real</p>
+              <div class="rating" style="--rating: 12">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">12/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/treacle-emmz.jpg" alt="Treacle, looking excellent" width="1131" height="1218" loading="lazy" decoding="async">
+              <figcaption>Treacle</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
+              <p class="floof__kicker">This dog has seen some things</p>
+              <div class="rating" style="--rating: 11">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">11/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="Wild Thing and Elmo, looking excellent" width="1200" height="675" loading="lazy" decoding="async">
+              <figcaption>Wild Thing &amp; Elmo</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
+              <p class="floof__kicker">I don't think those count as pets</p>
+              <div class="rating" style="--rating: 6">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">6/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card gallery__card">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/buddha-martin.jpg" alt="Buddha, looking excellent" width="1200" height="932" loading="lazy" decoding="async">
+              <figcaption>Buddha</figcaption>
+            </figure>
+            <div class="gallery__meta">
+              <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
+              <p class="floof__kicker">Lavish me with attention, human</p>
+              <div class="rating" style="--rating: 12">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">12/10</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+    </main>
+
+    <footer class="tech">
+      <h2 class="tech__title">Progressive enhancement, live</h2>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Where <code>light-dark()</code> is missing the page falls back to whichever colour the browser could parse, which is why the tokens are the only place it is used.</p>
+
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
+      <ul class="tech__list">
+        <li data-feature="light-dark"><code>light-dark()</code> one token, both values</li>
+        <li data-feature="color-scheme"><code>color-scheme</code> the one property the switch sets</li>
+        <li data-feature="prefers-color-scheme"><code>prefers-color-scheme</code> what the system asked for</li>
+        <li data-feature="has"><code>:root:has(:checked)</code> a radio restyles the whole document</li>
+      </ul>
+
+      <h3 class="tech__heading">Read more</h3>
+      <ul class="tech__list tech__list--links">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark"><code>light-dark()</code> on MDN</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme"><code>color-scheme</code> on MDN</a></li>
+        <li><a href="https://caniuse.com/?search=light-dark">can I use <code>light-dark()</code></a></li>
+      </ul>
+
+      <p class="tech__note">Full disclosure: this is the one demo where "no JavaScript" is the point being made against itself. The switch works, but only here, and only until you leave. The six lines above are the honest price of the feature.</p>
+    </footer>
+
+    <footer class="colophon" id="end">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/theme.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -30,6 +30,7 @@
           <li><a href="modal.html" aria-current="page"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
           <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
           <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
         </ol>
         <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
       </div>
@@ -107,10 +108,10 @@
       <!-- ─────────────── Dialog 1 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-1" closedby="any" aria-labelledby="floof-1-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-1-title">Lollycat</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-1-title">Lollycat</h2>
             <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-1" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -148,10 +149,10 @@
       <!-- ─────────────── Dialog 2 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-2" closedby="any" aria-labelledby="floof-2-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-2-title">Archie</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-2-title">Archie</h2>
             <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-2" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -189,10 +190,10 @@
       <!-- ─────────────── Dialog 3 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-3" closedby="any" aria-labelledby="floof-3-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-3-title">Fia</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-3-title">Fia</h2>
             <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-3" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -230,10 +231,10 @@
       <!-- ─────────────── Dialog 4 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-4" closedby="any" aria-labelledby="floof-4-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-4-title">Treacle</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-4-title">Treacle</h2>
             <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-4" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -271,10 +272,10 @@
       <!-- ─────────────── Dialog 5 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-5" closedby="any" aria-labelledby="floof-5-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-5-title">Wild Thing &amp; Elmo</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-5-title">Wild Thing &amp; Elmo</h2>
             <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-5" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -311,10 +312,10 @@
       <!-- ─────────────── Dialog 6 ─────────────── -->
       <dialog class="card pop-in floof-dialog" id="floof-6" closedby="any" aria-labelledby="floof-6-title">
         <header class="floof-dialog__head">
-          <span class="floof__names">
-            <span class="floof__pet lit-text" id="floof-6-title">Buddha</span>
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-6-title">Buddha</h2>
             <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
-          </span>
+          </div>
           <button class="round-btn plus-x" commandfor="floof-6" command="close" aria-label="Close"></button>
         </header>
         <div class="floof__body">
@@ -350,10 +351,10 @@
     </main>
 
     <footer class="tech">
-      <p class="tech__title">Progressive enhancement, live</p>
+      <h2 class="tech__title">Progressive enhancement, live</h2>
       <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Opening and closing animate with <code>@starting-style</code> and discrete transitions; the dialog stays in the top layer while it fades out thanks to <code>overlay</code>.</p>
 
-      <p class="tech__heading">CSS &middot; graded live by <code>@supports</code></p>
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
       <ul class="tech__list">
         <li data-feature="starting-style"><code>@starting-style</code> the dialog fades and lifts in</li>
         <li data-feature="allow-discrete"><code>transition-behavior: allow-discrete</code> animate to and from <code>display: none</code></li>
@@ -362,7 +363,7 @@
         <li data-feature="container"><code>@container</code> the profile stacks when the dialog is narrow</li>
       </ul>
 
-      <p class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></p>
+      <h3 class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></h3>
       <ul class="tech__list tech__list--links">
         <li><a href="https://caniuse.com/dialog"><code>&lt;dialog&gt;</code> modal with focus trap and Escape</a></li>
         <li><a href="https://caniuse.com/?search=commandfor"><code>command / commandfor</code> open and close it from a button</a></li>
@@ -375,7 +376,7 @@
     <footer class="colophon" id="end">
       <p>
         Made by <a href="https://jominney.com">Jo Minney</a>
-        &middot; source on <a href="https://github.com/jomarieminney/css-demos">GitHub</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/modal.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
       </p>
     </footer>
 

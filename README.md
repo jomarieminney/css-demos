@@ -7,6 +7,7 @@ Deployed at https://youdontneedjavascriptforthat.netlify.app/
 3. Modal — `<dialog>`, invoker commands, `@starting-style`, `allow-discrete`, `overlay`
 4. Popover — `popover`, anchor positioning, `position-try-fallbacks`
 5. Carousel — scroll snap, `scroll-state()` container query, `::scroll-marker`, `::scroll-button()`, `@property`
+6. Light & dark — `light-dark()`, `color-scheme`, `prefers-color-scheme`, a radio read by `:root:has()`
 
 Everything lives in one stylesheet, `css/main.css`, split into cascade layers (reset, theme, base, components, demo, utilities, prefs) with each demo under its own heading in the demo layer. Also shared: a `popover` site menu (hamburger to cross, no script), `@supports`-graded feature chips, container queries, cross-document view transitions.
 

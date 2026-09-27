@@ -13,7 +13,7 @@
      base        the page canvas and plain elements
      components  shared building blocks: masthead, site menu, cards,
                  buttons, the floof profile, the feature chips
-     demo        one heading per demo (01 Accordion … 05 Carousel);
+     demo        one heading per demo (01 Accordion … 06 Light & dark);
                  nothing in here is used outside its own page
      utilities   single-purpose helpers that always win over components
      prefs       user preferences (reduced motion): the last word
@@ -120,11 +120,14 @@
     --magenta:  light-dark(#c4128b, #d61a96);   /* Accent 1 */
     --purple:   #7d3c98;                        /* Accent 2 */
     --teal:     light-dark(#0b7d7a, #0e9490);   /* Accent 3 */
-    --lilac:    light-dark(#7a5b93, #c9a3dc);   /* Accent 4: eyebrows, ordinals, borders */
+    --lilac:    light-dark(#6a4b84, #c9a3dc);   /* Accent 4: eyebrows, ordinals, borders (light: 4.5:1 on the purple blob) */
     --pink:     light-dark(#b0157d, #f4c4e3);   /* Accent 5: links */
     --lavender: light-dark(#2a1f3d, #e4e7f7);   /* Accent 6: the tint behind buttons and code */
+    --code-ink: light-dark(#8c0f63, var(--pink));   /* light: a deeper pink, so code reads as ink, not highlighter */
+    --on-accent: light-dark(#fff, var(--paper));    /* text and icons on a magenta or purple fill */
 
-    --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, #ff5fb3 100%);
+    /* light: a deeper pink end, so the slab's pale text keeps 3:1 all the way across */
+    --grad-brand: linear-gradient(115deg, var(--purple) 0%, var(--magenta) 55%, light-dark(#e0429f, #ff5fb3) 100%);
 
     /* The page canvas: two slow colour blobs, like the gradient slide.
        Painted by <body>, and by anything that must match it exactly. */
@@ -157,17 +160,19 @@
     --dur: .65s;
     --gutter: clamp(1rem, 4vw, 3rem);   /* page side padding; the peekaboo grid breaks out to it */
 
-    /* The scheme. Dark is the default (it's the one on the slides); the
-       radios in the corner pick light, or hand the choice to the OS. */
+    /* The scheme. Dark is the default (it's the one on the slides). On the
+       light-and-dark page the OS decides, until a radio overrides it. */
     color-scheme: dark;
     --on-light: 0;                      /* 1 in light mode, for the odd non-colour that must change too */
   }
   /* TRICK: :has() reaches back up to the root from a radio anywhere in the
      page, so a form control can restyle the whole document */
   :root:has(#theme-light:checked) { color-scheme: light; --on-light: 1; }
-  /* TRICK: prefers-color-scheme — "auto" reads the OS or browser setting */
+  /* TRICK: prefers-color-scheme — on a page with the switch, follow the OS
+     or browser setting until either radio is checked. There is no "auto"
+     radio: auto is just what happens before you choose. */
   @media (prefers-color-scheme: light) {
-    :root:has(#theme-auto:checked) { color-scheme: light; --on-light: 1; }
+    :root:has(.theme):not(:has(.theme :checked)) { color-scheme: light; --on-light: 1; }
   }
   /* To follow the OS setting for everyone, with no radios at all, this is
      the whole change. Off for now: dark is the default on purpose (it is
@@ -266,8 +271,9 @@
     font-size: .9em;
     padding: .1em .4em;
     border-radius: .35em;
-    background: color-mix(in oklab, var(--lavender) 12%, transparent);
-    color: var(--pink);
+    /* a see-through tint, so the chip shows on the canvas and on a card alike */
+    background: light-dark(color-mix(in oklab, var(--purple) 8%, transparent), color-mix(in oklab, var(--lavender) 12%, transparent));
+    color: var(--code-ink);
   }
 
   :focus-visible {
@@ -478,8 +484,8 @@
     color: var(--paper);
     font: 700 1.5rem var(--font-display);
     cursor: pointer;
-    transition: background .3s, border-color .3s, scale .4s var(--ease-spring), rotate var(--dur) var(--ease-spring);
-    &:is(button):hover { background: var(--magenta); }
+    transition: background .3s, border-color .3s, color .3s, scale .4s var(--ease-spring), rotate var(--dur) var(--ease-spring);
+    &:is(button):hover { background: var(--magenta); color: var(--on-accent); }
   }
 
   /* Plus → cross. Set --x: 1 to show the cross. */
@@ -491,7 +497,7 @@
       position: absolute;
       inset: 0;
       margin: auto;
-      background: var(--paper);
+      background: currentColor;        /* the button's colour, so it flips on a magenta fill */
       border-radius: 2px;
     }
     &::before { width: 1rem; height: 2px; }
@@ -847,6 +853,7 @@
   .tech__heading {
     margin: 1.5rem 0 .6rem;
     font-size: .8rem;
+    font-weight: inherit;            /* an <h3>, but a quiet label, not a shout */
     letter-spacing: .14em;
     text-transform: uppercase;
     color: var(--lilac);
@@ -917,6 +924,13 @@
   }
   @supports (grid-template-columns: subgrid)   { [data-feature="subgrid"]        { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports selector(:has(a))                  { [data-feature="has"]            { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (color: light-dark(#000, #fff))    { [data-feature="light-dark"]     { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (color-scheme: light dark)         { [data-feature="color-scheme"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  /* A media query can't be @supports-tested, so let it grade itself: one
+     of these two matches in any browser that understands the query at all */
+  @media (prefers-color-scheme: light), (prefers-color-scheme: dark) {
+    [data-feature="prefers-color-scheme"] { --tick: "\2713"; --tick-hue: var(--teal); }
+  }
   @supports (transition-timing-function: linear(0, 1)) { [data-feature="linear"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (background-clip: text) or (-webkit-background-clip: text) { [data-feature="clip-text"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (transition-behavior: allow-discrete) { [data-feature="allow-discrete"] { --tick: "\2713"; --tick-hue: var(--teal); } }
@@ -937,57 +951,45 @@
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
 
-  /* ----- Theme picker: three radios in a pill, left of the menu. Sun for
-           light, moon for dark, a half disc for "auto" (the OS setting).
-           No JS: the radios are real, the root reads them with :has(), and
+  /* ----- Theme picker: two radios, Light and Dark, each its own button
+           rather than halves of a toggle. Neither starts checked, so the
+           page follows prefers-color-scheme until you pick one. No JS: the
+           radios are real, the root reads them with :has(), and
            light-dark() in the tokens does the rest. Nothing persists
-           between pages without a script, so every page starts dark.
-           Not in the markup yet: the plan is a demo of its own, so the
-           script that makes it stick can be talked about. ----- */
+           between pages without a script, which is why it lives on its
+           own demo page (06) and not in the corner of every page. ----- */
   .theme {
-    --i: 2;                          /* which option the highlight sits under */
-    --opt: 2.1rem;
-    position: fixed;
-    inset: var(--menu-edge) calc(var(--menu-edge) + var(--menu-size) + .6rem) auto auto;
-    z-index: 30;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .75rem;
+    min-width: 0;
     margin: 0;
-    padding: calc((var(--menu-size) - var(--opt)) / 2);
+    padding: 0;
+    border: 0;
+  }
+  .theme__opt {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .75rem 1.5rem .75rem 1.25rem;
     border: 1px solid var(--surface-border);
     border-radius: 100vmax;
     background: var(--surface);
     box-shadow: var(--surface-shadow);
-    view-transition-name: theme;
-    /* the highlight: one magenta disc that slides under the checked option */
-    &::before {
-      content: "";
-      position: absolute;
-      inset-block: calc((var(--menu-size) - var(--opt)) / 2);
-      inset-inline-start: calc((var(--menu-size) - var(--opt)) / 2);
-      width: var(--opt);
-      border-radius: 50%;
-      background: var(--magenta);
-      translate: calc(var(--i) * var(--opt)) 0;
-      transition: translate .55s var(--ease-spring);
-    }
-    &:has(#theme-light:checked) { --i: 0; }
-    &:has(#theme-auto:checked)  { --i: 1; }
-    &:has(#theme-dark:checked)  { --i: 2; }
-  }
-  .theme__opt {
-    position: relative;              /* above the highlight */
-    display: grid;
-    place-items: center;
-    width: var(--opt);
-    aspect-ratio: 1;
-    border-radius: 50%;
     color: var(--lilac);
     cursor: pointer;
-    transition: color .3s, scale .4s var(--ease-spring);
-    svg { width: 1.05rem; }
-    &:hover { color: var(--paper); scale: 1.12; }
-    &:has(:checked) { color: light-dark(#fff, var(--paper)); }
-    &:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
+    transition: color .3s, background .3s, border-color .3s, scale .4s var(--ease-spring);
+    svg { width: 1.3rem; flex: none; }
+    &:hover { color: var(--paper); border-color: var(--accent-border); scale: 1.05; }
+    &:has(:checked) { background: var(--magenta); border-color: var(--magenta); color: var(--on-accent); }
+    &:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 3px; }
+  }
+  .theme__label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1;
   }
 
   /* ----- Site menu: a round hamburger fixed top right on every page that
@@ -1026,7 +1028,7 @@
       margin: auto;
       height: 2px;
       border-radius: 2px;
-      background: var(--paper);
+      background: currentColor;        /* the button's colour, so it flips on a magenta fill */
       transition: translate var(--dur) var(--ease-spring), rotate var(--dur) var(--ease-spring);
     }
     &::before { translate: 0 calc((1 - var(--open)) * -.27rem); rotate: calc(var(--open) *  45deg); }
@@ -1035,7 +1037,7 @@
   /* TRICK: :has() — a button can't see whether its popover is open, but the
      parent they share can, and hands the state down */
   .menu:has(#site-menu:popover-open) {
-    .menu__toggle { background: var(--magenta); border-color: var(--magenta); }
+    .menu__toggle { background: var(--magenta); border-color: var(--magenta); color: var(--on-accent); }
     .menu__toggle:hover { background: var(--purple); border-color: var(--purple); }
     .burger { --open: 1; }
   }
@@ -1182,7 +1184,7 @@
       .ordinal { color: var(--magenta); }
       .floof__pet { --lit: 100%; }
       .floof__thumb { scale: 0; opacity: 0; }   /* big photo takes over */
-      .floof__toggle { --x: 1; background: var(--magenta); }
+      .floof__toggle { --x: 1; background: var(--magenta); color: var(--on-accent); }
     }
 
     /* TRICK: ::details-content — the animatable hidden part */
@@ -1408,8 +1410,8 @@
       @starting-style { opacity: 0; }
     }
 
-    .floof__pet { --lit: 100%; }
-    .plus-x { --x: 1; background: var(--magenta); }
+    .floof__pet { --lit: 100%; margin: 0; }   /* an <h2> here: the dialog's title */
+    .plus-x { --x: 1; background: var(--magenta); color: var(--on-accent); }
     .plus-x:hover { background: var(--purple); }
     /* the header already carries the owner, so hide the copy in the blurb */
     .floof__blurb .floof__owner { display: none; }
@@ -1864,7 +1866,7 @@
       z-index: 20;
       transition: background .3s, border-color .3s, scale .4s var(--ease-spring), opacity .3s;
     }
-    .reel::scroll-button(*):hover { background: var(--magenta); border-color: var(--magenta); scale: 1.08; }
+    .reel::scroll-button(*):hover { background: var(--magenta); border-color: var(--magenta); color: var(--on-accent); scale: 1.08; }
     .reel::scroll-button(*):disabled { opacity: .3; cursor: default; scale: 1; }
     .reel::scroll-button(inline-start) { content: "\2190" / "Previous"; inset-inline-start: anchor(start); }
     .reel::scroll-button(inline-end)   { content: "\2192" / "Next";     inset-inline-end:   anchor(end); }
@@ -1940,6 +1942,148 @@
          neighbours, so only the polaroid's edge ever shows at the screen edge */
       .slide__meta { padding-inline: 12vw; }
     }
+  }
+
+
+  /* ==========================================================================
+     06 · Light & dark (demos/theme.html) — light-dark(), prefers-color-scheme
+     The switch itself is the .theme component (see components); the tokens
+     and the :root:has() rules that flip color-scheme are in the theme layer.
+     This heading is only the page furniture around it.
+     ========================================================================== */
+  .scheme {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+  .scheme__switch {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    text-align: center;
+  }
+  /* "Your browser preference is set to…": both answers are in the markup
+     and prefers-color-scheme shows the true one */
+  .pref {
+    width: min(100%, 32rem);
+    padding: 1.4rem 1.5rem 1.5rem;
+    display: grid;
+    gap: .5rem;
+    justify-items: center;
+    &::before { display: none; }     /* no gradient hover bar: it isn't clickable */
+  }
+  .pref__kicker,
+  .pref__note {
+    margin: 0;
+    font-size: .95rem;
+    color: var(--paper-2);
+  }
+  .pref__value {
+    display: inline-flex;
+    margin: 0;
+    align-items: center;
+    gap: .6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--pink);
+    svg { width: 2rem; flex: none; }
+  }
+  .pref__value--light { display: none; }
+  @media (prefers-color-scheme: light) {
+    .pref__value--light { display: inline-flex; }
+    .pref__value--dark  { display: none; }
+  }
+  /* once a radio is checked, the note owns up to the override */
+  .pref__note--override { display: none; }
+  :root:has(.theme :checked) {
+    .pref__note--follow   { display: none; }
+    .pref__note--override { display: block; }
+  }
+
+  /* The two explainers: the accordion demo's .floof cards, holding prose */
+  .explainers {
+    min-width: 0;                    /* a grid item's default minimum is its content: the <pre> would widen the page */
+    > * { min-width: 0; }
+  }
+  .explain {
+    max-width: 64ch;
+    padding: 0 1.6rem 1.75rem;
+    p { margin: .75rem 0; color: var(--paper-2); }
+    > :first-child { margin-block-start: 0; }
+  }
+  /* The one code block on the site: a script shown, not run */
+  .code-block {
+    margin: 1rem 0;
+    padding: 1rem 0 .75rem;
+    border-radius: .4rem;            /* tight corners, so they don't clip the scrollbar's end arrows */
+    border: 1px solid var(--surface-border);
+    /* sunk into the card it sits in, not another card on top of it */
+    background: light-dark(color-mix(in oklab, var(--purple) 6%, transparent), color-mix(in oklab, var(--ink) 55%, transparent));
+    overflow-x: auto;
+    font-size: .85rem;
+    line-height: 1.6;
+    tab-size: 2;
+    /* a slim scrollbar in the page's colours, not the OS grey slab */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--lilac) 55%, transparent) transparent;
+    /* The padding lives on the <code>, which is as wide as its longest line:
+       padding on the scrolling <pre> would be lost past the right edge */
+    code {
+      display: block;
+      width: max-content;
+      min-width: 100%;
+      padding: 0 1.25rem .25rem;
+      background: none;
+      color: light-dark(var(--paper), var(--paper-2));   /* light: full-strength ink, so it isn't washed out by the tint */
+      font-size: 1em;
+    }
+    .comment { color: light-dark(#553a6d, var(--lilac)); }       /* light: a notch deeper than lilac */
+    .kw      { color: light-dark(#76094f, var(--code-ink)); }    /* light: a notch deeper than the inline pink */
+  }
+
+  /* The gallery and its heading: kept together, apart from the .scheme gap */
+  .examples {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .examples__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    line-height: 1;
+    color: var(--pink);
+  }
+
+  /* A plain grid of the floofs, so there is something to watch change */
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.25rem;
+    counter-reset: item;
+  }
+  .gallery__card {
+    counter-increment: item;
+    padding: 1.25rem 1.25rem 1.4rem;
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    &::before { display: none; }     /* no gradient hover bar on these */
+    /* the profile parts normally wait for an open <details>: not here */
+    .polaroid { opacity: 1; rotate: -2deg; translate: 0; margin-inline: .5rem; transition: rotate .5s var(--ease-spring), scale .5s var(--ease-spring); }
+    .rating__fill { scale: 1 1; }
+    .floof__kicker { font-size: 1.6rem; }
+    .rating { margin-block-start: .75rem; }
+    &:hover .polaroid { rotate: 0deg; scale: 1.02; }
+  }
+  .gallery__meta {
+    padding-inline: .25rem;
+    text-align: center;
+    .floof__owner { margin: 0 0 .25rem; }
   }
 }
 
