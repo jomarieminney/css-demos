@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <!-- Not in the index or the menu yet: take this out when it is -->
+  <meta name="robots" content="noindex">
+  <title>Scrolling Floofs</title>
+
+  <link rel="preload" href="../assets/fonts/amatic-sc-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/maven-pro-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker"><a href="../index.html"><span aria-hidden="true">&larr;</span> All demos</a></p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <!-- Scroll progress: a bar across the top that fills as you go down -->
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <p class="eyebrow">09 &middot; Scroll-driven &middot; <code>scroll()</code> + <code>view()</code> + <code>animation-range</code></p>
+
+      <h1 class="title">Scrolling <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">Animations that run on scroll position instead of a clock. The bar along the top is how far down you are, the cards arrive as they come into view, and a row of polaroids goes sideways while you scroll down. Scroll back up and it all plays in reverse: it's position, not time.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="scrolly">
+
+      <section aria-labelledby="arrive-title">
+        <h2 class="scrolly__title" id="arrive-title">Arriving on cue</h2>
+        <p class="scrolly__sub">Each card has its own <code>view()</code> timeline: 0% when its top edge peeks over the bottom of the window, 100% when it has gone off the top. <code>animation-range</code> uses just the first slice of that, so a card has finished arriving by the time a third of it is showing. The photo inside drifts at its own pace, and the rating fills as it comes up the screen.</p>
+
+        <ol class="arrivals">
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="1200" height="900" loading="lazy" decoding="async"></div>
+              <figcaption>Lollycat</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
+              <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+              <p>Her real name was actually LOL. Before she joined our household she had a brother named ROFL who thought he was a dog.</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/archie-michelle.jpg" alt="Archie, looking excellent" width="923" height="1042" loading="lazy" decoding="async"></div>
+              <figcaption>Archie</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
+              <p class="floof__kicker">Not all heroes wear capes</p>
+              <p>Archie is a trained service dog, and makes sure that Michelle stays safe if she experiences an epileptic seizure.</p>
+              <div class="rating" style="--rating: 15">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">15/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/fia-anders.jpg" alt="Fia, looking excellent" width="762" height="838" loading="lazy" decoding="async"></div>
+              <figcaption>Fia</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
+              <p class="floof__kicker">Surely this level of adorable can't be real</p>
+              <p>Friends assure me that this is not in fact a stuffed toy. I'm still on the fence.</p>
+              <div class="rating" style="--rating: 13">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">13/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/treacle-emmz.jpg" alt="Treacle, looking excellent" width="1131" height="1218" loading="lazy" decoding="async"></div>
+              <figcaption>Treacle</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
+              <p class="floof__kicker">This dog has seen some things</p>
+              <p>Woke up with a stamp on her wrist that says 'not today Satan', smelling of popcorn and bad choices.</p>
+              <div class="rating" style="--rating: 11">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">11/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="Wild Thing and Elmo, looking excellent" width="1200" height="675" loading="lazy" decoding="async"></div>
+              <figcaption>Wild Thing &amp; Elmo</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
+              <p class="floof__kicker">I don't think those count as pets</p>
+              <p>Included anyway for the LOLs. Much less likely to get arrested than Treacle.</p>
+              <div class="rating" style="--rating: 6">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">6/10</span>
+              </div>
+            </div>
+          </li>
+          <li class="card arrival">
+            <figure class="polaroid">
+              <div class="arrival__frame"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="Buddha, looking excellent" width="1200" height="932" loading="lazy" decoding="async"></div>
+              <figcaption>Buddha</figcaption>
+            </figure>
+            <div>
+              <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
+              <p class="floof__kicker">Lavish me with attention, human</p>
+              <p>I bet she's never woken up having inexplicably sprained an ankle in her sleep.</p>
+              <div class="rating" style="--rating: 12">
+                <span class="rating__label">Floof rating</span>
+                <span class="rating__track"><span class="rating__fill"></span></span>
+                <span class="rating__value">12/10</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- A couple of screens tall when scroll timelines are on: the inner box
+           sticks while the row slides across -->
+      <section class="strip" aria-labelledby="strip-title">
+        <div class="strip__sticky">
+          <h2 class="scrolly__title" id="strip-title">Sideways, by scrolling down</h2>
+          <p class="scrolly__sub">This section is a couple of screens tall. While it passes, the box inside sticks to the window and the row is moved sideways by exactly how much it overflows. The timeline is the section's, shared with the row by name.</p>
+          <ul class="strip__track">
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/lollycat-jo.jpg" alt="Lollycat" width="1200" height="900" loading="lazy" decoding="async">
+                <figcaption>Lollycat</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/archie-michelle.jpg" alt="Archie" width="923" height="1042" loading="lazy" decoding="async">
+                <figcaption>Archie</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/fia-anders.jpg" alt="Fia" width="762" height="838" loading="lazy" decoding="async">
+                <figcaption>Fia</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/treacle-emmz.jpg" alt="Treacle" width="1131" height="1218" loading="lazy" decoding="async">
+                <figcaption>Treacle</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="Wild Thing and Elmo" width="1200" height="675" loading="lazy" decoding="async">
+                <figcaption>Wild Thing &amp; Elmo</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="polaroid">
+                <img src="../assets/photos/floofs/buddha-martin.jpg" alt="Buddha" width="1200" height="932" loading="lazy" decoding="async">
+                <figcaption>Buddha</figcaption>
+              </figure>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="tally" aria-labelledby="tally-title">
+        <h2 class="scrolly__title" id="tally-title">Combined floof rating</h2>
+        <p class="tally__num">
+          <span aria-hidden="true"><span class="tally__count"></span><span class="tally__of">/60</span></span>
+          <span class="visually-hidden">72 out of 60</span>
+        </p>
+        <p>That's 120%. The maths checks out.</p>
+      </section>
+
+      <a class="to-top round-btn" href="#top"><span aria-hidden="true">&uarr;</span><span class="visually-hidden">Back to top</span></a>
+    </main>
+
+    <footer class="tech">
+      <h2 class="tech__title">Progressive enhancement, live</h2>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Where scroll timelines are missing, or you've asked your system for less motion, the page is all there and simply holds still: the progress bar and the back-to-top button step aside, and the strip is a row you scroll sideways.</p>
+
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
+      <ul class="tech__list">
+        <li data-feature="scroll-progress"><code>animation-timeline: scroll()</code> the progress bar, the back-to-top button</li>
+        <li data-feature="scroll-timeline"><code>animation-timeline: view()</code> the cards, the photos, the ratings</li>
+        <li data-feature="animation-range"><code>animation-range</code> which slice of the trip each one uses</li>
+        <li data-feature="view-timeline"><code>view-timeline</code> a named timeline the strip shares with its row</li>
+        <li data-feature="sticky"><code>position: sticky</code> the strip holds still while it scrolls</li>
+        <li data-feature="cq-units"><code>100cqi</code> how far the row has to travel</li>
+        <li data-feature="prefers-reduced-motion"><code>prefers-reduced-motion</code> motion is opt-in</li>
+      </ul>
+
+      <p class="tech__note">Full disclosure: scroll timelines are the newest thing on this page, so check the ticks above before you promise them to anyone. Where they're missing, you get the still version. The count-up also needs <code>@property</code>, to give <code>--tally</code> a type (an <code>&lt;integer&gt;</code>) so it can be animated at all.</p>
+    </footer>
+
+    <footer class="colophon" id="end">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/scroll.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

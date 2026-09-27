@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <!-- Not in the index or the menu yet: take this out when it is -->
+  <meta name="robots" content="noindex">
+  <title>Sponsor Floofs</title>
+
+  <link rel="preload" href="../assets/fonts/amatic-sc-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/maven-pro-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker"><a href="../index.html"><span aria-hidden="true">&larr;</span> All demos</a></p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">07 &middot; Marquee &middot; <code>@keyframes</code> + <code>animation-play-state</code> + <code>mask-image</code></p>
+
+      <h1 class="title">Sponsor <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">The endless logo strip every conference site has. The list is in the page twice, and both copies slide left forever: by the time the first has gone, the second is exactly where the first started. Hover to hold it still; every logo opens its floof.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="marquees">
+      <!-- Each strip holds its list twice. The second copy is aria-hidden
+           and inert: screen readers hear each floof once and Tab never
+           lands on the copy. -->
+      <section class="marquee" aria-labelledby="sponsors-title">
+        <h2 class="marquee__kicker" id="sponsors-title">The Glorious Floofs</h2>
+        <div class="marquee__viewport">
+          <ul class="marquee__track">
+            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/floofs/lollycat-jo.jpg" alt="" width="1200" height="900" decoding="async"><span class="lit-text">Lollycat</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/floofs/archie-michelle.jpg" alt="" width="923" height="1042" decoding="async"><span class="lit-text">Archie</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/floofs/fia-anders.jpg" alt="" width="762" height="838" decoding="async"><span class="lit-text">Fia</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/floofs/treacle-emmz.jpg" alt="" width="1131" height="1218" decoding="async"><span class="lit-text">Treacle</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="" width="1200" height="675" decoding="async"><span class="lit-text">Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="" width="1200" height="932" decoding="async"><span class="lit-text">Buddha</span></button></li>
+          </ul>
+          <ul class="marquee__track" aria-hidden="true" inert>
+            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/floofs/lollycat-jo.jpg" alt="" width="1200" height="900" decoding="async"><span class="lit-text">Lollycat</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/floofs/archie-michelle.jpg" alt="" width="923" height="1042" decoding="async"><span class="lit-text">Archie</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/floofs/fia-anders.jpg" alt="" width="762" height="838" decoding="async"><span class="lit-text">Fia</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/floofs/treacle-emmz.jpg" alt="" width="1131" height="1218" decoding="async"><span class="lit-text">Treacle</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="" width="1200" height="675" decoding="async"><span class="lit-text">Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/floofs/buddha-martin.jpg" alt="" width="1200" height="932" decoding="async"><span class="lit-text">Buddha</span></button></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="marquee marquee--reverse" aria-labelledby="hoomans-title">
+        <h2 class="marquee__kicker" id="hoomans-title">The Hoomans who do their bidding</h2>
+        <div class="marquee__viewport">
+          <ul class="marquee__track">
+            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/hoomans/jominney.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Jo Minney</span><span class="visually-hidden">: meet Lollycat</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/hoomans/michellefrost.jpg" alt="" width="340" height="340" decoding="async"><span class="lit-text">Michelle Frost</span><span class="visually-hidden">: meet Archie</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/hoomans/andersnoras.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Anders Noras</span><span class="visually-hidden">: meet Fia</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/hoomans/emmzrendle.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Emmz Rendle</span><span class="visually-hidden">: meet Treacle</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/hoomans/luisefreese.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Luise Freese</span><span class="visually-hidden">: meet Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/hoomans/martinthwaites.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Martin Thwaites</span><span class="visually-hidden">: meet Buddha</span></button></li>
+          </ul>
+          <ul class="marquee__track" aria-hidden="true" inert>
+            <li><button class="marquee__logo" commandfor="floof-1" command="show-modal"><img src="../assets/photos/hoomans/jominney.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Jo Minney</span><span class="visually-hidden">: meet Lollycat</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-2" command="show-modal"><img src="../assets/photos/hoomans/michellefrost.jpg" alt="" width="340" height="340" decoding="async"><span class="lit-text">Michelle Frost</span><span class="visually-hidden">: meet Archie</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-3" command="show-modal"><img src="../assets/photos/hoomans/andersnoras.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Anders Noras</span><span class="visually-hidden">: meet Fia</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-4" command="show-modal"><img src="../assets/photos/hoomans/emmzrendle.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Emmz Rendle</span><span class="visually-hidden">: meet Treacle</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-5" command="show-modal"><img src="../assets/photos/hoomans/luisefreese.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Luise Freese</span><span class="visually-hidden">: meet Wild Thing &amp; Elmo</span></button></li>
+            <li><button class="marquee__logo" commandfor="floof-6" command="show-modal"><img src="../assets/photos/hoomans/martinthwaites.jpg" alt="" width="400" height="400" decoding="async"><span class="lit-text">Martin Thwaites</span><span class="visually-hidden">: meet Buddha</span></button></li>
+          </ul>
+        </div>
+      </section>
+
+      <p class="marquee__hint">Hover to pause, click a logo to meet its floof. Keyboard tabbing into a strip stops the carousel and lays every logo out, so you can reach them all.</p>
+
+      <!-- ─────────────── Dialog 1 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-1" closedby="any" aria-labelledby="floof-1-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-1-title">Lollycat</h2>
+            <span class="floof__owner">former owner of <strong>Jo Minney</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-1" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="1200" height="900" loading="lazy" decoding="async">
+              <figcaption>Lollycat</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/jominney.jpg" alt="Jo Minney" width="400" height="400" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
+            <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+            <p>OK so her real name was actually LOL - she was adopted, and before she joined our household she had a brother named ROFL who thought he was a dog.</p>
+            <p>She ran our household and every morning we had to let her outside so she could inspect the backyard and drink her own body weight in water from flowerpots until she literally made gurgling sounds if you picked her up. RIP sweet baby.</p>
+            <div class="rating" style="--rating: 15">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ─────────────── Dialog 2 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-2" closedby="any" aria-labelledby="floof-2-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-2-title">Archie</h2>
+            <span class="floof__owner">superhero of <strong>Michelle Frost</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-2" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/archie-michelle.jpg" alt="Archie, looking excellent" width="923" height="1042" loading="lazy" decoding="async">
+              <figcaption>Archie</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/michellefrost.jpg" alt="Michelle Frost" width="340" height="340" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
+            <p class="floof__kicker">Not all heroes wear capes</p>
+            <p>Although, I'm sure you'll agree that Archie would look very dashing in a cape. If you run into Michelle at a conference you might even get to meet him!</p>
+            <p>Archie is a trained service dog, and makes sure that Michelle stays safe if she experiences an epileptic seizure.</p>
+            <div class="rating" style="--rating: 15">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ─────────────── Dialog 3 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-3" closedby="any" aria-labelledby="floof-3-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-3-title">Fia</h2>
+            <span class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-3" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/fia-anders.jpg" alt="Fia, looking excellent" width="762" height="838" loading="lazy" decoding="async">
+              <figcaption>Fia</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/andersnoras.jpg" alt="Anders Noras" width="400" height="400" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
+            <p class="floof__kicker">Surely this level of adorable can't be real</p>
+            <p>Friends assure me that this is not in fact a stuffed toy. I'm still on the fence, but she clearly meets the criteria for being an excellent floof.</p>
+            <p>One might argue that she has enough hair for both of them...</p>
+            <div class="rating" style="--rating: 13">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">13/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ─────────────── Dialog 4 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-4" closedby="any" aria-labelledby="floof-4-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-4-title">Treacle</h2>
+            <span class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-4" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/treacle-emmz.jpg" alt="Treacle, looking excellent" width="1131" height="1218" loading="lazy" decoding="async">
+              <figcaption>Treacle</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/emmzrendle.jpg" alt="Emmz Rendle" width="400" height="400" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
+            <p class="floof__kicker">This dog has seen some things</p>
+            <p>Have you ever woken up not knowing where you are and you can't remember the last 24 hours and you have a stamp on your wrist that says 'not today Satan' and you inexplicably smell like popcorn and bad choices?</p>
+            <p>Treacle has.</p>
+            <div class="rating" style="--rating: 11">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">11/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ─────────────── Dialog 5 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-5" closedby="any" aria-labelledby="floof-5-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-5-title">Wild Thing &amp; Elmo</h2>
+            <span class="floof__owner">support animals of <strong>Luise Freese</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-5" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="Wild Thing and Elmo, looking excellent" width="1200" height="675" loading="lazy" decoding="async">
+              <figcaption>Wild Thing &amp; Elmo</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/luisefreese.jpg" alt="Luise Freese" width="400" height="400" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
+            <p class="floof__kicker">I don't think those count as pets</p>
+            <p>I included them anyway for the LOLs but this is what Luise sent through when I asked in the group chat for pet photos. Although admittedly these two do seem much less likely to set your house on fire or get arrested for selling drugs than Treacle.</p>
+            <div class="rating" style="--rating: 6">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">6/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ─────────────── Dialog 6 ─────────────── -->
+      <dialog class="card pop-in floof-dialog" id="floof-6" closedby="any" aria-labelledby="floof-6-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="floof-6-title">Buddha</h2>
+            <span class="floof__owner">owner of <strong>Martin Thwaites</strong></span>
+          </div>
+          <button class="round-btn plus-x" commandfor="floof-6" command="close" aria-label="Close"></button>
+        </header>
+        <div class="floof__body">
+          <div class="floof__photos">
+            <figure class="polaroid">
+              <img src="../assets/photos/floofs/buddha-martin.jpg" alt="Buddha, looking excellent" width="1200" height="932" loading="lazy" decoding="async">
+              <figcaption>Buddha</figcaption>
+            </figure>
+            <figure class="hooman">
+              <img src="../assets/photos/hoomans/martinthwaites.jpg" alt="Martin Thwaites" width="400" height="400" loading="lazy" decoding="async">
+              <figcaption>
+                the hooman
+                <svg class="hooman__arrow" viewBox="0 0 60 34" aria-hidden="true">
+                  <path pathLength="1" d="M4 6 C 22 0, 42 6, 52 24" />
+                  <path pathLength="1" d="M41 22 L53 26 L55 13" />
+                </svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="floof__blurb">
+            <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
+            <p class="floof__kicker">Lavish me with attention, human</p>
+            <p>Do you ever look at a cat and just think - I wish that was me? She looks so relaxed. I bet she's never woken up having inexplicably sprained an ankle in her sleep...</p>
+            <div class="rating" style="--rating: 12">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">12/10</span>
+            </div>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+    <footer class="tech">
+      <h2 class="tech__title">Progressive enhancement, live</h2>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. The strip itself is one <code>@keyframes</code> rule that has worked everywhere for a decade; the newer parts are how it behaves when you reach for it.</p>
+
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
+      <ul class="tech__list">
+        <li data-feature="play-state"><code>animation-play-state</code> hover or focus holds it still</li>
+        <li data-feature="mask"><code>mask-image</code> the ends fade into the page</li>
+        <li data-feature="has"><code>:has(:focus-visible)</code> a keyboard visit stops it and shows every logo</li>
+        <li data-feature="prefers-reduced-motion"><code>prefers-reduced-motion</code> one still row instead</li>
+        <li data-feature="starting-style"><code>@starting-style</code> the dialog fades and lifts in</li>
+      </ul>
+
+      <h3 class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></h3>
+      <ul class="tech__list tech__list--links">
+        <li><a href="https://caniuse.com/mdn-html_global_attributes_inert"><code>inert</code> the copy can't be focused or clicked</a></li>
+        <li><a href="https://caniuse.com/?search=commandfor"><code>command / commandfor</code> each logo opens a dialog</a></li>
+        <li><a href="https://caniuse.com/dialog"><code>&lt;dialog&gt;</code> modal with focus trap and Escape</a></li>
+      </ul>
+
+      <p class="tech__note">Full disclosure: the logos really are in the page twice, because CSS can't clone an element. The copy is <code>aria-hidden</code> and <code>inert</code>, so it is scenery. Each copy also has to be at least as wide as the strip, or a gap shows before the loop comes round; with six logos that's never a problem, but with two you would repeat them in the markup.</p>
+    </footer>
+
+    <footer class="colophon" id="end">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/marquee.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

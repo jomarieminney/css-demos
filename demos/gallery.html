@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <!-- Not in the index or the menu yet: take this out when it is -->
+  <meta name="robots" content="noindex">
+  <title>Sorted Floofs</title>
+
+  <link rel="preload" href="../assets/fonts/amatic-sc-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/maven-pro-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker"><a href="../index.html"><span aria-hidden="true">&larr;</span> All demos</a></p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">10 &middot; Filter &middot; <code>:has()</code> + <code>order</code> + <code>subgrid</code></p>
+
+      <h1 class="title">Sorted <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">Filter buttons, a sort, a live count and an empty state: the whole kit for a product listing. The buttons are radios, the page reads them with <code>:has()</code>, and each card says what it is in a <code>data-</code> attribute. Fia is filed under two species, pending further investigation.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="sift">
+
+      <div class="sift__controls">
+        <fieldset class="choices">
+          <legend class="choices__legend">Show</legend>
+          <div class="pills">
+            <label class="pill"><input class="visually-hidden" type="radio" name="show" id="show-all" value="all" checked>All</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="show" id="show-cat" value="cat"><span aria-hidden="true">🐱</span>Cats</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="show" id="show-dog" value="dog"><span aria-hidden="true">🐶</span>Dogs</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="show" id="show-plush" value="plush"><span aria-hidden="true">🧸</span>Plushies</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="show" id="show-fish" value="fish"><span aria-hidden="true">🐟</span>Fish</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="choices">
+          <legend class="choices__legend">Sort</legend>
+          <div class="pills">
+            <label class="pill"><input class="visually-hidden" type="radio" name="sort" id="sort-none" value="none" checked>As they came in</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="sort" id="sort-high" value="high">Floofiest first</label>
+            <label class="pill"><input class="visually-hidden" type="radio" name="sort" id="sort-low" value="low">Least floofy first</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- --rating on each card draws its bar AND sorts it; data-species
+           is a space-separated list, matched a word at a time with ~= -->
+      <ol class="gallery sift__gallery" aria-label="The floofs">
+        <li class="card gallery__card" data-species="cat" style="--rating: 15">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/lollycat-jo.jpg" alt="Lollycat, looking excellent" width="1200" height="900" loading="lazy" decoding="async">
+            <figcaption>Lollycat</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">former owner of <strong>Jo Minney</strong></p>
+            <p class="floof__kicker">She was the sweetest kitty who ever was</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Cat</li></ul>
+          </div>
+        </li>
+        <li class="card gallery__card" data-species="dog" style="--rating: 15">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/archie-michelle.jpg" alt="Archie, looking excellent" width="923" height="1042" loading="lazy" decoding="async">
+            <figcaption>Archie</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">superhero of <strong>Michelle Frost</strong></p>
+            <p class="floof__kicker">Not all heroes wear capes</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">15/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Dog</li></ul>
+          </div>
+        </li>
+        <li class="card gallery__card" data-species="dog plush" style="--rating: 13">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/fia-anders.jpg" alt="Fia, looking excellent" width="762" height="838" loading="lazy" decoding="async">
+            <figcaption>Fia</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">ridiculous toy of <strong>Anders Noras</strong></p>
+            <p class="floof__kicker">Surely this level of adorable can't be real</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">13/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Dog</li><li>Plushie (disputed)</li></ul>
+          </div>
+        </li>
+        <li class="card gallery__card" data-species="dog" style="--rating: 11">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/treacle-emmz.jpg" alt="Treacle, looking excellent" width="1131" height="1218" loading="lazy" decoding="async">
+            <figcaption>Treacle</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">partner in crime of <strong>Emmz Rendle</strong></p>
+            <p class="floof__kicker">This dog has seen some things</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">11/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Dog</li></ul>
+          </div>
+        </li>
+        <li class="card gallery__card" data-species="plush" style="--rating: 6">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/wild-thing-elmo-luise.jpg" alt="Wild Thing and Elmo, looking excellent" width="1200" height="675" loading="lazy" decoding="async">
+            <figcaption>Wild Thing &amp; Elmo</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">support animals of <strong>Luise Freese</strong></p>
+            <p class="floof__kicker">I don't think those count as pets</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">6/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Plushie</li></ul>
+          </div>
+        </li>
+        <li class="card gallery__card" data-species="cat" style="--rating: 12">
+          <figure class="polaroid">
+            <img src="../assets/photos/floofs/buddha-martin.jpg" alt="Buddha, looking excellent" width="1200" height="932" loading="lazy" decoding="async">
+            <figcaption>Buddha</figcaption>
+          </figure>
+          <div class="gallery__meta">
+            <p class="floof__owner">owner of <strong>Martin Thwaites</strong></p>
+            <p class="floof__kicker">Lavish me with attention, human</p>
+            <div class="rating">
+              <span class="rating__label">Floof rating</span>
+              <span class="rating__track"><span class="rating__fill"></span></span>
+              <span class="rating__value">12/10</span>
+            </div>
+            <ul class="sift__tags" aria-label="Species"><li>Cat</li></ul>
+          </div>
+        </li>
+      </ol>
+
+      <!-- After the cards, because a counter can only be read once it has
+           counted them. CSS order puts it back above. -->
+      <p class="sift__count">Showing <strong class="sift__n"></strong> of 6 floofs</p>
+
+      <div class="card sift__empty">
+        <p class="sift__empty-title">No fish. Yet.</p>
+        <p>Nobody has sent in a fish. Nobody has sent in anything, actually, because the <a href="submit.html">submission form</a> doesn't send.</p>
+      </div>
+    </main>
+
+    <footer class="tech">
+      <h2 class="tech__title">Progressive enhancement, live</h2>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. Filtering and sorting only need <code>:has()</code>. The fade that hides the shuffle is a plain animation that works everywhere; it is how it gets replayed on every click that is the trick.</p>
+
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
+      <ul class="tech__list">
+        <li data-feature="has"><code>:has(#show-cat:checked)</code> the page knows which button is on</li>
+        <li data-feature="attr-word"><code>[data-species~="cat"]</code> one word from a list, so Fia can be two things</li>
+        <li><code>animation-name</code> a new name replays the fade on every click</li>
+        <li data-feature="subgrid"><code>grid-template-rows: subgrid</code> ratings and tags line up across a row</li>
+        <li data-feature="order-calc"><code>order: calc(var(--rating) * -1)</code> sort by the number the bar draws</li>
+        <li><code>counter()</code> hidden cards don't count, so the total is live</li>
+      </ul>
+
+      <!-- A <div>, not a <p>: a list can't go inside a paragraph, and the
+           parser would close the <p> before the <ul> -->
+      <div class="tech__note">
+        <p>Full disclosure: two things here that I would actually use JavaScript to improve.</p>
+        <ul>
+          <li>The cards don't glide to their new places: the gallery blinks out and fades back in to hide the jump. Actually moving them needs <code>document.startViewTransition()</code>.</li>
+          <li><code>order</code> only moves cards on screen: a screen reader still meets them in the order they are in the markup. That's fine for a gallery of photos, but think twice before sorting a table this way.</li>
+        </ul>
+      </div>
+    </footer>
+
+    <footer class="colophon" id="end">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/gallery.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

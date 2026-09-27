@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <!-- Not in the index or the menu yet: take this out when it is -->
+  <meta name="robots" content="noindex">
+  <title>Aspiring Floofs</title>
+
+  <link rel="preload" href="../assets/fonts/amatic-sc-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/maven-pro-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Hold first render until the parser reaches the colophon, so a
+       cross-document view transition captures the whole page, not just the
+       top of it. Ignored by browsers that don't know rel="expect". -->
+  <link rel="expect" href="#end" blocking="render">
+</head>
+<body>
+  <div class="page">
+
+    <nav class="menu" aria-label="Site">
+      <button class="menu__toggle round-btn" type="button" popovertarget="site-menu" aria-label="Menu">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+      <div class="menu__panel card pop-in" id="site-menu" popover>
+        <p class="menu__kicker"><a href="../index.html"><span aria-hidden="true">&larr;</span> All demos</a></p>
+        <ol class="menu__list">
+          <li><a href="accordion.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Accordion</span></a></li>
+          <li><a href="tabs.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Tabs</span></a></li>
+          <li><a href="modal.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Modal</span></a></li>
+          <li><a href="popover.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Popover</span></a></li>
+          <li><a href="carousel.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Carousel</span></a></li>
+          <li><a href="theme.html"><span class="ordinal" aria-hidden="true"></span><span class="lit-text">Light &amp; dark</span></a></li>
+        </ol>
+        <a class="menu__repo" href="https://github.com/jomarieminney/css-demos">Source on GitHub <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </nav>
+
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">&larr; All demos</a></nav>
+
+    <header class="masthead">
+      <p class="eyebrow">08 &middot; Form &middot; <code>:placeholder-shown</code> + <code>:user-invalid</code> + <code>:has()</code></p>
+
+      <h1 class="title">Aspiring <span class="title__slab">Floofs</span></h1>
+
+      <p class="lede">Think your pet belongs on the slides? Tell us about them. The labels float out of the way, the errors wait until you've actually had a go, and the submit button knows whether you're finished. None of that is JavaScript.</p>
+
+      <svg class="badge" viewBox="0 0 140 140" role="img" aria-label="Zero kilobytes of JavaScript">
+        <defs>
+          <path id="badge-circle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" />
+        </defs>
+        <circle class="badge__disc" cx="70" cy="70" r="68" />
+        <g class="badge__ring">
+          <text><textPath href="#badge-circle" textLength="322" lengthAdjust="spacing">NO JAVASCRIPT ✦ NO JAVASCRIPT ✦</textPath></text>
+        </g>
+        <text class="badge__big" x="70" y="74" text-anchor="middle">0 KB</text>
+        <text class="badge__small" x="70" y="93" text-anchor="middle">of JS</text>
+      </svg>
+    </header>
+
+    <main class="apply">
+
+      <!-- method="dialog" outside a <dialog> means a submit that passes
+           validation goes nowhere: no reload, no query string. -->
+      <form class="card apply__form" method="dialog" aria-labelledby="apply-title">
+        <h2 class="apply__title" id="apply-title">Submit your floof</h2>
+
+        <div class="apply__pair">
+          <div class="field">
+            <label class="field__label" for="pet-name">Their name</label>
+            <input class="field__input" id="pet-name" name="pet" type="text" placeholder=" " required autocomplete="off">
+            <p class="field__error">Every floof needs a name</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="owner-name">Your name</label>
+            <input class="field__input" id="owner-name" name="owner" type="text" placeholder=" " required autocomplete="name">
+            <p class="field__error">So we know whose floof it is</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="email">Email</label>
+          <input class="field__input" id="email" name="email" type="email" placeholder=" " required autocomplete="email">
+          <p class="field__error">That doesn't look like an email address</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="species">Species</label>
+          <!-- The <button> and <selectedcontent> are for appearance: base-select.
+               Browsers without it drop both tags while parsing, and the
+               emoji spans' text stays, so it's an ordinary select there. -->
+          <select class="field__input field__select" id="species" name="species" required>
+            <button><selectedcontent></selectedcontent></button>
+            <option value="" disabled selected hidden></option>
+            <option value="cat"><span class="field__emoji" aria-hidden="true">🐱</span> Cat</option>
+            <option value="dog"><span class="field__emoji" aria-hidden="true">🐶</span> Dog</option>
+            <option value="plush"><span class="field__emoji" aria-hidden="true">🧸</span> Plushie</option>
+            <option value="fish"><span class="field__emoji" aria-hidden="true">🐟</span> Fish</option>
+          </select>
+          <p class="field__error">Pick the closest. Nobody's checking.</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="about">Tell us about them</label>
+          <textarea class="field__input" id="about" name="about" rows="3" placeholder=" " required minlength="20"></textarea>
+          <p class="field__error">A little more than that, please (20 characters or so)</p>
+        </div>
+
+        <div class="field field--static">
+          <label class="field__label" for="photo">Their best photo</label>
+          <input class="field__input" id="photo" name="photo" type="file" accept="image/*" required>
+          <p class="field__error">No photo, no floof</p>
+        </div>
+
+        <div class="apply__range">
+          <label class="apply__label" for="floofiness">How floofy? We only accept submissions at or above an 8/10.</label>
+          <!-- The bar is drawn from 1 to 15; the real slider only covers
+               8 to 15, so there's no way to pick anything lower -->
+          <div class="slider__bar">
+            <input class="slider" id="floofiness" name="floofiness" type="range" min="8" max="15" step="1" value="8">
+          </div>
+          <!-- CSS can't print the slider's value, so the scale is printed under it -->
+          <div class="slider__scale" aria-hidden="true">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+          </div>
+        </div>
+
+        <label class="apply__consent">
+          <input type="checkbox" name="consent" required>
+          <span>I understand that nobody is actually going to read this</span>
+        </label>
+
+        <div class="apply__actions">
+          <button class="apply__btn apply__btn--ghost" type="reset">Start again</button>
+          <!-- Only one of these two shows at a time: see form:invalid in the CSS -->
+          <button class="apply__btn apply__btn--check" type="submit">Submit my floof</button>
+          <button class="apply__btn apply__btn--go" type="button" commandfor="lol-no" command="show-modal">Submit my floof</button>
+        </div>
+      </form>
+
+
+      <dialog class="card pop-in floof-dialog lol-no" id="lol-no" closedby="any" aria-labelledby="lol-no-title">
+        <header class="floof-dialog__head">
+          <div class="floof__names">
+            <h2 class="floof__pet lit-text" id="lol-no-title">Lol no.</h2>
+          </div>
+          <button class="round-btn plus-x" commandfor="lol-no" command="close" aria-label="Close"></button>
+        </header>
+        <div class="lol-no__body">
+          <p>I'm not reading a hundred submissions every time I give a talk.</p>
+          <p>But thank you. I'm sure your floof is excellent. At least an 8/10.</p>
+          <button class="apply__btn" commandfor="lol-no" command="close">Fair enough</button>
+        </div>
+      </dialog>
+    </main>
+
+    <footer class="tech">
+      <h2 class="tech__title">Progressive enhancement, live</h2>
+      <p class="tech__sub">What <em>this</em> browser is giving you right now. Every tick is decided by <code>@supports</code>, not JavaScript. The form works everywhere; the styled dropdown and the growing textarea are the newest parts, and without them you get the browser's own select and a textarea you can drag.</p>
+
+      <h3 class="tech__heading">CSS &middot; graded live by <code>@supports</code></h3>
+      <ul class="tech__list">
+        <li data-feature="placeholder-shown"><code>:placeholder-shown</code> empty or not: the label floats</li>
+        <li data-feature="user-invalid"><code>:user-invalid</code> red only after you've had a go</li>
+        <li data-feature="has"><code>:has()</code> each field restyles itself from its control</li>
+        <li data-feature="base-select"><code>appearance: base-select</code> a dropdown you can style</li>
+        <li data-feature="field-sizing"><code>field-sizing: content</code> the textarea grows as you type</li>
+        <li data-feature="file-button"><code>::file-selector-button</code> the "choose file" button, restyled</li>
+        <li data-feature="accent-color"><code>accent-color</code> the checkbox in brand colours</li>
+      </ul>
+
+      <h3 class="tech__heading">HTML &middot; CSS can't grade these, so check <a href="https://caniuse.com/">Can I use</a></h3>
+      <ul class="tech__list tech__list--links">
+        <li><a href="https://caniuse.com/form-validation"><code>required</code>, <code>type="email"</code>, <code>minlength</code> the browser checks the form</a></li>
+        <li><a href="https://caniuse.com/?search=commandfor"><code>command / commandfor</code> the button opens the dialog</a></li>
+        <li><a href="https://caniuse.com/input-range"><code>type="range"</code> a real slider, restyled</a></li>
+        <li><a href="https://caniuse.com/?search=selectedcontent"><code>&lt;selectedcontent&gt;</code> the chosen option, copied into the button</a></li>
+      </ul>
+
+    </footer>
+
+    <footer class="colophon" id="end">
+      <p>
+        Made by <a href="https://jominney.com">Jo Minney</a>
+        &middot; page source on <a href="https://github.com/jomarieminney/css-demos/blob/main/demos/submit.html" target="_blank" rel="noopener">GitHub <span aria-hidden="true">&nearr;</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

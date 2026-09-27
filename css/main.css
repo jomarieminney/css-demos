@@ -13,7 +13,7 @@
      base        the page canvas and plain elements
      components  shared building blocks: masthead, site menu, cards,
                  buttons, the floof profile, the feature chips
-     demo        one heading per demo (01 Accordion … 06 Light & dark);
+     demo        one heading per demo (01 Accordion … 10 Filter);
                  nothing in here is used outside its own page
      utilities   single-purpose helpers that always win over components
      prefs       user preferences (reduced motion): the last word
@@ -83,6 +83,9 @@
 @property --depth { syntax: "<number>"; inherits: false; initial-value: 0; }
 @property --dir   { syntax: "<number>"; inherits: true;  initial-value: 1; }
 @property --band  { syntax: "<number>"; inherits: true;  initial-value: 1; }
+/* The scroll demo's count-up: an <integer> interpolates in whole steps, and
+   counter() can print it (see "09 · Scroll-driven") */
+@property --tally { syntax: "<integer>"; inherits: false; initial-value: 0; }
 
 
 /* ==========================================================================
@@ -828,6 +831,83 @@
     :is(details[open], dialog[open], :popover-open) .rating__fill { scale: 0 1; }
   }
 
+  /* ----- Gallery: a plain grid of floof cards, polaroid on top, always
+           showing. Used by the light & dark, form and filter demos. ----- */
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.25rem;
+    counter-reset: item;
+  }
+  .gallery__card {
+    counter-increment: item;
+    padding: 1.25rem 1.25rem 1.4rem;
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    &::before { display: none; }     /* no gradient hover bar on these */
+    /* the profile parts normally wait for an open <details>: not here */
+    .polaroid { opacity: 1; rotate: -2deg; translate: 0; margin-inline: .5rem; transition: rotate .5s var(--ease-spring), scale .5s var(--ease-spring); }
+    .rating__fill { scale: 1 1; }
+    .floof__kicker { font-size: 1.6rem; }
+    .rating { margin-block-start: .75rem; }
+    &:hover .polaroid { rotate: 0deg; scale: 1.02; }
+  }
+  .gallery__meta {
+    padding-inline: .25rem;
+    text-align: center;
+    .floof__owner { margin: 0 0 .25rem; }
+  }
+
+  /* ----- Pills: radios and checkboxes dressed as buttons. The input stays
+           real (visually hidden, still focusable and announced) and the
+           label reads its state with :has(). Wrapped in a .choices fieldset,
+           whose legend says what the group is for. Used by the filter
+           demo. ----- */
+  .choices {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .choices__legend {
+    margin-block-end: .6rem;
+    padding: 0;
+    font-size: .8rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .55rem;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .5rem 1.05rem .45rem;
+    border: 1px solid var(--surface-border);
+    border-radius: 100vmax;
+    background: var(--surface);
+    box-shadow: var(--surface-shadow);
+    color: var(--lilac);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: color .3s, background .3s, border-color .3s, scale .4s var(--ease-spring);
+    &:hover { color: var(--paper); border-color: var(--accent-border); scale: 1.05; }
+    &:has(:checked) { background: var(--magenta); border-color: var(--magenta); color: var(--on-accent); }
+    &:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 3px; }
+  }
+
   /* ==========================================================================
      Tech cheat-sheet footer + feature chips
      ========================================================================== */
@@ -849,6 +929,15 @@
     max-width: 60ch;
     font-size: .9rem;
     color: var(--paper-2);
+    /* a note can be a <div> holding a paragraph and a list */
+    p { margin: 0; }
+    ul {
+      margin: .5rem 0 0;
+      padding-inline-start: 1.25rem;
+      display: grid;
+      gap: .4rem;
+    }
+    li::marker { color: var(--pink); }
   }
   .tech__heading {
     margin: 1.5rem 0 .6rem;
@@ -947,6 +1036,26 @@
   @supports selector(::scroll-marker)          { [data-feature="scroll-markers"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (scrollbar-width: none)            { [data-feature="scrollbar-width"] { --tick: "\2713"; --tick-hue: var(--teal); } }
   @supports (scroll-initial-target: nearest)   { [data-feature="scroll-initial-target"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (animation-play-state: paused)     { [data-feature="play-state"]     { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (mask-image: linear-gradient(#000, #000)) { [data-feature="mask"]    { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(:focus-visible)           { [data-feature="focus-visible"]  { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(:placeholder-shown)       { [data-feature="placeholder-shown"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(:user-invalid)            { [data-feature="user-invalid"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (field-sizing: content)            { [data-feature="field-sizing"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (appearance: base-select)          { [data-feature="base-select"]    { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector(::file-selector-button)   { [data-feature="file-button"]    { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (accent-color: red)                { [data-feature="accent-color"]   { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (animation-timeline: scroll())     { [data-feature="scroll-progress"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (animation-range: entry 0% cover 50%) { [data-feature="animation-range"] { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (view-timeline-name: --a)          { [data-feature="view-timeline"]  { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (position: sticky)                 { [data-feature="sticky"]         { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (width: 1cqi)                      { [data-feature="cq-units"]       { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports (order: calc(2 * -1))              { [data-feature="order-calc"]     { --tick: "\2713"; --tick-hue: var(--teal); } }
+  @supports selector([a~="b"])                 { [data-feature="attr-word"]      { --tick: "\2713"; --tick-hue: var(--teal); } }
+  /* Media queries grade themselves, as with prefers-color-scheme above */
+  @media (prefers-reduced-motion: reduce), (prefers-reduced-motion: no-preference) {
+    [data-feature="prefers-reduced-motion"] { --tick: "\2713"; --tick-hue: var(--teal); }
+  }
   /* Only at-rule() can test this one (Chrome 148+). Safari supports the
      feature but not the test, so it shows a cross there for now. */
   @supports at-rule(@view-transition)          { [data-feature="view-transition"] { --tick: "\2713"; --tick-hue: var(--teal); } }
@@ -2057,36 +2166,942 @@
     line-height: 1;
     color: var(--pink);
   }
+  /* The gallery below the explainers is the shared .gallery component */
 
-  /* A plain grid of the floofs, so there is something to watch change */
-  .gallery {
+
+  /* ==========================================================================
+     07 · Marquee (demos/marquee.html) — an endless logo strip
+     No JS: the list is in the page twice, side by side, and both copies
+     slide left by their own width plus the gap, forever. When the first
+     copy has gone, the second is exactly where the first began, so the loop
+     has no seam. Hover or focus pauses it; every logo is a button that
+     opens a <dialog> (the same ones as the modal demo).
+     ========================================================================== */
+  .marquees {
+    display: grid;
+    gap: clamp(1.75rem, 5vw, 3rem);
+  }
+  .marquee {
+    display: grid;
+    gap: .6rem;
+    min-width: 0;                    /* a grid item's default minimum is its content: two whole tracks */
+    > * { min-width: 0; }
+  }
+  .marquee__kicker {
+    margin: 0;
+    text-align: center;
+    font-size: .85rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .marquee__viewport {
+    --gap: 1rem;
+    --speed: 40s;                    /* one full lap */
+    --fade: clamp(2rem, 10vw, 7rem);
+    display: flex;
+    gap: var(--gap);
+    padding-block: .9rem;            /* room for the hover lift and the focus ring */
+    overflow: clip;
+    /* TRICK: mask-image — both ends fade into whatever is behind the strip,
+       so there's no colour to match */
+    mask-image: linear-gradient(to right,
+      transparent, #000 var(--fade),
+      #000 calc(100% - var(--fade)), transparent);
+  }
+  .marquee--reverse .marquee__viewport { --speed: 55s; }
+
+  .marquee__track {
+    flex: none;
+    display: flex;
+    justify-content: space-around;
+    gap: var(--gap);
+    min-width: 100%;                 /* each copy must be at least as wide as the strip, or a gap shows */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: marquee var(--speed) linear infinite;
+    .marquee--reverse & { animation-direction: reverse; }
+  }
+  /* -100% is the track's own width; the gap is the space before the copy */
+  @keyframes marquee {
+    to { translate: calc(-100% - var(--gap)) 0; }
+  }
+
+  /* TRICK: animation-play-state — hover anywhere on the strip, or tab into
+     it, and it holds still, so what you are aiming at stays put */
+  .marquee__viewport:is(:hover, :focus-within) .marquee__track {
+    animation-play-state: paused;
+  }
+  /* Pausing alone can strand the focused logo behind the fade or off the
+     end, so a KEYBOARD visit stops the strip outright and lays the whole
+     list out as a still, wrapped row: every logo in sight, the copy gone.
+     :has(:focus-visible) rather than :focus-within, so a mouse click
+     doesn't make it jump. */
+  .marquee__viewport:has(:focus-visible) {
+    mask-image: none;
+    .marquee__track {
+      flex: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+      min-width: 0;
+      animation: none;
+    }
+    .marquee__track[aria-hidden] { display: none; }
+  }
+
+  /* A sponsor logo: sits quietly in greyscale until you look at it */
+  .marquee__logo {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .5rem 1.3rem .5rem .5rem;
+    border: 1px solid var(--surface-border);
+    border-radius: 100vmax;
+    background: var(--surface);
+    box-shadow: var(--surface-shadow);
+    color: inherit;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    filter: grayscale(1);
+    opacity: .7;
+    transition: filter .4s, opacity .4s, border-color .3s, translate .4s var(--ease-spring);
+
+    img {
+      width: 3rem;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--lilac);
+      transition: border-color .3s, rotate var(--dur) var(--ease-spring);
+    }
+    .lit-text { font-size: 1.9rem; }
+
+    &:is(:hover, :focus-visible) {
+      filter: none;
+      opacity: 1;
+      border-color: var(--accent-border);
+      translate: 0 -3px;
+      img { border-color: var(--magenta); rotate: 8deg; }
+      .lit-text { --lit: 100%; }
+    }
+  }
+
+  .marquee__hint {
+    margin: 0;
+    text-align: center;
+    font-size: .9rem;
+    color: var(--lilac);
+  }
+
+  /* Reduced motion: the prefs layer stops every animation, which would
+     leave a strip cut off at one end. Give it the keyboard layout above
+     instead: one still, wrapped row with the copy dropped. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__viewport {
+      mask-image: none;
+      .marquee__track {
+        flex: 1;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 0;
+      }
+      .marquee__track[aria-hidden] { display: none; }
+    }
+  }
+
+
+  /* ==========================================================================
+     08 · Form (demos/submit.html) — floating labels, polite validation,
+     restyled native controls.
+     No JS:
+     · placeholder=" " + :placeholder-shown tells an empty field from a full
+       one, so the label can float up out of the way
+     · :user-invalid only goes red once you have had a go
+     · the select, the file button, the slider and the checkbox are the
+       browser's own controls, restyled
+     · form:invalid / form:valid swap the submit button for one that opens
+       the "lol no" <dialog> (see the note on .apply__btn)
+     ========================================================================== */
+  .apply {
+    max-width: 46rem;
+  }
+
+  .apply__form {
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    &::before { display: none; }     /* no gradient hover bar on a form */
+  }
+  .apply__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    line-height: 1;
+    color: var(--pink);
+  }
+  /* Two short fields side by side when there is room */
+  .apply__pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ----- A field: label, control, error. The label comes first in the
+           markup (it is read first) and floats over the control. ----- */
+  .field {
+    position: relative;
+    display: grid;
+    /* side by side, a field whose neighbour is showing an error gets taller
+       too; keep the control its own height and let the space go below it */
+    align-content: start;
+  }
+  .field__input {
+    width: 100%;
+    padding: 1.5rem 1rem .5rem;
+    border: 1px solid var(--surface-border);
+    border-radius: .8rem;
+    background: color-mix(in oklab, var(--lavender) 6%, transparent);
+    color: var(--paper);
+    font: inherit;
+    font-weight: 400;
+    transition: border-color .3s, background .3s;
+    &:hover { border-color: var(--accent-border); }
+    &:focus { border-color: var(--teal); background: color-mix(in oklab, var(--lavender) 10%, transparent); }
+    &:focus-visible { outline-offset: 1px; }
+  }
+  .field__label {
+    position: absolute;
+    inset-inline-start: 1rem;
+    inset-block-start: 1rem;
+    color: var(--lilac);
+    pointer-events: none;            /* clicks go through to the control */
+    transform-origin: left top;
+    transition: translate .45s var(--ease-spring), scale .45s var(--ease-spring), color .3s;
+  }
+  /* TRICK: :placeholder-shown — every text field has placeholder=" ", so it
+     is "showing its placeholder" exactly when it is empty. Focused or
+     filled, the label floats up and shrinks. :has() lets the label sit
+     before the input in the markup; the classic version needs it after,
+     for a + selector. */
+  .field:has(.field__input:focus),
+  .field:has(.field__input:is(input, textarea):not(:placeholder-shown)),
+  .field:has(option:checked:not([value=""])),      /* a species has been picked */
+  .field--static {                                 /* the file input always has its button showing */
+    .field__label { translate: 0 -.72rem; scale: .76; }
+  }
+  .field:has(.field__input:focus) .field__label { color: var(--teal); }
+
+  /* TRICK: :user-invalid — the same test as :invalid, but only after the
+     person has changed the field and moved on, or tried to submit. So a
+     blank form doesn't arrive covered in red. */
+  .field__error {
+    display: none;
+    margin: .4rem 0 0 1rem;
+    font-size: .85rem;
+    color: var(--pink);
+  }
+  .field:has(:user-invalid) {
+    .field__input { border-color: var(--magenta); }
+    .field__label { color: var(--pink); }
+    .field__error { display: block; }
+  }
+  .field:has(:user-valid) .field__input:not(:focus) {
+    border-color: color-mix(in oklab, var(--teal) 70%, transparent);
+  }
+
+  /* TRICK: field-sizing: content — the textarea grows with what you type,
+     between three lines and sixteen. Without it, rows="3" and a drag handle. */
+  textarea.field__input {
+    field-sizing: content;
+    min-block-size: calc(3lh + 2rem);
+    max-block-size: calc(16lh + 2rem);
+    resize: vertical;
+  }
+
+  /* TRICK: ::file-selector-button — the "Choose file" button, restyled */
+  input[type="file"].field__input {
+    padding-block: 1.85rem .7rem;
+    color: var(--paper-2);
+    cursor: pointer;
+    &::file-selector-button {
+      margin-inline-end: .9rem;
+      padding: .45rem 1rem .4rem;
+      border: 0;
+      border-radius: 100vmax;
+      background: var(--magenta);
+      color: var(--on-accent);
+      font: 700 1.3rem/1 var(--font-display);
+      cursor: pointer;
+      transition: background .3s;
+    }
+    &:hover::file-selector-button { background: var(--purple); }
+  }
+
+  /* TRICK: appearance: base-select — a <select> you are allowed to style,
+     dropdown and all. The options can hold more than text, and
+     <selectedcontent> copies the chosen one into the button. Elsewhere it
+     is an ordinary select (the parser drops the extra tags, the emoji is
+     plain text), so this is all enhancement. */
+  @supports (appearance: base-select) {
+    .field__select,
+    .field__select::picker(select) { appearance: base-select; }
+
+    .field__select {
+      display: flex;
+      align-items: center;
+      min-block-size: 3.35rem;
+      cursor: pointer;
+      > button { display: contents; }
+    }
+    .field__select::picker-icon {
+      color: var(--lilac);
+      transition: rotate .45s var(--ease-spring);
+    }
+    .field__select:open::picker-icon { rotate: 180deg; }
+
+    .field__select selectedcontent,
+    .field__select option {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .field__select selectedcontent { font-weight: 500; }
+
+    /* The dropdown: a card that drops in, like the popovers */
+    .field__select::picker(select) {
+      margin-block: .4rem;
+      padding: .4rem;
+      border: 1px solid var(--surface-border);
+      border-radius: .9rem;
+      background: var(--ink-2);
+      box-shadow: var(--surface-drop);
+      color: var(--paper);
+      opacity: 0;
+      translate: 0 -.5rem;
+      transition:
+        opacity .25s var(--ease-out),
+        translate .45s var(--ease-spring),
+        display .45s allow-discrete,
+        overlay .45s allow-discrete;
+    }
+    .field__select:open::picker(select) { opacity: 1; translate: 0; }
+    @starting-style {
+      .field__select:open::picker(select) { opacity: 0; translate: 0 -.5rem; }
+    }
+
+    .field__select option {
+      padding: .45rem .8rem .45rem .6rem;
+      border-radius: .55rem;
+      font: 700 1.5rem/1.1 var(--font-display);
+      cursor: pointer;
+      transition: background .2s;
+      &:is(:hover, :focus-visible) { background: color-mix(in oklab, var(--lavender) 12%, transparent); outline: none; }
+      &:checked { background: color-mix(in oklab, var(--magenta) 25%, transparent); }
+      &::checkmark { order: 1; margin-inline-start: auto; color: var(--teal); }
+      /* display: flex above would beat the UA's [hidden] rule, and the
+         blank placeholder would show as an empty row */
+      &[hidden] { display: none; }
+    }
+  }
+  .field__emoji { font-size: 1.2em; }
+
+  /* ----- The rating slider: a real <input type="range">, dressed as the
+           floof rating bar used on the other demos. The bar runs 1 to 15
+           (brand gradient up to 10/10, teal beyond, a notch at 10), but the
+           slider only covers 8 to 15, laid over the right-hand part of it,
+           so nothing under 8 can be picked. ----- */
+  .apply__label {
+    display: block;
+    margin-block-end: .6rem;
+    font-size: .8rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .apply__range {
+    --thumb: 1.6rem;
+    --track: .55rem;
+  }
+
+  /* 15 stops, evenly spaced: the first thumb-centre is half a thumb in from
+     the left, the last half a thumb in from the right, so one step is
+     (100% - thumb) / 14. Stop 8 is 7 steps along, which puts the slider's
+     left edge at (100% - thumb) / 2, and its thumb then stops exactly on
+     8, 9 … 15. */
+  .slider__bar {
+    position: relative;
+    &::before {
+      --at10: calc(var(--thumb) / 2 + (100% - var(--thumb)) * 9 / 14);   /* stop 10 */
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      inset-block-start: calc((var(--thumb) - var(--track)) / 2);
+      height: var(--track);
+      border-radius: 1rem;
+      background:
+        linear-gradient(90deg, transparent calc(var(--at10) - 1px), var(--ink) 0 calc(var(--at10) + 1px), transparent 0),
+        var(--grad-brand) 0 0 / var(--at10) 100% no-repeat,
+        linear-gradient(90deg, var(--teal), #3fd4c9);
+    }
+  }
+  .slider {
+    position: relative;              /* above the bar */
+    appearance: none;
+    display: block;
+    width: calc((100% + var(--thumb)) / 2);
+    height: var(--thumb);
+    margin: 0 0 0 calc((100% - var(--thumb)) / 2);
+    background: none;
+    cursor: pointer;
+    &:focus-visible { outline: none; }   /* the ring goes on the thumb instead */
+  }
+  /* TRICK: the slider's parts are pseudo-elements, one set per engine.
+     Each needs its own rule: a selector list with an unknown pseudo-element
+     in it is thrown away whole. The track is see-through: the bar behind
+     it is the one you see. */
+  .slider::-webkit-slider-runnable-track { height: var(--track); background: none; }
+  .slider::-moz-range-track              { height: var(--track); background: none; }
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: var(--thumb);
+    height: var(--thumb);
+    margin-block-start: calc((var(--track) - var(--thumb)) / 2);   /* centre it on the track */
+    border: 4px solid var(--magenta);
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 .3rem .8rem -.2rem var(--shadow-ink);
+    transition: scale .4s var(--ease-spring);
+  }
+  .slider::-moz-range-thumb {
+    box-sizing: border-box;
+    width: var(--thumb);
+    height: var(--thumb);
+    border: 4px solid var(--magenta);
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 .3rem .8rem -.2rem var(--shadow-ink);
+    transition: scale .4s var(--ease-spring);
+  }
+  .slider:is(:hover, :active)::-webkit-slider-thumb { scale: 1.15; }
+  .slider:is(:hover, :active)::-moz-range-thumb     { scale: 1.15; }
+  .slider:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--teal); outline-offset: 3px; }
+  .slider:focus-visible::-moz-range-thumb     { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  /* The numbers under it. The row is inset by half a thumb at each end, so
+     its first and last points are the first and last stops; each number is
+     a zero-width box with its text centred over it, so they sit exactly
+     under the stopping points and never make the row wider than the form.
+     1 to 7 are dimmed: on the bar, but out of reach. */
+  .slider__scale {
+    display: flex;
+    justify-content: space-between;
+    margin-block-start: .35rem;
+    padding-inline: calc(var(--thumb) / 2);
+    font: 700 1.25rem/1 var(--font-display);
+    color: var(--lilac);
+    span { width: 0; display: flex; justify-content: center; }
+    span:nth-child(-n + 7) { opacity: .4; }
+    span:nth-child(10) { color: var(--pink); }   /* 10/10, where the notch is */
+  }
+
+  /* TRICK: accent-color — the browser's own checkbox, in brand colours */
+  .apply__consent {
+    display: flex;
+    align-items: start;
+    gap: .75rem;
+    color: var(--paper-2);
+    cursor: pointer;
+    input {
+      flex: none;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin: .15rem 0 0;
+      accent-color: var(--magenta);
+      cursor: pointer;
+    }
+  }
+
+  /* ----- Buttons ----- */
+  .apply__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: .75rem;
+    padding-block-start: .5rem;
+  }
+  .apply__btn {
+    padding: .7rem 1.6rem .6rem;
+    border: 1px solid var(--magenta);
+    border-radius: 100vmax;
+    background: var(--magenta);
+    color: var(--on-accent);
+    font: 700 1.7rem/1 var(--font-display);
+    cursor: pointer;
+    transition: background .3s, border-color .3s, color .3s, scale .4s var(--ease-spring);
+    &:hover { background: var(--purple); border-color: var(--purple); scale: 1.04; }
+  }
+  .apply__btn--ghost {
+    background: none;
+    border-color: var(--surface-border);
+    color: var(--lilac);
+    &:hover { background: none; border-color: var(--accent-border); color: var(--paper); }
+  }
+  /* TRICK: form:invalid / form:valid — two buttons, one showing at a time.
+     While anything is missing you get a real submit button: pressing it
+     runs the browser's own validation, which focuses the first problem and
+     says what's wrong (the form is method="dialog", so even a submit that
+     passes goes nowhere). Once everything is valid it swaps for a
+     command="show-modal" button that opens the dialog. The hidden one is
+     display: none, so it is out of the tab order too. */
+  .apply__form:invalid .apply__btn--go,
+  .apply__form:valid .apply__btn--check { display: none; }
+
+  /* ----- The "lol no" dialog: the .floof-dialog shell, narrower ----- */
+  .lol-no {
+    width: min(30rem, calc(100% - 2rem));
+    .floof__pet { font-size: clamp(2.4rem, 7vw, 3.2rem); }
+  }
+  .lol-no__body {
+    display: grid;
+    gap: 1.25rem;
+    padding: .5rem 1.6rem 1.75rem;
+    > p { margin: 0; color: var(--paper-2); }
+    .apply__btn { justify-self: end; }
+  }
+
+
+  /* ==========================================================================
+     09 · Scroll-driven (demos/scroll.html) — animations on a scroll
+     position instead of a clock.
+     No JS:
+     · scroll(root): progress is how far down the page you are
+     · view(): progress is how far an element has come through the window
+     · animation-range: which slice of that journey the animation spans
+     Everything below is visible and still by default. The animations are
+     added only when the browser has scroll timelines AND the person hasn't
+     asked for reduced motion, so each is a from-state layered on top.
+     ========================================================================== */
+  .scrolly {
+    display: grid;
+    gap: clamp(3rem, 8vw, 5rem);
+  }
+  .scrolly__title {
+    margin: 0 0 .5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    line-height: 1;
+    color: var(--pink);
+  }
+  .scrolly__sub {
+    margin: 0 0 1.75rem;
+    max-width: 58ch;
+    color: var(--paper-2);
+  }
+
+  /* ----- 1 · Cards that arrive: polaroid and words, zig-zagging ----- */
+  .arrivals {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.25rem;
-    counter-reset: item;
+    gap: clamp(1.5rem, 5vw, 3rem);
   }
-  .gallery__card {
-    counter-increment: item;
-    padding: 1.25rem 1.25rem 1.4rem;
+  .arrival {
     display: grid;
-    gap: 1rem;
-    align-content: start;
-    &::before { display: none; }     /* no gradient hover bar on these */
-    /* the profile parts normally wait for an open <details>: not here */
-    .polaroid { opacity: 1; rotate: -2deg; translate: 0; margin-inline: .5rem; transition: rotate .5s var(--ease-spring), scale .5s var(--ease-spring); }
+    grid-template-columns: minmax(10rem, 15rem) 1fr;
+    align-items: center;
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    padding: 1.5rem clamp(1.25rem, 4vw, 2.25rem);
+    transition: border-color .3s;    /* not the .card entrance: the scroll animation owns opacity and translate */
+    --lean: -1;                      /* odd cards lean and arrive from the left… */
+
+    &:nth-child(even) {
+      --lean: 1;                     /* …even ones from the right, photo on the right */
+      grid-template-columns: 1fr minmax(10rem, 15rem);
+      .polaroid { order: 1; }
+    }
+    &:hover { border-color: var(--accent-border); }
+
+    .polaroid {
+      opacity: 1;
+      translate: 0;
+      rotate: calc(var(--lean) * 3deg);
+      transition: none;
+    }
     .rating__fill { scale: 1 1; }
-    .floof__kicker { font-size: 1.6rem; }
-    .rating { margin-block-start: .75rem; }
-    &:hover .polaroid { rotate: 0deg; scale: 1.02; }
+    .floof__owner { margin: 0 0 .3rem; }
+    .floof__kicker { font-size: clamp(1.7rem, 3.5vw, 2.1rem); }
+    p { margin: 0 0 .75rem; color: var(--paper-2); }
+
+    @media (width < 40rem) {
+      &, &:nth-child(even) { grid-template-columns: 1fr; }
+      .polaroid, &:nth-child(even) .polaroid { max-width: 15rem; justify-self: center; order: 0; }
+    }
   }
-  .gallery__meta {
-    padding-inline: .25rem;
+  /* The photo sits in a clipped frame, slightly zoomed, so it has room to
+     drift inside it (the parallax below) */
+  .arrival__frame {
+    overflow: clip;
+    border-radius: .15rem;
+    img { scale: 1.25; }
+  }
+
+  /* ----- 2 · A row of polaroids ----- */
+  .strip__track {
+    list-style: none;
+    margin: 0;
+    padding: 1.5rem .5rem 2rem;
+    display: flex;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    overflow-x: auto;                /* static fallback: a row you scroll sideways */
+    scrollbar-width: thin;
+    scrollbar-color: var(--magenta) transparent;
+
+    > li { flex: 0 0 min(15rem, 62vw); }
+    .polaroid { opacity: 1; translate: 0; rotate: -3deg; transition: none; }
+    > li:nth-child(even) .polaroid { rotate: 4deg; }
+  }
+
+  /* ----- 3 · The tally ----- */
+  .tally {
+    display: grid;
+    justify-items: center;
+    gap: .25rem;
     text-align: center;
-    .floof__owner { margin: 0 0 .25rem; }
+    p { margin: 0; color: var(--paper-2); }
   }
+  .tally__num {
+    display: flex;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(6rem, 24vw, 13rem);
+    line-height: .9;
+  }
+  .tally__count {
+    --tally: 72;                     /* the answer, for browsers that won't count up to it */
+    min-width: 2ch;                  /* the digits vary in width; stop the "/60" wobbling */
+    text-align: end;
+    color: var(--pink);
+    counter-reset: tally var(--tally);
+    &::before { content: counter(tally); }
+  }
+  .tally__of { color: var(--lilac); font-size: .45em; }
+
+  /* ----- Progress bar and back-to-top: only there when they're animated ----- */
+  .scroll-progress { display: none; }
+  .to-top {
+    position: fixed;
+    inset: auto var(--menu-edge) var(--menu-edge) auto;
+    z-index: 30;
+    width: var(--menu-size);
+    border-color: var(--surface-border);
+    background: var(--surface);
+    box-shadow: var(--surface-shadow);
+    text-decoration: none;
+    &:hover { background: var(--magenta); border-color: var(--magenta); color: var(--on-accent); }
+  }
+
+  /* ----- The animations ----- */
+  /* TRICK: motion as an opt-in — nothing below exists unless the person
+     is fine with motion, so there's nothing to undo for those who aren't */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+
+      /* TRICK: scroll(root) — a bar that is exactly as full as the page is
+         scrolled. No duration: the scroll position is the clock. */
+      .scroll-progress {
+        display: block;
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 40;
+        height: .3rem;
+        background: var(--grad-brand);
+        transform-origin: left;
+        animation: progress-bar linear both;
+        animation-timeline: scroll(root);
+      }
+      @keyframes progress-bar { from { scale: 0 1; } }
+
+      /* The back-to-top button fades in between 40% and 90% of a screen
+         scrolled. For a scroll() timeline, lengths in animation-range are
+         distances down the page. */
+      .to-top {
+        animation: appear linear both;
+        animation-timeline: scroll(root);
+        animation-range: 40vh 90vh;
+      }
+      @keyframes appear {
+        from { opacity: 0; scale: .5; visibility: hidden; }   /* hidden only at the very top: no hidden-but-clickable button */
+      }
+    }
+
+    @supports (animation-timeline: view()) {
+
+      /* TRICK: view() + animation-range — each card animates across its own
+         trip through the window: from its top edge peeking over the bottom
+         (entry 0%) to a third of it being in view (cover 35%). Scroll back
+         and it plays backwards. */
+      .arrival {
+        animation: arrive linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+      }
+      @keyframes arrive {
+        from { opacity: 0; translate: calc(var(--lean) * var(--gutter)) 3rem; scale: .92; }   /* sideways by no more than the page's side padding, so it never pokes past the window */
+      }
+
+      /* The polaroid lands a beat later, with a twist */
+      .arrival .polaroid {
+        animation: land linear both;
+        animation-timeline: view();
+        animation-range: entry 30% cover 45%;
+      }
+      @keyframes land {
+        from { rotate: calc(var(--lean) * -16deg); scale: .7; }
+      }
+
+      /* Parallax: the photo drifts up inside its frame while the card
+         scrolls through, so it seems to sit further back */
+      .arrival__frame img {
+        animation: parallax linear both;
+        animation-timeline: view();
+      }
+      @keyframes parallax {
+        from { translate: 0 -9%; }
+        to   { translate: 0 9%; }
+      }
+
+      /* The rating fills as it comes up the screen. The fill can't use its
+         own view(): its track is overflow: hidden, which makes the track a
+         scroll container, and view() would watch the fill scroll inside a
+         box that never scrolls. So the whole .rating names a timeline and
+         the fill borrows it. */
+      .arrival .rating { view-timeline: --rating block; }
+      .arrival .rating__fill {
+        animation: fill-up linear both;
+        animation-timeline: --rating;
+        animation-range: entry 100% cover 55%;
+      }
+      @keyframes fill-up { from { scale: 0 1; } }
+
+      /* TRICK: a tall section with a sticky inside, and a NAMED view
+         timeline. The section is three screens tall; while it scrolls past,
+         its inner box sticks to the window and the row of polaroids is
+         translated sideways by exactly its own overflow. Vertical scroll in,
+         horizontal movement out. */
+      .strip {
+        height: 220vh;
+        view-timeline: --strip block;
+      }
+      .strip__sticky {
+        position: sticky;
+        inset-block-start: 0;
+        height: 100dvh;
+        display: grid;
+        align-content: center;
+        /* the whole window, not the page column */
+        width: 100vw;
+        margin-inline-start: calc(50% - 50vw);
+        padding-inline: var(--gutter);
+        overflow: clip;
+        container-type: inline-size;   /* 100cqi below = the room the row has */
+      }
+      .strip__track {
+        > li { flex-basis: min(19rem, 62vw); }   /* bigger photos, and further to travel */
+        width: max-content;
+        overflow: visible;
+        animation: sideways linear both;
+        animation-timeline: --strip;
+        /* contain: from the section's top reaching the window's top to its
+           bottom reaching the window's bottom — exactly while it sticks */
+        animation-range: contain 0% contain 100%;
+      }
+      @keyframes sideways {
+        to { translate: calc(-100% + 100cqi) 0; }
+      }
+
+      /* TRICK: animating a registered <integer> (see @property at the top)
+         and printing it with counter(): the number counts up as it
+         scrolls into view, and back down if you scroll away */
+      .tally__count {
+        animation: count-up linear both;
+        animation-timeline: view();
+        animation-range: entry 40% cover 55%;
+      }
+      @keyframes count-up { from { --tally: 0; } }
+    }
+  }
+
+
+  /* ==========================================================================
+     10 · Filter (demos/gallery.html) — filter, sort, count and an empty
+     state, all from a few radios.
+     No JS:
+     · :has() asks the page which radio is checked
+     · [data-species~="cat"] matches one word in a space-separated list, so
+       a card can be in more than one group
+     · every click replays a quick fade that hides the cards jumping to
+       their new places: a NEW animation name restarts an animation
+     · order sorts without moving a node
+     · a counter counts the cards that are showing: display: none ones
+       don't increment it
+     · subgrid lines the ratings and tags up across a row of cards
+     ========================================================================== */
+  .sift {
+    display: grid;
+    gap: 1.5rem;
+    counter-reset: shown;
+  }
+  .sift__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+  }
+  /* The count is after the cards in the markup, because a counter can only
+     be read after it has counted; order moves it above them */
+  .sift__count {
+    order: -1;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--paper-2);
+    strong {
+      font-weight: inherit;
+      color: light-dark(#e9469f, #ff7cc0);   /* the bright pink the .lit-text sweep ends on */
+    }
+  }
+  .sift__controls { order: -2; }
+  .sift__n::before { content: counter(shown); }
+
+  .sift__gallery .gallery__card {
+    counter-increment: item shown;
+    transition: border-color .3s;    /* not the .card slide-in: the shuffle fade below covers comings and goings */
+  }
+  /* TRICK: subgrid — kickers wrap to one line or three, so on their own the
+     ratings and tags below them land at different heights. Each card spans
+     five rows of the gallery's grid (photo, owner, kicker, rating, tags) and
+     borrows them with subgrid; its meta block does the same for the last
+     four. A row is as tall as its tallest cell across every card beside it,
+     so the ratings line up, and so do the tags. */
+  @supports (grid-template-rows: subgrid) {
+    .sift__gallery .gallery__card {
+      /* .card makes each card a size container, which brings layout
+         containment, and a grid with layout containment can't be a
+         subgrid: it would quietly fall back to its own rows. Nothing in
+         these cards needs a container query, so switch it off. */
+      container-type: normal;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+      row-gap: 1rem;
+    }
+    .sift__gallery .gallery__meta {
+      display: grid;
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+      row-gap: .3rem;
+      align-items: start;
+      .floof__owner, .floof__kicker { margin: 0; }
+      .rating { margin-block-start: .5rem; }
+    }
+  }
+  .sift__tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .4rem;
+    margin: .6rem 0 0;
+    padding: 0;
+    list-style: none;
+    li {
+      padding: .15rem .6rem;
+      border-radius: 100vmax;
+      border: 1px solid color-mix(in oklab, var(--lilac) 30%, transparent);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--lilac);
+    }
+  }
+
+  /* TRICK: :has() + ~= — "if the Cats radio is checked, hide every card
+     whose species list doesn't include cat" */
+  .sift:has(#show-cat:checked)   .gallery__card:not([data-species~="cat"]),
+  .sift:has(#show-dog:checked)   .gallery__card:not([data-species~="dog"]),
+  .sift:has(#show-plush:checked) .gallery__card:not([data-species~="plush"]),
+  .sift:has(#show-fish:checked)  .gallery__card:not([data-species~="fish"]) {
+    display: none;
+  }
+
+  /* TRICK: order: calc() — every card carries its rating as --rating (the
+     bar draws from it too), so "highest first" is order: -rating. Ties keep
+     their place in the markup. */
+  .sift:has(#sort-high:checked) .gallery__card { order: calc(var(--rating) * -1); }
+  .sift:has(#sort-low:checked)  .gallery__card { order: var(--rating); }
+
+  /* TRICK: an empty state that works itself out — "this filter is on AND
+     no card has that species". Add a fish to the markup and it disappears. */
+  .sift__empty {
+    display: none;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    &::before { display: none; }
+    p { margin: 0; color: var(--paper-2); }
+    .sift__empty-title {
+      margin-block-end: .5rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2.4rem;
+      line-height: 1;
+      color: var(--pink);
+    }
+  }
+  .sift:has(#show-cat:checked):not(:has(.gallery__card[data-species~="cat"])),
+  .sift:has(#show-dog:checked):not(:has(.gallery__card[data-species~="dog"])),
+  .sift:has(#show-plush:checked):not(:has(.gallery__card[data-species~="plush"])),
+  .sift:has(#show-fish:checked):not(:has(.gallery__card[data-species~="fish"])) {
+    .sift__empty { display: block; }
+  }
+
+  /* TRICK: a new animation name restarts an animation. Cards jump when the
+     filter or sort changes (moving them smoothly needs JavaScript), so hide
+     the jump: the gallery, the count and the empty state blink out and fade
+     back in, already rearranged. A one-off animation only plays again when
+     its name changes, so each button gets its own name for the same
+     keyframes; clicking a different one swaps the name and replays the
+     fade. Two names, one per group, so filtering and sorting both do it.
+     (It also plays on page load: "All" and "As they came in" are checked
+     then too, and CSS can't tell arriving from coming back.) */
+  .sift {
+    --shuffle-show: shuffle-show-all;
+    --shuffle-sort: shuffle-sort-none;
+    &:has(#show-cat:checked)   { --shuffle-show: shuffle-show-cat; }
+    &:has(#show-dog:checked)   { --shuffle-show: shuffle-show-dog; }
+    &:has(#show-plush:checked) { --shuffle-show: shuffle-show-plush; }
+    &:has(#show-fish:checked)  { --shuffle-show: shuffle-show-fish; }
+    &:has(#sort-high:checked)  { --shuffle-sort: shuffle-sort-high; }
+    &:has(#sort-low:checked)   { --shuffle-sort: shuffle-sort-low; }
+  }
+  .sift :is(.sift__gallery, .sift__count, .sift__empty) {
+    animation-name: var(--shuffle-show), var(--shuffle-sort);
+    animation-duration: .7s;         /* hidden for the first 30%, then a gentle fade back */
+    animation-timing-function: var(--ease-out);
+  }
+  /* Identical on purpose: only the names differ */
+  @keyframes shuffle-show-all   { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-show-cat   { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-show-dog   { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-show-plush { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-show-fish  { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-sort-none  { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-sort-high  { 0%, 30% { opacity: 0; } }
+  @keyframes shuffle-sort-low   { 0%, 30% { opacity: 0; } }
 }
 
 
