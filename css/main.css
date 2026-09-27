@@ -437,6 +437,8 @@
   .stagger > :nth-child(6) { --enter-delay: 350ms; }
   .stagger > :nth-child(7) { --enter-delay: 420ms; }
   .stagger > :nth-child(8) { --enter-delay: 490ms; }
+  .stagger > :nth-child(9) { --enter-delay: 560ms; }
+  .stagger > :nth-child(10) { --enter-delay: 630ms; }
 
   /* ----- Launcher: a card that is a link or a button to somewhere.
            Thumb (or ordinal) · names · arrow. ----- */
@@ -3076,7 +3078,7 @@
 
 
   /* ==========================================================================
-     10 · Filter (demos/gallery.html) — filter, sort, count and an empty
+     10 · Filtered gallery (demos/gallery.html) — filter, sort, count and an empty
      state, all from a few radios.
      No JS:
      · :has() asks the page which radio is checked
